@@ -1,0 +1,2886 @@
+<title>Obras de Casa</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --paper:#ECEEEC;
+    --surface:#FFFFFF;
+    --surface-2:#F5F6F4;
+    --ink:#1B2422;
+    --ink-soft:#58635F;
+    --ink-faint:#8B948F;
+    --line:#D7DAD3;
+    --rust:#C1541F;
+    --rust-ink:#7A3512;
+    --rust-tint:#F4E3D8;
+    --petrol:#1F6F63;
+    --petrol-tint:#DCEAE6;
+    --amber:#9A6B1E;
+    --amber-tint:#F2E6CE;
+    --shadow: 0 1px 2px rgba(20,24,22,.06), 0 8px 24px -12px rgba(20,24,22,.18);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#14181A;
+      --surface:#1C2224;
+      --surface-2:#20272A;
+      --ink:#EDEFEC;
+      --ink-soft:#9AA6A1;
+      --ink-faint:#6C7773;
+      --line:#2C3436;
+      --rust:#E58452;
+      --rust-ink:#F6D2BC;
+      --rust-tint:#3A2318;
+      --petrol:#5FC3AE;
+      --petrol-tint:#173330;
+      --amber:#E1B565;
+      --amber-tint:#332A15;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#14181A;
+    --surface:#1C2224;
+    --surface-2:#20272A;
+    --ink:#EDEFEC;
+    --ink-soft:#9AA6A1;
+    --ink-faint:#6C7773;
+    --line:#2C3436;
+    --rust:#E58452;
+    --rust-ink:#F6D2BC;
+    --rust-tint:#3A2318;
+    --petrol:#5FC3AE;
+    --petrol-tint:#173330;
+    --amber:#E1B565;
+    --amber-tint:#332A15;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"IBM Plex Sans", system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:"IBM Plex Sans Condensed", system-ui, sans-serif;
+    text-wrap:balance;
+  }
+  .mono{ font-family:"IBM Plex Mono", ui-monospace, monospace; }
+
+  .app{
+    max-width:480px;
+    margin:0 auto;
+    min-height:100vh;
+    min-height:100svh; /* a menor altura visivel: nunca empurra o conteudo para fora */
+    display:flex;
+    flex-direction:column;
+    position:relative;
+    background:var(--paper);
+    padding-left:env(safe-area-inset-left);
+    padding-right:env(safe-area-inset-right);
+  }
+
+  /* Top bar */
+  .topbar{
+    position:sticky; top:0; z-index:20;
+    background:var(--paper);
+    border-bottom:1px solid var(--line);
+    padding:10px 14px 9px;
+    padding-top:calc(10px + env(safe-area-inset-top)); /* ilha dinamica */
+  }
+  .topbar .eyebrow{
+    font-size:11px; letter-spacing:.09em; text-transform:uppercase;
+    color:var(--ink-faint); font-weight:600;
+  }
+  .topbar-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .title-wrap{ display:flex; align-items:center; gap:8px; min-width:0; }
+  .topbar h1{
+    margin:0; font-size:19px; font-weight:700; letter-spacing:-.01em;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .sync-dot{
+    flex:none; width:8px; height:8px; border-radius:50%;
+    background:var(--ink-faint); cursor:pointer;
+  }
+  .sync-dot.good{ background:var(--petrol); }
+  .sync-dot.warn{ background:var(--amber); }
+  .backup-btn{
+    flex:none; width:32px; height:32px; border-radius:9px;
+    border:1px solid var(--line); background:var(--surface-2); color:var(--ink-soft);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+  }
+  .backup-btn svg{ width:17px; height:17px; }
+  .backup-banner{
+    display:flex; gap:9px; align-items:flex-start;
+    background:var(--amber-tint); border:1px solid var(--amber);
+    border-radius:10px; padding:10px 11px; margin:0 0 12px;
+    font-size:12px; line-height:1.5; color:var(--ink);
+  }
+  .backup-banner b{ color:var(--amber); }
+  .backup-banner .x{ margin-left:auto; flex:none; color:var(--ink-faint); cursor:pointer; padding:2px; }
+  .sync-status{ display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--ink-soft); margin-top:3px; }
+  .sync-status .dot{ width:7px; height:7px; border-radius:50%; background:var(--ink-faint); flex:none; }
+  .sync-status .dot.good{ background:var(--petrol); }
+  .sync-status .dot.warn{ background:var(--amber); }
+  .tally{
+    display:flex; gap:6px; overflow-x:auto; padding:8px 0 2px;
+    scrollbar-width:none;
+  }
+  .tally::-webkit-scrollbar{display:none;}
+  .tally-chip{
+    flex:none;
+    display:flex; align-items:baseline; gap:5px;
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    border-radius:7px;
+    padding:6px 9px;
+    font-size:12.5px;
+    white-space:nowrap;
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+  }
+  .tally-chip b{ font-family:"IBM Plex Mono"; font-size:13px; color:var(--rust); font-weight:600;}
+  .tally-chip.active{ background:var(--rust-tint); border-color:var(--rust); color:var(--rust-ink); }
+  .tally-chip.active b{ color:var(--rust-ink); }
+  .tally-empty{ font-size:12.5px; color:var(--ink-faint); padding:6px 2px; }
+  .filter-note{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    margin-top:8px; font-size:12px; color:var(--ink-soft);
+  }
+  .filter-note .clear{ color:var(--rust); font-weight:600; cursor:pointer; padding:4px; }
+
+  /* Item: defeito e urgencia */
+  .item-defect{ font-size:11.5px; color:var(--ink-faint); margin-top:1px; }
+  .item-urgent{
+    font-size:10px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+    color:#fff; background:#B4402B; padding:1px 5px; border-radius:4px;
+  }
+
+  /* Escolha do tipo de defeito */
+  .defect-list{ display:flex; flex-wrap:wrap; gap:6px; }
+  .defect-opt{
+    border:1px solid var(--line); border-radius:8px; padding:7px 10px;
+    font-size:12.5px; color:var(--ink-soft); cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .defect-opt.active{ border-color:var(--rust); background:var(--rust-tint); color:var(--rust-ink); font-weight:600; }
+
+  /* Resumo: numeros de cabeca */
+  .stat-row{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:12px; }
+  .stat-tile{
+    background:var(--surface); border:1px solid var(--line); border-radius:12px;
+    padding:12px 12px 10px; box-shadow:var(--shadow);
+  }
+  .stat-num{
+    font-family:"IBM Plex Mono"; font-size:26px; font-weight:600; color:var(--ink);
+    line-height:1.1; font-variant-numeric:tabular-nums;
+  }
+  .stat-num .pct{ font-size:15px; color:var(--ink-soft); margin-left:1px; }
+  .stat-tile.danger .stat-num{ color:#B4402B; }
+  .stat-lbl{ font-size:11px; color:var(--ink-soft); margin-top:4px; letter-spacing:.02em; }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .stat-tile.danger .stat-num{ color:#E58C74; } }
+  :root[data-theme="dark"] .stat-tile.danger .stat-num{ color:#E58C74; }
+
+  .progress-block{ margin-bottom:6px; }
+  .progress-track{
+    height:12px; border-radius:6px; background:var(--surface-2);
+    border:1px solid var(--line); overflow:hidden;
+  }
+  .progress-done{ height:100%; background:var(--petrol); border-radius:6px; }
+  .progress-legend{
+    display:flex; gap:14px; margin-top:7px; font-size:11.5px; color:var(--ink-soft);
+  }
+  .progress-legend span{ display:flex; align-items:center; gap:5px; }
+  .progress-legend .sw{ width:9px; height:9px; border-radius:3px; display:inline-block; }
+  .progress-legend .sw.done{ background:var(--petrol); }
+  .progress-legend .sw.pending{ background:var(--surface-2); border:1px solid var(--line); }
+
+  /* Barras */
+  .bars-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:14px;
+    padding:6px 14px; box-shadow:var(--shadow); margin-bottom:4px;
+  }
+  .bar-row{
+    padding:11px 0; border-bottom:1px solid var(--line);
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+  }
+  .bar-row:last-child{ border-bottom:none; }
+  .bar-head{ display:flex; align-items:center; gap:8px; margin-bottom:7px; }
+  .bar-code{
+    flex:none; font-family:"IBM Plex Mono"; font-size:11px; font-weight:600;
+    background:var(--rust-tint); color:var(--rust-ink);
+    padding:2px 7px; border-radius:5px;
+  }
+  .bar-name{ flex:1; font-size:13.5px; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .bar-urgent{
+    flex:none; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.03em;
+    color:#B4402B; background:var(--rust-tint); padding:2px 6px; border-radius:4px;
+  }
+  .bar-val{
+    flex:none; font-family:"IBM Plex Mono"; font-size:16px; font-weight:600; color:var(--rust);
+    font-variant-numeric:tabular-nums;
+  }
+  .bar-val.small{ font-size:13px; color:var(--ink-soft); }
+  .bar-track{ height:10px; border-radius:5px; background:var(--surface-2); overflow:hidden; }
+  .bar-fill{ height:100%; background:var(--rust); border-radius:5px; }
+  .bar-fill.done{ background:var(--petrol); }
+
+  /* Miniaturas dentro do resumo */
+  .photo-strip{ display:flex; gap:7px; overflow-x:auto; padding:10px 0 2px; scrollbar-width:none; }
+  .photo-strip::-webkit-scrollbar{ display:none; }
+  .photo-thumb{ flex:none; width:64px; cursor:pointer; }
+  .photo-thumb img{
+    width:64px; height:64px; object-fit:cover; border-radius:8px;
+    border:1px solid var(--line); display:block;
+  }
+  .photo-thumb span{
+    display:block; font-family:"IBM Plex Mono"; font-size:10.5px; color:var(--rust);
+    text-align:center; margin-top:3px;
+  }
+
+  .trade-copy{
+    border-top:1px solid var(--line);
+    padding:11px 14px; font-size:12.5px; font-weight:600; color:var(--rust);
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+  }
+
+  .summary-actions{ display:flex; flex-direction:column; gap:8px; margin-top:18px; }
+  .btn-secondary{
+    width:100%; background:var(--surface); color:var(--ink-soft);
+    border:1px solid var(--line); border-radius:11px;
+    padding:12px; font-size:14px; font-weight:600; cursor:pointer; font-family:inherit;
+  }
+
+  /* Resumo por especialidade */
+  .summary-urgent{
+    background:var(--rust-tint); border:1px solid var(--rust);
+    border-radius:10px; padding:10px 12px; margin-bottom:12px;
+    font-size:12.5px; color:var(--ink); line-height:1.5;
+  }
+  .summary-urgent b{ color:var(--rust-ink); }
+  .summary-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:14px;
+    margin-bottom:10px; box-shadow:var(--shadow); overflow:hidden;
+  }
+  .summary-head{
+    display:flex; align-items:center; gap:11px; padding:11px 12px;
+  }
+  .summary-code{
+    flex:none; width:40px; height:34px; border-radius:8px;
+    background:var(--rust-tint); color:var(--rust-ink);
+    display:flex; align-items:center; justify-content:center;
+    font-family:"IBM Plex Mono"; font-weight:600; font-size:12px;
+  }
+  .summary-title{ flex:1; min-width:0; }
+  .summary-title .name{ font-size:14.5px; font-weight:600; }
+  .summary-title .who{ font-size:11.5px; color:var(--ink-faint); margin-top:1px; }
+  .summary-count{
+    flex:none; font-family:"IBM Plex Mono"; font-size:18px; font-weight:600; color:var(--rust);
+  }
+  .summary-body{ border-top:1px solid var(--line); padding:4px 14px 10px; }
+  .summary-line{
+    display:flex; align-items:baseline; gap:8px; padding:6px 0;
+    border-bottom:1px solid var(--line); font-size:13px;
+  }
+  .summary-line:last-child{ border-bottom:none; }
+  .summary-line .qty{
+    flex:none; font-family:"IBM Plex Mono"; font-weight:600; color:var(--ink);
+    min-width:26px;
+  }
+  .summary-line .what{ flex:1; color:var(--ink-soft); }
+  .summary-line .codes{
+    flex:none; font-family:"IBM Plex Mono"; font-size:11px; color:var(--rust);
+    max-width:44%; text-align:right; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+
+  /* Content */
+  .content{ flex:1; padding:12px 14px 88px; }
+  .content.compras{ padding-top:16px; }
+
+  .section-label{
+    font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--ink-faint); font-weight:600;
+    margin:18px 2px 8px;
+  }
+  .section-label:first-child{ margin-top:2px; }
+
+  .empty-state{
+    border:1px dashed var(--line);
+    border-radius:12px;
+    padding:26px 18px;
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:13.5px;
+    line-height:1.5;
+  }
+  .empty-state .glyph{ font-size:22px; margin-bottom:8px; opacity:.7; }
+
+  /* Area card */
+  .area-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:12px;
+    margin-bottom:8px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  .area-head{
+    display:flex; align-items:center; gap:11px;
+    padding:10px 12px;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .area-badge{
+    flex:none; width:32px; height:32px; border-radius:8px;
+    background:var(--rust-tint); color:var(--rust-ink);
+    display:flex; align-items:center; justify-content:center;
+    font-family:"IBM Plex Mono"; font-weight:600; font-size:16px;
+  }
+  .area-title{ flex:1; min-width:0; }
+  .area-title .name{ font-size:14.5px; font-weight:600; }
+  .area-title .meta{ font-size:11.5px; color:var(--ink-soft); margin-top:1px; }
+  .area-delete{
+    flex:none; color:var(--ink-faint); cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+    width:44px; height:44px; margin:-10px -6px -10px 0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:17px; border-radius:50%;
+  }
+  .area-delete:active{ background:var(--surface-2); color:var(--rust); }
+  .area-chevron{
+    flex:none; color:var(--ink-faint); font-size:13px;
+    transition:transform .15s ease;
+  }
+  .area-card.open .area-chevron{ transform:rotate(90deg); }
+
+  .item-list{ border-top:1px solid var(--line); }
+  .item-row{
+    display:flex; align-items:center; gap:10px;
+    padding:9px 12px;
+    border-bottom:1px solid var(--line);
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .item-row:last-child{ border-bottom:none; }
+  .item-thumb{
+    flex:none; width:36px; height:36px; border-radius:7px;
+    object-fit:cover; background:var(--surface-2); border:1px solid var(--line);
+  }
+  .item-thumb.placeholder{
+    display:flex; align-items:center; justify-content:center;
+    color:var(--ink-faint); font-size:11px; font-family:"IBM Plex Mono"; font-weight:600;
+  }
+  .item-main{ flex:1; min-width:0; }
+  .item-top{ display:flex; align-items:center; gap:6px; }
+  .item-code{ font-family:"IBM Plex Mono"; font-weight:600; font-size:13px; color:var(--rust); }
+  .item-tag{
+    font-family:"IBM Plex Mono"; font-size:10.5px; font-weight:600; letter-spacing:.03em;
+    background:var(--surface-2); border:1px solid var(--line); color:var(--ink-soft);
+    padding:1px 5px; border-radius:4px;
+  }
+  .item-desc{ font-size:13px; color:var(--ink-soft); margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .status-dot{ flex:none; width:9px; height:9px; border-radius:50%; border:1.5px solid var(--ink-faint); }
+  .status-dot.progress{ background:var(--amber); border-color:var(--amber); }
+  .status-dot.done{ background:var(--petrol); border-color:var(--petrol); }
+
+  .add-row{
+    display:flex; align-items:center; gap:8px;
+    padding:10px 12px;
+    color:var(--rust); font-size:13.5px; font-weight:600;
+    border-top:1px solid var(--line);
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+  }
+
+  .new-area-form{
+    display:flex; gap:8px; margin-top:2px;
+  }
+  .new-area-form input{ flex:1; }
+
+  .new-area-row{
+    display:flex; align-items:center; justify-content:center; gap:7px;
+    border:1px dashed var(--line); border-radius:12px;
+    padding:12px; margin-top:2px;
+    color:var(--ink-soft); font-size:13px; font-weight:600;
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+  }
+
+  /* Escolher a divisao ao criar um item */
+  .area-picker{ display:flex; flex-direction:column; gap:7px; }
+  .picker-opt{
+    display:flex; align-items:center; gap:11px;
+    border:1px solid var(--line); border-radius:11px;
+    padding:11px 12px; cursor:pointer; -webkit-tap-highlight-color:transparent;
+  }
+  .picker-opt:active{ background:var(--surface-2); }
+  .picker-letter{
+    flex:none; width:30px; height:30px; border-radius:8px;
+    background:var(--rust-tint); color:var(--rust-ink);
+    display:flex; align-items:center; justify-content:center;
+    font-family:"IBM Plex Mono"; font-weight:600; font-size:14px;
+  }
+  .picker-name{ flex:1; font-size:14.5px; font-weight:500; }
+  .picker-count{ flex:none; font-size:11.5px; color:var(--ink-faint); }
+
+  /* Shopping list */
+  .shop-group{ margin-bottom:4px; }
+  .shop-body{ border-top:1px solid var(--line); padding:2px 14px; }
+  .shop-line{
+    display:flex; align-items:center; gap:11px;
+    padding:11px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .shop-line:last-child{ border-bottom:none; }
+  .shop-row{
+    display:flex; align-items:center; gap:11px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:11px;
+    padding:11px 12px;
+    margin-bottom:7px;
+    box-shadow:var(--shadow);
+  }
+  .check{
+    flex:none; width:22px; height:22px; border-radius:50%;
+    border:1.5px solid var(--ink-faint);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+    color:transparent; font-size:13px;
+  }
+  .check.checked{ background:var(--petrol); border-color:var(--petrol); color:var(--surface); }
+  .shop-main{ flex:1; min-width:0; }
+  .shop-name{ font-size:14px; font-weight:500; }
+  .shop-name.checked{ text-decoration:line-through; color:var(--ink-faint); }
+  .shop-origin{ font-size:11.5px; color:var(--ink-faint); margin-top:1px; }
+  .shop-qty{ font-family:"IBM Plex Mono"; font-size:12.5px; color:var(--ink-soft); flex:none; }
+  .shop-del{ flex:none; color:var(--ink-faint); padding:4px; font-size:15px; cursor:pointer; }
+
+  /* Navegacao no topo: dentro da app Claude o fundo do ecra pode ficar
+     fora da area visivel, por isso os separadores vivem no cabecalho. */
+  .tabbar{
+    display:flex; gap:4px;
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:3px;
+    margin-top:9px;
+  }
+  .tab{
+    flex:1; display:flex; align-items:center; justify-content:center; gap:6px;
+    padding:8px 4px; border-radius:8px;
+    color:var(--ink-soft); font-size:12.5px; font-weight:600;
+    cursor:pointer; -webkit-tap-highlight-color:transparent; letter-spacing:.01em;
+  }
+  .tab svg{ width:16px; height:16px; }
+  .tab.active{ background:var(--surface); color:var(--rust); box-shadow:var(--shadow); }
+  .tab-badge{
+    font-family:"IBM Plex Mono"; font-size:10.5px; font-weight:600;
+    background:var(--rust); color:#fff; border-radius:9px; padding:1px 5px;
+  }
+
+  .fab{
+    /* fixo ao ecra: numa lista longa tem de continuar ao alcance do polegar */
+    position:fixed;
+    right:max(16px, calc(50% - 240px + 16px));
+    /* levantado do fundo: dentro da app Claude os ultimos ~60px do ecra
+       ficam fora da area visivel */
+    bottom:calc(76px + env(safe-area-inset-bottom));
+    z-index:15;
+    width:52px; height:52px; border-radius:16px;
+    background:var(--rust); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:var(--shadow); font-size:26px; font-weight:400; line-height:1;
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+    border:none;
+  }
+
+  /* Sheet overlay */
+  .scrim{
+    position:fixed; inset:0; background:rgba(10,12,11,.42);
+    z-index:30; display:none;
+  }
+  .scrim.show{ display:block; }
+  .sheet{
+    position:fixed; left:0; right:0; bottom:0; z-index:31;
+    max-width:480px; margin:0 auto;
+    background:var(--surface);
+    border-radius:18px 18px 0 0;
+    box-shadow:0 -8px 30px rgba(0,0,0,.25);
+    max-height:88vh; max-height:88dvh; overflow-y:auto;
+    transform:translateY(100%);
+    transition:transform .22s ease;
+    padding-bottom:calc(18px + env(safe-area-inset-bottom));
+  }
+  .sheet.show{ transform:translateY(0); }
+  .sheet-handle{ width:36px; height:4px; background:var(--line); border-radius:2px; margin:10px auto 4px; }
+  .sheet-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:8px 18px 4px;
+  }
+  .sheet-head h2{ font-size:17px; font-weight:700; }
+  .sheet-close{ color:var(--ink-soft); font-size:14px; font-weight:600; cursor:pointer; padding:4px; }
+  .sheet-body{
+    padding:6px 18px 4px;
+    padding-left:calc(18px + env(safe-area-inset-left));
+    padding-right:calc(18px + env(safe-area-inset-right));
+  }
+
+  label.field{ display:block; margin-bottom:14px; }
+  label.field .lbl{ font-size:11.5px; font-weight:600; color:var(--ink-soft); letter-spacing:.03em; text-transform:uppercase; display:block; margin-bottom:6px; }
+  input[type=text], textarea, select{
+    width:100%; background:var(--surface-2); border:1px solid var(--line); border-radius:9px;
+    padding:10px 11px; font-size:15px; color:var(--ink); font-family:inherit;
+  }
+  textarea{ resize:vertical; min-height:64px; }
+  input[type=text]:focus, textarea:focus, select:focus{ outline:2px solid var(--rust); outline-offset:1px; }
+
+  .code-chip{
+    display:inline-block; font-family:"IBM Plex Mono"; font-weight:600; font-size:14px;
+    color:var(--rust); background:var(--rust-tint); padding:3px 9px; border-radius:6px;
+  }
+
+  .code-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:7px; }
+  .code-opt{
+    border:1px solid var(--line); border-radius:9px; padding:9px 5px; text-align:center;
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+    font-size:10.5px; line-height:1.3; color:var(--ink-soft); font-weight:600;
+    display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+  }
+  .code-opt .sw{ font-family:"IBM Plex Mono"; font-size:12px; font-weight:700; color:var(--ink); display:block; margin-bottom:3px; }
+  .code-opt.active{ border-color:var(--rust); background:var(--rust-tint); color:var(--rust-ink); }
+  .code-opt.active .sw{ color:var(--rust-ink); }
+
+  .status-grid{ display:flex; gap:7px; }
+  .status-opt{
+    flex:1; border:1px solid var(--line); border-radius:9px; padding:9px 4px; text-align:center;
+    font-size:12.5px; font-weight:600; color:var(--ink-soft); cursor:pointer;
+  }
+  .status-opt.active{ border-color:var(--rust); background:var(--rust-tint); color:var(--rust-ink); }
+
+  .photo-row{ display:flex; gap:8px; margin-bottom:14px; }
+  .photo-btn{
+    flex:1; border:1px dashed var(--line); border-radius:10px; padding:11px 6px;
+    text-align:center; font-size:12.5px; font-weight:600; color:var(--ink-soft);
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+  }
+  .photo-preview{ position:relative; margin-bottom:14px; }
+  .photo-preview img{ width:100%; max-height:200px; object-fit:cover; border-radius:10px; display:block; }
+  .photo-remove{
+    position:absolute; top:8px; right:8px; background:rgba(20,20,20,.6); color:#fff;
+    border-radius:50%; width:26px; height:26px; display:flex; align-items:center; justify-content:center;
+    font-size:14px; cursor:pointer;
+  }
+
+  .materials-list{ display:flex; flex-direction:column; gap:7px; margin-bottom:8px; }
+  .material-row{ display:flex; gap:7px; align-items:center; }
+  .material-row input[type=text]:first-child{ flex:1; }
+  .material-row input.qty{ width:64px; text-align:right; }
+  .material-row .rm{ flex:none; color:var(--ink-faint); font-size:16px; padding:4px; cursor:pointer; }
+  .add-material{
+    font-size:12.5px; font-weight:600; color:var(--rust); cursor:pointer; padding:4px 0;
+    display:inline-flex; align-items:center; gap:5px;
+  }
+
+  .btn-primary{
+    width:100%; background:var(--rust); color:#fff; border:none; border-radius:11px;
+    padding:13px; font-size:15px; font-weight:600; margin-top:6px; cursor:pointer;
+    font-family:inherit;
+  }
+  .btn-primary:disabled{ opacity:.45; }
+  .btn-danger{
+    width:100%; background:transparent; color:#B4402B; border:1px solid #E3B7A6; border-radius:11px;
+    padding:11px; font-size:13.5px; font-weight:600; margin-top:10px; cursor:pointer; font-family:inherit;
+  }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .btn-danger{ color:#E58C74; border-color:#5A3227; } }
+  :root[data-theme="dark"] .btn-danger{ color:#E58C74; border-color:#5A3227; }
+
+  .example-flag{
+    font-size:10px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+    color:var(--amber); background:var(--amber-tint); padding:1px 6px; border-radius:4px; margin-left:6px;
+  }
+
+  .hint{ font-size:12px; color:var(--ink-faint); line-height:1.5; margin-top:2px; }
+</style>
+
+<div class="app" id="app"></div>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-head">
+    <h2 id="sheetTitle">Novo item</h2>
+    <span class="sheet-close" id="sheetClose">Fechar</span>
+  </div>
+  <div class="sheet-body" id="sheetBody"></div>
+</div>
+
+<input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none">
+<input type="file" id="libraryInput" accept="image/*" style="display:none">
+
+<script>
+(function(){
+  "use strict";
+
+  function showDebugError(msg){
+    var el = document.getElementById("debugError");
+    if (!el){
+      el = document.createElement("div");
+      el.id = "debugError";
+      el.style.cssText = "position:fixed;left:8px;right:8px;top:8px;z-index:9999;background:#B4402B;color:#fff;padding:10px 12px;border-radius:10px;font-size:11.5px;font-family:ui-monospace,monospace;white-space:pre-wrap;max-height:42vh;overflow:auto;box-shadow:0 8px 24px rgba(0,0,0,.3);";
+      var closeBtn = document.createElement("div");
+      closeBtn.textContent = "Fechar aviso";
+      closeBtn.style.cssText = "margin-top:8px;text-decoration:underline;font-weight:600;";
+      closeBtn.onclick = function(){ el.remove(); };
+      el.appendChild(document.createElement("div")).id = "debugErrorText";
+      el.appendChild(closeBtn);
+      document.body.appendChild(el);
+    }
+    var textEl = document.getElementById("debugErrorText");
+    textEl.textContent += (textEl.textContent ? "\n\n" : "") + msg;
+  }
+  window.addEventListener("error", function(e){
+    showDebugError("Erro: " + (e.message || e) + (e.filename ? (" (linha " + e.lineno + ")") : ""));
+  });
+  window.addEventListener("unhandledrejection", function(e){
+    var reason = e.reason;
+    var text = (reason && reason.message) ? reason.message : (reason && reason.code) ? ("codigo: " + reason.code) : JSON.stringify(reason);
+    showDebugError("Falha nao tratada: " + text);
+  });
+
+  // As apps guardadas no ecra principal do iPhone por vezes nao mostram
+  // os alert()/confirm() nativos do browser. Usamos caixas proprias em
+  // vez disso, para funcionar sempre.
+  function showAlert(message){
+    var overlay = document.createElement("div");
+    overlay.style.cssText = "position:fixed;inset:0;z-index:9998;background:rgba(10,12,11,.5);display:flex;align-items:center;justify-content:center;padding:24px;";
+    var box = document.createElement("div");
+    box.style.cssText = "background:var(--surface);color:var(--ink);border-radius:14px;padding:18px;max-width:340px;width:100%;font-size:14px;line-height:1.5;box-shadow:0 8px 30px rgba(0,0,0,.3);font-family:inherit;";
+    var text = document.createElement("div");
+    text.textContent = message;
+    var btn = document.createElement("button");
+    btn.textContent = "OK";
+    btn.className = "btn-primary";
+    btn.style.marginTop = "14px";
+    btn.onclick = function(){ overlay.remove(); };
+    box.appendChild(text);
+    box.appendChild(btn);
+    overlay.appendChild(box);
+    overlay.onclick = function(e){ if (e.target === overlay) overlay.remove(); };
+    document.body.appendChild(overlay);
+  }
+
+  function showConfirm(message, onConfirm, confirmLabel){
+    var overlay = document.createElement("div");
+    overlay.style.cssText = "position:fixed;inset:0;z-index:9998;background:rgba(10,12,11,.5);display:flex;align-items:center;justify-content:center;padding:24px;";
+    var box = document.createElement("div");
+    box.style.cssText = "background:var(--surface);color:var(--ink);border-radius:14px;padding:18px;max-width:340px;width:100%;font-size:14px;line-height:1.5;box-shadow:0 8px 30px rgba(0,0,0,.3);font-family:inherit;";
+    var text = document.createElement("div");
+    text.textContent = message;
+    var row = document.createElement("div");
+    row.style.cssText = "display:flex;gap:8px;margin-top:16px;";
+    var cancelBtn = document.createElement("button");
+    cancelBtn.textContent = "Cancelar";
+    cancelBtn.style.cssText = "flex:1;background:var(--surface-2);color:var(--ink-soft);border:1px solid var(--line);border-radius:10px;padding:11px;font-size:14px;font-weight:600;font-family:inherit;";
+    cancelBtn.onclick = function(){ overlay.remove(); };
+    var okBtn = document.createElement("button");
+    okBtn.textContent = confirmLabel || "Continuar";
+    okBtn.style.cssText = "flex:1;background:#B4402B;color:#fff;border:none;border-radius:10px;padding:11px;font-size:14px;font-weight:600;font-family:inherit;";
+    okBtn.onclick = function(){ overlay.remove(); onConfirm(); };
+    row.appendChild(cancelBtn);
+    row.appendChild(okBtn);
+    box.appendChild(text);
+    box.appendChild(row);
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+  }
+
+  var STORAGE_KEY = "homefixnotes.v1";
+
+  // Especialidade (quem faz o trabalho) e, dentro dela, o defeito concreto.
+  // E assim que funciona uma lista de nao conformidades de obra: o resumo
+  // por especialidade e o que se entrega a cada profissional.
+  var TRADES = [
+    { id:"alvenaria", code:"ALV", emoji:"🧱", label:"Alvenaria e estuque", who:"Pedreiro / estucador", defects:[
+      { id:"buraco_parede", label:"Buraco na parede" },
+      { id:"buraco_teto",   label:"Buraco no teto" },
+      { id:"fissura",       label:"Fissura / racha" },
+      { id:"reboco",        label:"Reboco solto ou em falta" },
+      { id:"canto",         label:"Canto danificado" },
+      { id:"desnivel",      label:"Parede empenada / desnivel" },
+      { id:"roco",          label:"Roco por fechar" }
+    ]},
+    { id:"pintura", code:"PIN", emoji:"🎨", label:"Pintura", who:"Pintor", defects:[
+      { id:"retoque",     label:"Retoque de tinta" },
+      { id:"sem_pintura", label:"Zona por pintar" },
+      { id:"descascada",  label:"Tinta a descascar" },
+      { id:"mancha",      label:"Mancha / nodoa" },
+      { id:"salpicos",    label:"Salpicos de tinta" },
+      { id:"bolor_tinta", label:"Bolor / humidade na tinta" }
+    ]},
+    { id:"carpintaria", code:"CAR", emoji:"🪚", label:"Carpintaria e moveis", who:"Carpinteiro", defects:[
+      { id:"porta_fecha",   label:"Porta nao fecha bem" },
+      { id:"porta_risca",   label:"Porta riscada / danificada" },
+      { id:"rodape",        label:"Rodape solto ou em falta" },
+      { id:"armario",       label:"Armario desalinhado" },
+      { id:"gaveta",        label:"Gaveta / corredica" },
+      { id:"prateleira",    label:"Prateleira" },
+      { id:"aro",           label:"Aro ou guarnicao" }
+    ]},
+    { id:"ferragens", code:"FER", emoji:"🔑", label:"Fechaduras e ferragens", who:"Serralheiro / carpinteiro", defects:[
+      { id:"fechadura",  label:"Fechadura" },
+      { id:"puxador",    label:"Puxador / macaneta" },
+      { id:"dobradica",  label:"Dobradica" },
+      { id:"fecho_jan",  label:"Fecho de janela" },
+      { id:"chave",      label:"Chave em falta" }
+    ]},
+    { id:"eletricidade", code:"ELE", emoji:"🔌", label:"Eletricidade", who:"Eletricista", defects:[
+      { id:"fio_vista",   label:"Fios a vista" },
+      { id:"tomada",      label:"Tomada" },
+      { id:"interruptor", label:"Interruptor" },
+      { id:"luminaria",   label:"Luminaria / foco" },
+      { id:"sem_corrente",label:"Sem corrente" },
+      { id:"quadro",      label:"Quadro eletrico" },
+      { id:"campainha",   label:"Campainha / videoporteiro" }
+    ]},
+    { id:"canalizacao", code:"CAN", emoji:"🚰", label:"Canalizacao", who:"Canalizador", defects:[
+      { id:"fuga",        label:"Fuga de agua" },
+      { id:"torneira",    label:"Torneira" },
+      { id:"autoclismo",  label:"Autoclismo / sanita" },
+      { id:"entupido",    label:"Esgoto entupido" },
+      { id:"chuveiro",    label:"Chuveiro / misturadora" },
+      { id:"pressao",     label:"Falta de pressao" },
+      { id:"esquentador", label:"Esquentador / agua quente" }
+    ]},
+    { id:"revestimentos", code:"REV", emoji:"🔳", label:"Azulejos e pavimentos", who:"Ladrilhador", defects:[
+      { id:"azulejo",    label:"Azulejo partido ou solto" },
+      { id:"junta",      label:"Junta por refazer" },
+      { id:"pavimento",  label:"Pavimento riscado ou solto" },
+      { id:"soalho",     label:"Soalho a ranger" },
+      { id:"desalinhado",label:"Peca desalinhada" }
+    ]},
+    { id:"janelas", code:"JAN", emoji:"🪟", label:"Janelas, vidros e estores", who:"Aluminios / vidraceiro", defects:[
+      { id:"vidro",       label:"Vidro partido ou riscado" },
+      { id:"nao_veda",    label:"Janela nao veda" },
+      { id:"estore",      label:"Estore / persiana" },
+      { id:"mosquiteira", label:"Rede mosquiteira" },
+      { id:"condensacao", label:"Condensacao no vidro" }
+    ]},
+    { id:"vedantes", code:"SIL", emoji:"🧴", label:"Silicones e vedantes", who:"Acabamentos", defects:[
+      { id:"silicone_refazer", label:"Silicone por refazer" },
+      { id:"silicone_bolor",   label:"Bolor no silicone" },
+      { id:"vedante_falta",    label:"Vedante em falta" }
+    ]},
+    { id:"climatizacao", code:"CLI", emoji:"❄️", label:"Climatizacao e ventilacao", who:"AVAC", defects:[
+      { id:"ar_cond",   label:"Ar condicionado" },
+      { id:"exaustor",  label:"Exaustor" },
+      { id:"grelha",    label:"Grelha de ventilacao" },
+      { id:"radiador",  label:"Radiador / aquecimento" }
+    ]},
+    { id:"exterior", code:"EXT", emoji:"🏠", label:"Exterior", who:"Exterior / telhados", defects:[
+      { id:"telhado",  label:"Telhado / caleira" },
+      { id:"fachada",  label:"Fachada" },
+      { id:"varanda",  label:"Varanda / terraco" },
+      { id:"portao",   label:"Portao / gradeamento" },
+      { id:"jardim",   label:"Jardim / rega" }
+    ]},
+    { id:"outro", code:"OUT", emoji:"🔧", label:"Outro", who:"A definir", defects:[
+      { id:"outro", label:"Outro" },
+      { id:"limpeza", label:"Limpeza final" }
+    ]}
+  ];
+
+  function tradeById(id){
+    for (var i=0;i<TRADES.length;i++) if (TRADES[i].id === id) return TRADES[i];
+    return TRADES[TRADES.length-1];
+  }
+  function defectById(tradeId, defectId){
+    var trade = tradeById(tradeId);
+    for (var i=0;i<trade.defects.length;i++) if (trade.defects[i].id === defectId) return trade.defects[i];
+    return trade.defects[0];
+  }
+
+  // Itens antigos guardavam so "category". Convertemos para especialidade
+  // + defeito sem perder nada do que ja estava registado.
+  var LEGACY_CATEGORY_MAP = {
+    buraco:      { trade:"alvenaria",    defect:"buraco_parede" },
+    fechadura:   { trade:"ferragens",    defect:"fechadura" },
+    fios:        { trade:"eletricidade", defect:"fio_vista" },
+    acabamento:  { trade:"pintura",      defect:"retoque" },
+    pintura:     { trade:"pintura",      defect:"retoque" },
+    canalizacao: { trade:"canalizacao",  defect:"fuga" },
+    carpintaria: { trade:"carpintaria",  defect:"porta_fecha" },
+    outro:       { trade:"outro",        defect:"outro" }
+  };
+  function normalizeItem(item){
+    if (!item.trade){
+      var legacy = LEGACY_CATEGORY_MAP[item.category] || LEGACY_CATEGORY_MAP.outro;
+      item.trade = legacy.trade;
+      item.defect = legacy.defect;
+    }
+    if (!item.priority) item.priority = "normal";
+    return item;
+  }
+
+  var STATUSES = [
+    { id:"pendente",  label:"Pendente" },
+    { id:"em_curso",  label:"Em curso" },
+    { id:"concluido", label:"Concluido" }
+  ];
+
+  var PRIORITIES = [
+    { id:"urgente", label:"Urgente",   short:"!" },
+    { id:"normal",  label:"Normal",    short:"" },
+    { id:"estetico",label:"Quando der", short:"~" }
+  ];
+  function priorityById(id){
+    for (var i=0;i<PRIORITIES.length;i++) if (PRIORITIES[i].id === id) return PRIORITIES[i];
+    return PRIORITIES[1];
+  }
+
+  function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+
+  function letterForIndex(i){
+    var n = i, out = "";
+    do {
+      out = String.fromCharCode(65 + (n % 26)) + out;
+      n = Math.floor(n/26) - 1;
+    } while (n >= 0);
+    return out;
+  }
+  function nextAreaLetter(areas){
+    var used = {};
+    areas.forEach(function(a){ used[a.letter] = true; });
+    var i = 0;
+    while (used[letterForIndex(i)]) i++;
+    return letterForIndex(i);
+  }
+  function nextItemNumber(items, areaId){
+    var max = 0;
+    items.forEach(function(it){ if (it.areaId === areaId && it.number > max) max = it.number; });
+    return max + 1;
+  }
+
+  // ---------- state ----------
+  var state = { areas: [], items: [], shopping: [] };
+  var ui = {
+    tab: "obras",
+    openAreaId: null,
+    filterTrade: null,
+    bannerDismissed: false,
+    cloudMode: null, // null = a ligar, true = na conta, false = so neste telemovel
+    sheet: null // {type:'area'|'item', areaId, itemId}
+  };
+  var cloudDb = null;
+
+  function seedState(){
+    var areaId = uid();
+    var item1 = uid(), item2 = uid();
+    return {
+      areas: [ { id:areaId, letter:"A", name:"Cozinha", order:0, example:true } ],
+      items: [
+        { id:item1, areaId:areaId, number:1, trade:"alvenaria", defect:"buraco_parede", priority:"normal", desc:"Buraco na parede junto a janela", notes:"", status:"pendente", photo:null, example:true },
+        { id:item2, areaId:areaId, number:2, trade:"ferragens", defect:"fechadura", priority:"urgente", desc:"Fechadura do armario nao fecha", notes:"", status:"em_curso", photo:null, example:true }
+      ],
+      shopping: [
+        { id:uid(), name:"Massa de vidraceiro", qty:"1 tubo", checked:false, itemId:item1, example:true },
+        { id:uid(), name:"Fechadura de embutir 40mm", qty:"1 un.", checked:false, itemId:item2, example:true }
+      ]
+    };
+  }
+
+  // storeReady evita que o primeiro render (com o estado ainda vazio)
+  // grave por cima dos dados que ainda nao foram lidos do telemovel.
+  var storeReady = false;
+
+  function persist(){
+    if (!storeReady || ui.cloudMode) return; // a conta e a fonte da verdade em modo sincronizado
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){}
+  }
+
+  function docToObj(d){
+    var data = d.data() || {};
+    var o = {}; // data() vem congelado (frozen); copiamos antes de acrescentar o id
+    for (var k in data){ o[k] = data[k]; }
+    o.id = d.id;
+    return o;
+  }
+
+  function showDbError(err){
+    var msg = "Nao foi possivel guardar agora. Tenta outra vez.";
+    if (err && err.code === "quota_exceeded") msg = "Limite de armazenamento da conta atingido. Apaga alguns itens antigos (sobretudo com fotos) e tenta outra vez.";
+    else if (err && err.code === "invalid_argument") msg = "Este item ficou grande demais, provavelmente a foto. Tenta uma foto mais pequena.";
+    else if (err && err.code === "resource_exhausted") msg = "Demasiados pedidos de uma vez. Espera um pouco e tenta outra vez.";
+    else if (err && (err.code === "revoked" || err.code === "not_granted")) msg = "Perdeste a ligacao a conta. Os dados ficam guardados so neste telemovel a partir de agora.";
+    showAlert(msg);
+  }
+
+  function stripId(obj){
+    var c = {};
+    for (var k in obj){ if (k !== "id") c[k] = obj[k]; }
+    return c;
+  }
+
+  // Envolve uma promessa da conta com um limite de tempo: se a conta nao
+  // responder a tempo (ex.: pedido de permissao que nunca aparece neste
+  // enquadramento), desiste e cai para o modo local em vez de bloquear.
+  function withTimeout(promise, ms){
+    return new Promise(function(resolve, reject){
+      var done = false;
+      var timer = setTimeout(function(){
+        if (done) return;
+        done = true;
+        reject({ code:"timeout", message:"A conta nao respondeu a tempo." });
+      }, ms);
+      promise.then(function(v){
+        if (done) return; done = true; clearTimeout(timer); resolve(v);
+      }, function(e){
+        if (done) return; done = true; clearTimeout(timer); reject(e);
+      });
+    });
+  }
+
+  function isConnectivityError(err){
+    return !!(err && (err.code === "timeout" || err.code === "unavailable" || err.code === "not_granted" || err.code === "revoked" || err.code === "capability_disabled" || err.code === "capability_removed"));
+  }
+
+  // Se um pedido de gravacao cair por falha de ligacao, aplica a mesma
+  // alteracao localmente e passa a app para modo so-neste-telemovel, para
+  // a ação do utilizador nunca ficar perdida nem bloqueada.
+  function fallbackToLocal(applyLocally){
+    ui.cloudMode = false;
+    ui.bannerDismissed = false;
+    storeReady = true; // a partir de agora e o telemovel que guarda
+    applyLocally();
+    render();
+  }
+
+  async function ensureCloudSeedFromSnapshot(db, markerSnap){
+    if (markerSnap.exists) return;
+    var seed = seedState();
+    for (var i=0;i<seed.areas.length;i++) await db.collection("areas").doc(seed.areas[i].id).set(stripId(seed.areas[i]));
+    for (var j=0;j<seed.items.length;j++) await db.collection("items").doc(seed.items[j].id).set(stripId(seed.items[j]));
+    for (var k=0;k<seed.shopping.length;k++) await db.collection("shopping").doc(seed.shopping[k].id).set(stripId(seed.shopping[k]));
+    await db.doc("meta/init").set({ seeded:true });
+  }
+
+  function subscribeCloud(db){
+    db.collection("areas").onSnapshot(function(snap){ if (!ui.cloudMode) return; state.areas = snap.docs.map(docToObj); render(); }, dbListenerError);
+    db.collection("items").onSnapshot(function(snap){ if (!ui.cloudMode) return; state.items = snap.docs.map(docToObj).map(normalizeItem); render(); }, dbListenerError);
+    db.collection("shopping").onSnapshot(function(snap){ if (!ui.cloudMode) return; state.shopping = snap.docs.map(docToObj); render(); }, dbListenerError);
+  }
+
+  function dbListenerError(err){
+    if (isConnectivityError(err) && ui.cloudMode){
+      ui.cloudMode = false;
+      ui.bannerDismissed = false;
+      storeReady = true;
+      render();
+    }
+  }
+
+  async function saveItemToCloud(db, editingId, areaId, itemData, materials){
+    var itemId = editingId || uid();
+    await db.collection("items").doc(itemId).set(itemData);
+    if (editingId){
+      var existing = await db.collection("shopping").where("itemId", "==", itemId).get();
+      for (var i=0;i<existing.docs.length;i++) await db.collection("shopping").doc(existing.docs[i].id).delete();
+    }
+    for (var j=0;j<materials.length;j++){
+      var m = materials[j];
+      await db.collection("shopping").doc(uid()).set({ name:m.name, qty:m.qty, checked:false, itemId:itemId, example:false });
+    }
+  }
+
+  async function deleteItemFromCloud(db, itemId){
+    await db.collection("items").doc(itemId).delete();
+    var existing = await db.collection("shopping").where("itemId", "==", itemId).get();
+    for (var i=0;i<existing.docs.length;i++) await db.collection("shopping").doc(existing.docs[i].id).delete();
+  }
+
+  async function deleteAreaFromCloud(db, areaId){
+    var items = await db.collection("items").where("areaId", "==", areaId).get();
+    for (var i=0;i<items.docs.length;i++){
+      var itemId = items.docs[i].id;
+      var shopping = await db.collection("shopping").where("itemId", "==", itemId).get();
+      for (var j=0;j<shopping.docs.length;j++) await db.collection("shopping").doc(shopping.docs[j].id).delete();
+      await db.collection("items").doc(itemId).delete();
+    }
+    await db.collection("areas").doc(areaId).delete();
+  }
+
+  function removeAreaLocally(areaId){
+    var itemIds = state.items.filter(function(it){ return it.areaId === areaId; }).map(function(it){ return it.id; });
+    state.items = state.items.filter(function(it){ return it.areaId !== areaId; });
+    state.shopping = state.shopping.filter(function(s){ return itemIds.indexOf(s.itemId) === -1; });
+    state.areas = state.areas.filter(function(a){ return a.id !== areaId; });
+    if (ui.openAreaId === areaId) ui.openAreaId = null;
+  }
+
+  function confirmDeleteArea(area){
+    var items = allItemsForArea(area.id);
+    var msg = items.length > 0
+      ? ("Isto apaga a Area " + area.letter + " (" + area.name + ") e os " + items.length + " itens dentro dela, incluindo os materiais na lista de compras. Continuar?")
+      : ("Apagar a Area " + area.letter + " (" + area.name + ")?");
+    showConfirm(msg, function(){
+      if (ui.cloudMode && cloudDb){
+        withTimeout(deleteAreaFromCloud(cloudDb, area.id), 12000).then(function(){
+          if (ui.openAreaId === area.id) ui.openAreaId = null;
+        }).catch(function(err){
+          if (isConnectivityError(err)) fallbackToLocal(function(){ removeAreaLocally(area.id); });
+          else showDbError(err);
+        });
+      } else {
+        removeAreaLocally(area.id);
+        render();
+      }
+    }, "Apagar area");
+  }
+
+  async function importIntoCloud(db, parsed){
+    var areas = parsed.areas || [], items = parsed.items || [], shopping = parsed.shopping || [];
+    for (var i=0;i<areas.length;i++) await db.collection("areas").doc(areas[i].id || uid()).set(stripId(areas[i]));
+    for (var j=0;j<items.length;j++) await db.collection("items").doc(items[j].id || uid()).set(stripId(items[j]));
+    for (var k=0;k<shopping.length;k++) await db.collection("shopping").doc(shopping[k].id || uid()).set(stripId(shopping[k]));
+  }
+
+  function initApp(){
+    render();
+    if (!(window.claude && window.claude.use)){ setupLocal(); return; }
+    window.claude.use("db").then(function(db){
+      if (!db){ setupLocal(); return; }
+      probeCloud(db);
+    }).catch(function(){ setupLocal(); });
+  }
+
+  // Testa se a conta responde antes de confiar nela: evita que a app
+  // fique presa em "A guardar..." se o pedido de permissao nunca chegar
+  // a aparecer (acontece a abrir pelo icone do ecra principal).
+  function probeCloud(db){
+    var settled = false;
+    var timer = setTimeout(function(){
+      if (settled) return;
+      settled = true;
+      setupLocal();
+    }, 6000);
+
+    db.doc("meta/init").get().then(function(snap){
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      cloudDb = db;
+      ui.cloudMode = true;
+      render();
+      ensureCloudSeedFromSnapshot(db, snap).catch(function(){}).then(function(){ subscribeCloud(db); });
+    }).catch(function(){
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      setupLocal();
+    });
+  }
+
+  function setupLocal(){
+    ui.cloudMode = false;
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (raw){
+        var parsed = JSON.parse(raw);
+        state.areas = parsed.areas || [];
+        state.items = (parsed.items || []).map(normalizeItem);
+        state.shopping = parsed.shopping || [];
+        storeReady = true;
+        render();
+        return;
+      }
+    } catch(e){}
+    var seed = seedState();
+    state.areas = seed.areas; state.items = seed.items; state.shopping = seed.shopping;
+    storeReady = true;
+    render();
+  }
+
+  function areasSorted(){
+    return state.areas.slice().sort(function(a,b){ return a.order - b.order; });
+  }
+  function itemsForArea(areaId){
+    return state.items.filter(function(it){
+      if (it.areaId !== areaId) return false;
+      if (ui.filterTrade && it.trade !== ui.filterTrade) return false;
+      return true;
+    }).sort(function(a,b){ return a.number - b.number; });
+  }
+  function allItemsForArea(areaId){
+    return state.items.filter(function(it){ return it.areaId === areaId; })
+      .sort(function(a,b){ return a.number - b.number; });
+  }
+  function itemCode(item){
+    var area = state.areas.find(function(a){ return a.id === item.areaId; });
+    return (area ? area.letter : "?") + item.number;
+  }
+
+  // ---------- render ----------
+  var app = document.getElementById("app");
+
+  function render(){
+    persist();
+    app.innerHTML = "";
+    app.appendChild(renderTopbar());
+    var content = document.createElement("div");
+    content.className = "content" + (ui.tab === "obras" ? "" : " compras");
+    if (ui.tab === "obras") content.appendChild(renderAreas());
+    else if (ui.tab === "resumo") content.appendChild(renderSummary());
+    else content.appendChild(renderShopping());
+    app.appendChild(content);
+
+    if (ui.tab === "obras"){
+      var fab = document.createElement("button");
+      fab.className = "fab";
+      fab.setAttribute("aria-label", "Novo item");
+      fab.textContent = "+";
+      fab.onclick = function(){ startNewItem(); };
+      app.appendChild(fab);
+    }
+  }
+
+  function renderTopbar(){
+    var bar = document.createElement("div");
+    bar.className = "topbar";
+
+    if (ui.cloudMode === false && !ui.bannerDismissed && (state.areas.length > 0 || state.items.length > 0)){
+      var banner = document.createElement("div");
+      banner.className = "backup-banner";
+      banner.innerHTML =
+        "<span><b>A guardar so neste iPhone.</b> Inicia sessao na tua conta Claude no Safari para sincronizar e nao perderes dados. Entretanto, usa o icone &#128190; para copiar uma copia de seguranca.</span>" +
+        "<span class='x' id='dismissBanner'>&#10005;</span>";
+      banner.querySelector("#dismissBanner").onclick = function(){ ui.bannerDismissed = true; render(); };
+      bar.appendChild(banner);
+    }
+
+    // Cabecalho compacto: o titulo, o estado de sincronizacao e a copia de
+    // seguranca cabem numa linha so, para sobrar ecra para a lista.
+    var row = document.createElement("div");
+    row.className = "topbar-row";
+
+    var titleWrap = document.createElement("div");
+    titleWrap.className = "title-wrap";
+    var h1 = document.createElement("h1");
+    h1.textContent = ui.tab === "obras" ? "Obras de Casa" : (ui.tab === "resumo" ? "Resumo da obra" : "Lista de compras");
+    titleWrap.appendChild(h1);
+
+    var syncDot = document.createElement("span");
+    syncDot.className = "sync-dot" + (ui.cloudMode === true ? " good" : ui.cloudMode === false ? " warn" : "");
+    syncDot.title = ui.cloudMode === true ? "Sincronizado com a tua conta Claude"
+      : ui.cloudMode === false ? "Guardado so neste telemovel" : "A ligar...";
+    syncDot.onclick = function(){
+      showAlert(ui.cloudMode === true ? "Sincronizado com a tua conta Claude. Os dados estao guardados na conta e aparecem em qualquer dispositivo onde tenhas sessao iniciada."
+        : ui.cloudMode === false ? "A guardar so neste telemovel. Inicia sessao na tua conta Claude no Safari para sincronizar."
+        : "A ligar a tua conta Claude...");
+    };
+    titleWrap.appendChild(syncDot);
+    row.appendChild(titleWrap);
+
+    var backupBtn = document.createElement("div");
+    backupBtn.className = "backup-btn";
+    backupBtn.setAttribute("aria-label", "Copia de seguranca");
+    backupBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4 8 8M12 4l4 4"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>';
+    backupBtn.onclick = function(){ openBackupSheet(); };
+    row.appendChild(backupBtn);
+
+    bar.appendChild(row);
+    bar.appendChild(renderTabbar());
+
+    if (ui.tab === "obras"){
+      var counts = {};
+      state.items.forEach(function(it){
+        if (it.status === "concluido") return;
+        counts[it.trade] = (counts[it.trade]||0) + 1;
+      });
+      var any = Object.keys(counts).length > 0;
+      var tally = document.createElement("div");
+      tally.className = "tally";
+      if (!any){
+        var e = document.createElement("div");
+        e.className = "tally-empty";
+        e.textContent = "Sem itens por resolver.";
+        tally.appendChild(e);
+      } else {
+        TRADES.forEach(function(trade){
+          var n = counts[trade.id];
+          if (!n) return;
+          var active = ui.filterTrade === trade.id;
+          var chip = document.createElement("div");
+          chip.className = "tally-chip" + (active ? " active" : "");
+          chip.innerHTML = "<b>" + n + "</b><span>" + trade.label.toLowerCase() + "</span>";
+          chip.onclick = function(){
+            ui.filterTrade = active ? null : trade.id;
+            render();
+          };
+          tally.appendChild(chip);
+        });
+      }
+      bar.appendChild(tally);
+
+      if (ui.filterTrade){
+        var filterNote = document.createElement("div");
+        filterNote.className = "filter-note";
+        filterNote.innerHTML = "<span>A mostrar so " + escapeHtml(tradeById(ui.filterTrade).label) + "</span><span class='clear'>Ver tudo</span>";
+        filterNote.querySelector(".clear").onclick = function(){ ui.filterTrade = null; render(); };
+        bar.appendChild(filterNote);
+      }
+    }
+    return bar;
+  }
+
+  function renderAreas(){
+    var wrap = document.createDocumentFragment();
+    var list = areasSorted();
+
+    if (list.length === 0){
+      var empty = document.createElement("div");
+      empty.className = "empty-state";
+      empty.innerHTML = "<div class='glyph'>&#9633;</div>Ainda sem areas registadas.<br>Toca no botao + para criar a primeira, por exemplo Cozinha ou Sala.";
+      wrap.appendChild(empty);
+      return wrap;
+    }
+
+    list.forEach(function(area){
+      var items = itemsForArea(area.id);
+      var allItems = allItemsForArea(area.id);
+      var pendentes = allItems.filter(function(it){ return it.status !== "concluido"; }).length;
+      var open = ui.openAreaId === area.id;
+      if (ui.filterTrade && items.length === 0) return;
+
+      var card = document.createElement("div");
+      card.className = "area-card" + (open ? " open" : "");
+
+      var head = document.createElement("div");
+      head.className = "area-head";
+      head.onclick = function(){ ui.openAreaId = open ? null : area.id; render(); };
+      head.innerHTML =
+        "<div class='area-badge'>" + area.letter + "</div>" +
+        "<div class='area-title'>" +
+          "<div class='name'>" + escapeHtml(area.name) + (area.example ? "<span class='example-flag'>Exemplo</span>" : "") + "</div>" +
+          "<div class='meta'>" + (allItems.length === 0 ? "Sem itens" : (pendentes + " por resolver · " + allItems.length + " no total")) + "</div>" +
+        "</div>" +
+        "<div class='area-chevron'>&#9656;</div>";
+      var delBtn = document.createElement("div");
+      delBtn.className = "area-delete";
+      delBtn.innerHTML = "&#10005;";
+      delBtn.onclick = function(e){ e.stopPropagation(); confirmDeleteArea(area); };
+      head.insertBefore(delBtn, head.querySelector(".area-chevron"));
+      card.appendChild(head);
+
+      if (open){
+        var itemList = document.createElement("div");
+        itemList.className = "item-list";
+        items.forEach(function(item){
+          itemList.appendChild(renderItemRow(item));
+        });
+        var addRow = document.createElement("div");
+        addRow.className = "add-row";
+        addRow.innerHTML = "<span>+</span><span>Novo item em " + area.letter + "</span>";
+        addRow.onclick = function(){ openItemSheet(area.id, null); };
+        itemList.appendChild(addRow);
+        card.appendChild(itemList);
+      }
+
+      wrap.appendChild(card);
+    });
+
+    if (!ui.filterTrade){
+      var newArea = document.createElement("div");
+      newArea.className = "new-area-row";
+      newArea.innerHTML = "<span>+</span><span>Nova divisao</span>";
+      newArea.onclick = function(){ openAreaSheet(); };
+      wrap.appendChild(newArea);
+    }
+
+    return wrap;
+  }
+
+  function renderItemRow(item){
+    var trade = tradeById(item.trade);
+    var defect = defectById(item.trade, item.defect);
+    var row = document.createElement("div");
+    row.className = "item-row";
+    row.onclick = function(){ openItemSheet(item.areaId, item.id); };
+
+    var thumb;
+    if (item.photo){
+      thumb = document.createElement("img");
+      thumb.className = "item-thumb";
+      thumb.src = item.photo;
+    } else {
+      thumb = document.createElement("div");
+      thumb.className = "item-thumb placeholder";
+      thumb.textContent = trade.code;
+    }
+    row.appendChild(thumb);
+
+    var urgent = item.priority === "urgente" && item.status !== "concluido";
+    var main = document.createElement("div");
+    main.className = "item-main";
+    main.innerHTML =
+      "<div class='item-top'>" +
+        "<span class='item-code'>" + itemCode(item) + "</span>" +
+        "<span class='item-tag'>" + trade.code + "</span>" +
+        (urgent ? "<span class='item-urgent'>Urgente</span>" : "") +
+      "</div>" +
+      "<div class='item-desc'>" + escapeHtml(item.desc || defect.label) + "</div>" +
+      (item.desc ? "<div class='item-defect'>" + escapeHtml(defect.label) + "</div>" : "");
+    row.appendChild(main);
+
+    var dot = document.createElement("div");
+    dot.className = "status-dot" + (item.status === "concluido" ? " done" : item.status === "em_curso" ? " progress" : "");
+    row.appendChild(dot);
+
+    return row;
+  }
+
+  // Agrupa o trabalho pendente por especialidade e, dentro dela, por tipo
+  // de defeito: e este o texto que se entrega a cada profissional.
+  function buildSummary(){
+    var pendingItems = state.items.filter(function(it){ return it.status !== "concluido"; });
+    var groups = [];
+    TRADES.forEach(function(trade){
+      var items = pendingItems.filter(function(it){ return it.trade === trade.id; });
+      if (items.length === 0) return;
+      var byDefect = [];
+      trade.defects.forEach(function(d){
+        var matching = items.filter(function(it){ return it.defect === d.id; });
+        if (matching.length === 0) return;
+        byDefect.push({ defect:d, items:matching });
+      });
+      groups.push({ trade:trade, items:items, byDefect:byDefect });
+    });
+    return groups;
+  }
+
+  // Texto para WhatsApp: la so existe *negrito*, _italico_ e emoji, por
+  // isso as barras sao feitas com blocos e cada especialidade leva o seu
+  // icone. tradeId opcional gera a lista de um so profissional.
+  function summaryAsText(tradeId){
+    var groups = buildSummary().filter(function(g){ return !tradeId || g.trade.id === tradeId; });
+    if (groups.length === 0) return "Sem trabalhos pendentes.";
+
+    var stats = summaryStats();
+    var hoje = new Date().toLocaleDateString("pt-PT", { day:"2-digit", month:"long", year:"numeric" });
+    var lines = [];
+
+    if (tradeId){
+      var g0 = groups[0];
+      lines.push("*OBRAS DE CASA*");
+      lines.push("_" + g0.trade.label + " · " + hoje + "_");
+      lines.push("");
+      lines.push(g0.trade.emoji + " *" + g0.items.length + "* trabalho" + (g0.items.length > 1 ? "s" : "") + " para " + g0.trade.who.toLowerCase());
+    } else {
+      lines.push("*OBRAS DE CASA*");
+      lines.push("_Trabalhos pendentes · " + hoje + "_");
+      lines.push("");
+      lines.push("📋 *" + stats.pending + "* por resolver");
+      if (stats.urgent > 0) lines.push("🔴 *" + stats.urgent + "* urgente" + (stats.urgent > 1 ? "s" : ""));
+      lines.push("✅ *" + stats.pct + "%* concluido  " + blocksBar(stats.pct, 100, 10, true));
+    }
+    lines.push("");
+
+    if (!tradeId && groups.length > 1){
+      var maxCount = groups.reduce(function(m, g){ return Math.max(m, g.items.length); }, 1);
+      lines.push("*POR ESPECIALIDADE*");
+      groups.slice().sort(function(a,b){ return b.items.length - a.items.length; }).forEach(function(g){
+        lines.push(g.trade.emoji + " " + g.trade.label + "  " + blocksBar(g.items.length, maxCount, 8, false) + " *" + g.items.length + "*");
+      });
+      lines.push("");
+    }
+
+    groups.forEach(function(g){
+      if (!tradeId){
+        lines.push("*" + g.trade.emoji + " " + g.trade.label.toUpperCase() + "*");
+        lines.push("_" + g.trade.who + "_");
+      }
+      g.byDefect.forEach(function(d){
+        var urgent = d.items.some(function(it){ return it.priority === "urgente"; });
+        var codes = d.items.map(function(it){ return itemCode(it); }).join(", ");
+        lines.push((urgent ? "🔴 " : "• ") + "*" + d.items.length + "x* " + d.defect.label + "  ·  " + codes);
+        d.items.forEach(function(it){
+          var area = state.areas.find(function(a){ return a.id === it.areaId; });
+          var where = area ? area.name : "";
+          var detail = it.desc ? it.desc : "";
+          if (detail || where){
+            lines.push("      " + itemCode(it) + " (" + where + ")" + (detail ? ": " + detail : ""));
+          }
+        });
+      });
+      lines.push("");
+    });
+
+    lines.push("_Cada codigo (A1, B2...) identifica o item e a divisao da casa._");
+    return lines.join("\n");
+  }
+
+  function blocksBar(value, max, width, showEmpty){
+    var filled = max <= 0 ? 0 : Math.max(1, Math.round((value / max) * width));
+    if (value === 0) filled = 0;
+    var bar = "";
+    for (var i=0;i<width;i++) bar += (i < filled ? "█" : (showEmpty ? "░" : ""));
+    return bar;
+  }
+
+  function summaryStats(){
+    var total = state.items.length;
+    var done = state.items.filter(function(it){ return it.status === "concluido"; }).length;
+    var pending = total - done;
+    var urgent = state.items.filter(function(it){ return it.status !== "concluido" && it.priority === "urgente"; }).length;
+    var pct = total === 0 ? 0 : Math.round((done / total) * 100);
+    return { total:total, done:done, pending:pending, urgent:urgent, pct:pct };
+  }
+
+  function areaBreakdown(){
+    return areasSorted().map(function(area){
+      var items = allItemsForArea(area.id);
+      var done = items.filter(function(it){ return it.status === "concluido"; }).length;
+      return { area:area, total:items.length, done:done, pending:items.length - done };
+    }).filter(function(row){ return row.total > 0; });
+  }
+
+  function renderSummary(){
+    var wrap = document.createDocumentFragment();
+    var groups = buildSummary();
+    var stats = summaryStats();
+
+    if (state.items.length === 0){
+      var empty = document.createElement("div");
+      empty.className = "empty-state";
+      empty.textContent = "Ainda sem itens registados. Assim que registares arranjos, aparece aqui o resumo por especialidade, pronto a enviar a quem vai fazer o trabalho.";
+      wrap.appendChild(empty);
+      return wrap;
+    }
+
+    // Numeros de cabeca: o que falta, o que arde, e quanto ja esta feito.
+    var tiles = document.createElement("div");
+    tiles.className = "stat-row";
+    tiles.innerHTML =
+      "<div class='stat-tile'><div class='stat-num'>" + stats.pending + "</div><div class='stat-lbl'>Por resolver</div></div>" +
+      "<div class='stat-tile" + (stats.urgent > 0 ? " danger" : "") + "'><div class='stat-num'>" + stats.urgent + "</div><div class='stat-lbl'>Urgentes</div></div>" +
+      "<div class='stat-tile'><div class='stat-num'>" + stats.pct + "<span class='pct'>%</span></div><div class='stat-lbl'>Concluido</div></div>";
+    wrap.appendChild(tiles);
+
+    var progress = document.createElement("div");
+    progress.className = "progress-block";
+    progress.innerHTML =
+      "<div class='progress-track'>" +
+        "<div class='progress-done' style='width:" + stats.pct + "%'></div>" +
+      "</div>" +
+      "<div class='progress-legend'>" +
+        "<span><i class='sw done'></i>" + stats.done + " concluidos</span>" +
+        "<span><i class='sw pending'></i>" + stats.pending + " por fazer</span>" +
+      "</div>";
+    wrap.appendChild(progress);
+
+    if (groups.length > 0){
+      var maxCount = groups.reduce(function(m, g){ return Math.max(m, g.items.length); }, 0);
+
+      var barsLabel = document.createElement("div");
+      barsLabel.className = "section-label";
+      barsLabel.textContent = "Trabalho por especialidade";
+      wrap.appendChild(barsLabel);
+
+      var barsCard = document.createElement("div");
+      barsCard.className = "bars-card";
+      groups.slice().sort(function(a,b){ return b.items.length - a.items.length; }).forEach(function(g){
+        var rowEl = document.createElement("div");
+        rowEl.className = "bar-row";
+        var pct = Math.round((g.items.length / maxCount) * 100);
+        var urgentInGroup = g.items.filter(function(it){ return it.priority === "urgente"; }).length;
+        rowEl.innerHTML =
+          "<div class='bar-head'>" +
+            "<span class='bar-code'>" + g.trade.code + "</span>" +
+            "<span class='bar-name'>" + escapeHtml(g.trade.label) + "</span>" +
+            (urgentInGroup ? "<span class='bar-urgent'>" + urgentInGroup + " urgente" + (urgentInGroup > 1 ? "s" : "") + "</span>" : "") +
+            "<span class='bar-val'>" + g.items.length + "</span>" +
+          "</div>" +
+          "<div class='bar-track'><div class='bar-fill' style='width:" + Math.max(pct, 4) + "%'></div></div>";
+        rowEl.onclick = function(){ ui.filterTrade = g.trade.id; ui.tab = "obras"; render(); };
+        barsCard.appendChild(rowEl);
+      });
+      wrap.appendChild(barsCard);
+    }
+
+    var areas = areaBreakdown();
+    if (areas.length > 0){
+      var areaLabel = document.createElement("div");
+      areaLabel.className = "section-label";
+      areaLabel.textContent = "Estado por divisao";
+      wrap.appendChild(areaLabel);
+
+      var areaCard = document.createElement("div");
+      areaCard.className = "bars-card";
+      areas.forEach(function(row){
+        var pct = Math.round((row.done / row.total) * 100);
+        var el = document.createElement("div");
+        el.className = "bar-row";
+        el.innerHTML =
+          "<div class='bar-head'>" +
+            "<span class='bar-code'>" + row.area.letter + "</span>" +
+            "<span class='bar-name'>" + escapeHtml(row.area.name) + "</span>" +
+            "<span class='bar-val small'>" + row.done + "/" + row.total + "</span>" +
+          "</div>" +
+          "<div class='bar-track'><div class='bar-fill done' style='width:" + Math.max(pct, 2) + "%'></div></div>";
+        areaCard.appendChild(el);
+      });
+      wrap.appendChild(areaCard);
+    }
+
+    if (groups.length > 0){
+      var detailLabel = document.createElement("div");
+      detailLabel.className = "section-label";
+      detailLabel.textContent = "Detalhe para entregar";
+      wrap.appendChild(detailLabel);
+    }
+
+    groups.forEach(function(g){
+      var card = document.createElement("div");
+      card.className = "summary-card";
+
+      var head = document.createElement("div");
+      head.className = "summary-head";
+      head.innerHTML =
+        "<div class='summary-code'>" + g.trade.code + "</div>" +
+        "<div class='summary-title'>" +
+          "<div class='name'>" + escapeHtml(g.trade.label) + "</div>" +
+          "<div class='who'>" + escapeHtml(g.trade.who) + "</div>" +
+        "</div>" +
+        "<div class='summary-count'>" + g.items.length + "</div>";
+      card.appendChild(head);
+
+      // Copiar so o que e desta especialidade, para enviar a quem a faz.
+      var tradeCopy = document.createElement("div");
+      tradeCopy.className = "trade-copy";
+      tradeCopy.textContent = "Copiar so " + g.trade.label.toLowerCase();
+      tradeCopy.onclick = function(){
+        var text = summaryAsText(g.trade.id);
+        var done = function(){
+          tradeCopy.textContent = "Copiado";
+          setTimeout(function(){ tradeCopy.textContent = "Copiar so " + g.trade.label.toLowerCase(); }, 1800);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(done).catch(function(){ showAlert(text); });
+        } else {
+          showAlert(text);
+        }
+      };
+
+      var body = document.createElement("div");
+      body.className = "summary-body";
+      g.byDefect.forEach(function(d){
+        var line = document.createElement("div");
+        line.className = "summary-line";
+        var codes = d.items.map(function(it){ return itemCode(it); }).join(", ");
+        line.innerHTML =
+          "<span class='qty'>" + d.items.length + "x</span>" +
+          "<span class='what'>" + escapeHtml(d.defect.label) + "</span>" +
+          "<span class='codes'>" + codes + "</span>";
+        body.appendChild(line);
+      });
+
+      // Miniaturas das fotos: o empreiteiro ve logo do que se trata.
+      var photos = g.items.filter(function(it){ return !!it.photo; }).slice(0, 6);
+      if (photos.length > 0){
+        var strip = document.createElement("div");
+        strip.className = "photo-strip";
+        photos.forEach(function(it){
+          var fig = document.createElement("div");
+          fig.className = "photo-thumb";
+          fig.innerHTML = "<img src='" + it.photo + "' alt=''><span>" + itemCode(it) + "</span>";
+          fig.onclick = function(){ openItemSheet(it.areaId, it.id); };
+          strip.appendChild(fig);
+        });
+        body.appendChild(strip);
+      }
+
+      card.appendChild(body);
+      card.appendChild(tradeCopy);
+      wrap.appendChild(card);
+    });
+
+    var actions = document.createElement("div");
+    actions.className = "summary-actions";
+
+    var shareBtn = document.createElement("button");
+    shareBtn.className = "btn-primary";
+    shareBtn.textContent = "Partilhar como imagem";
+    shareBtn.onclick = function(){
+      shareBtn.disabled = true;
+      shareBtn.textContent = "A preparar...";
+      shareSummaryImage().catch(function(){}).then(function(){
+        shareBtn.disabled = false;
+        shareBtn.textContent = "Partilhar como imagem";
+      });
+    };
+    actions.appendChild(shareBtn);
+
+    var copyBtn = document.createElement("button");
+    copyBtn.className = "btn-secondary";
+    copyBtn.textContent = "Copiar como texto";
+    copyBtn.onclick = function(){
+      var text = summaryAsText();
+      var done = function(){
+        copyBtn.textContent = "Copiado";
+        setTimeout(function(){ copyBtn.textContent = "Copiar como texto"; }, 1800);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done).catch(function(){ showAlert(text); });
+      } else {
+        showAlert(text);
+      }
+    };
+    actions.appendChild(copyBtn);
+    wrap.appendChild(actions);
+
+    return wrap;
+  }
+
+  // ---------- resumo em imagem ----------
+  // Desenhado a mao no canvas, com paleta clara fixa: a imagem sai da app
+  // e vai para o WhatsApp de outra pessoa, por isso nao segue o tema.
+  var IMG = {
+    w: 1080, pad: 56,
+    paper: "#FFFFFF", panel: "#F4F5F2", ink: "#1B2422", soft: "#58635F",
+    faint: "#8B948F", line: "#DFE2DC", accent: "#C1541F", accentSoft: "#F4E3D8",
+    danger: "#B4402B", done: "#1F6F63"
+  };
+
+  function roundRect(ctx, x, y, w, h, r){
+    var radius = Math.min(r, h/2, w/2);
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.arcTo(x + w, y, x + w, y + h, radius);
+    ctx.arcTo(x + w, y + h, x, y + h, radius);
+    ctx.arcTo(x, y + h, x, y, radius);
+    ctx.arcTo(x, y, x + w, y, radius);
+    ctx.closePath();
+  }
+
+  function wrapLines(ctx, text, maxWidth){
+    var words = String(text).split(" ");
+    var lines = [], current = "";
+    words.forEach(function(word){
+      var test = current ? current + " " + word : word;
+      if (ctx.measureText(test).width > maxWidth && current){
+        lines.push(current);
+        current = word;
+      } else {
+        current = test;
+      }
+    });
+    if (current) lines.push(current);
+    return lines;
+  }
+
+  function buildSummaryCanvas(){
+    var groups = buildSummary();
+    var stats = summaryStats();
+    var areas = areaBreakdown();
+    var maxCount = groups.reduce(function(m, g){ return Math.max(m, g.items.length); }, 1);
+
+    // Primeira passagem: medir a altura necessaria.
+    var height = IMG.pad;
+    height += 118;                       // cabecalho
+    height += 150;                       // tiles + progresso
+    if (groups.length){
+      height += 58 + groups.length * 74; // barras por especialidade
+    }
+    if (areas.length){
+      height += 58 + areas.length * 62;  // barras por divisao
+    }
+    groups.forEach(function(g){
+      height += 76;                      // cabecalho do bloco
+      height += g.byDefect.length * 44;  // linhas de defeito
+      height += 18;
+    });
+    height += 70 + 240;                  // rodape e folga (a imagem e cortada no fim real)
+
+    var scale = 2;
+    var canvas = document.createElement("canvas");
+    canvas.width = IMG.w * scale;
+    canvas.height = height * scale;
+    var ctx = canvas.getContext("2d");
+    ctx.scale(scale, scale);
+
+    var sans = '"IBM Plex Sans", -apple-system, system-ui, sans-serif';
+    var cond = '"IBM Plex Sans Condensed", "IBM Plex Sans", system-ui, sans-serif';
+    var mono = '"IBM Plex Mono", ui-monospace, monospace';
+
+    ctx.fillStyle = IMG.paper;
+    ctx.fillRect(0, 0, IMG.w, height);
+
+    var x = IMG.pad, w = IMG.w - IMG.pad * 2, y = IMG.pad;
+
+    // Cabecalho
+    ctx.fillStyle = IMG.accent;
+    ctx.font = "600 20px " + sans;
+    ctx.textBaseline = "top";
+    ctx.fillText("OBRAS DE CASA", x, y);
+    y += 30;
+    ctx.fillStyle = IMG.ink;
+    ctx.font = "700 46px " + cond;
+    ctx.fillText("Trabalhos pendentes", x, y);
+    y += 54;
+    ctx.fillStyle = IMG.faint;
+    ctx.font = "400 20px " + sans;
+    ctx.fillText(new Date().toLocaleDateString("pt-PT", { day:"2-digit", month:"long", year:"numeric" }), x, y);
+    y += 46;
+
+    // Tiles
+    var tileW = (w - 24) / 3, tileH = 96;
+    var tileData = [
+      { num:String(stats.pending), lbl:"Por resolver", color:IMG.ink },
+      { num:String(stats.urgent),  lbl:"Urgentes",     color:stats.urgent > 0 ? IMG.danger : IMG.ink },
+      { num:stats.pct + "%",       lbl:"Concluido",    color:IMG.done }
+    ];
+    tileData.forEach(function(t, i){
+      var tx = x + i * (tileW + 12);
+      ctx.fillStyle = IMG.panel;
+      roundRect(ctx, tx, y, tileW, tileH, 14);
+      ctx.fill();
+      ctx.fillStyle = t.color;
+      ctx.font = "600 40px " + mono;
+      ctx.fillText(t.num, tx + 18, y + 16);
+      ctx.fillStyle = IMG.soft;
+      ctx.font = "500 18px " + sans;
+      ctx.fillText(t.lbl, tx + 18, y + 62);
+    });
+    y += tileH + 20;
+
+    // Barra de progresso global
+    var trackH = 14;
+    ctx.fillStyle = IMG.panel;
+    roundRect(ctx, x, y, w, trackH, 7);
+    ctx.fill();
+    if (stats.pct > 0){
+      ctx.fillStyle = IMG.done;
+      roundRect(ctx, x, y, Math.max(w * stats.pct / 100, trackH), trackH, 7);
+      ctx.fill();
+    }
+    y += trackH + 30;
+
+    // Barras por especialidade
+    if (groups.length){
+      ctx.fillStyle = IMG.faint;
+      ctx.font = "600 18px " + sans;
+      ctx.fillText("POR ESPECIALIDADE", x, y);
+      y += 34;
+
+      groups.slice().sort(function(a,b){ return b.items.length - a.items.length; }).forEach(function(g){
+        ctx.fillStyle = IMG.accentSoft;
+        roundRect(ctx, x, y, 54, 30, 7);
+        ctx.fill();
+        ctx.fillStyle = IMG.accent;
+        ctx.font = "600 17px " + mono;
+        ctx.textAlign = "center";
+        ctx.fillText(g.trade.code, x + 27, y + 7);
+        ctx.textAlign = "left";
+
+        ctx.fillStyle = IMG.ink;
+        ctx.font = "500 21px " + sans;
+        ctx.fillText(g.trade.label, x + 68, y + 5);
+
+        ctx.fillStyle = IMG.accent;
+        ctx.font = "600 24px " + mono;
+        ctx.textAlign = "right";
+        ctx.fillText(String(g.items.length), x + w, y + 3);
+        ctx.textAlign = "left";
+
+        var barY = y + 40, barH = 12;
+        ctx.fillStyle = IMG.panel;
+        roundRect(ctx, x, barY, w, barH, 6);
+        ctx.fill();
+        ctx.fillStyle = IMG.accent;
+        roundRect(ctx, x, barY, Math.max(w * g.items.length / maxCount, barH), barH, 6);
+        ctx.fill();
+
+        y += 74;
+      });
+      y += 4;
+    }
+
+    // Barras por divisao
+    if (areas.length){
+      ctx.fillStyle = IMG.faint;
+      ctx.font = "600 18px " + sans;
+      ctx.fillText("ESTADO POR DIVISAO", x, y);
+      y += 34;
+
+      areas.forEach(function(row){
+        ctx.fillStyle = IMG.ink;
+        ctx.font = "500 21px " + sans;
+        ctx.fillText(row.area.letter + " · " + row.area.name, x, y);
+
+        ctx.fillStyle = IMG.soft;
+        ctx.font = "500 19px " + mono;
+        ctx.textAlign = "right";
+        ctx.fillText(row.done + "/" + row.total, x + w, y + 1);
+        ctx.textAlign = "left";
+
+        var barY = y + 30, barH = 10;
+        ctx.fillStyle = IMG.panel;
+        roundRect(ctx, x, barY, w, barH, 5);
+        ctx.fill();
+        if (row.done > 0){
+          ctx.fillStyle = IMG.done;
+          roundRect(ctx, x, barY, Math.max(w * row.done / row.total, barH), barH, 5);
+          ctx.fill();
+        }
+        y += 62;
+      });
+      y += 4;
+    }
+
+    // Detalhe por especialidade
+    groups.forEach(function(g){
+      ctx.fillStyle = IMG.ink;
+      ctx.font = "700 26px " + cond;
+      ctx.fillText(g.trade.label.toUpperCase(), x, y);
+      ctx.fillStyle = IMG.faint;
+      ctx.font = "400 19px " + sans;
+      ctx.textAlign = "right";
+      ctx.fillText(g.trade.who, x + w, y + 4);
+      ctx.textAlign = "left";
+      y += 38;
+
+      ctx.strokeStyle = IMG.line;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + w, y);
+      ctx.stroke();
+      y += 16;
+
+      g.byDefect.forEach(function(d){
+        ctx.fillStyle = IMG.accent;
+        ctx.font = "600 20px " + mono;
+        ctx.fillText(d.items.length + "x", x, y);
+
+        ctx.fillStyle = IMG.ink;
+        ctx.font = "400 21px " + sans;
+        ctx.fillText(d.defect.label, x + 52, y);
+
+        var urgentHere = d.items.filter(function(it){ return it.priority === "urgente"; }).length;
+        if (urgentHere > 0){
+          var labelW = ctx.measureText(d.defect.label).width;
+          ctx.fillStyle = IMG.danger;
+          ctx.font = "600 15px " + sans;
+          ctx.fillText("URGENTE", x + 52 + labelW + 12, y + 4);
+        }
+
+        var codes = d.items.map(function(it){ return itemCode(it); }).join(", ");
+        ctx.fillStyle = urgentHere > 0 ? IMG.danger : IMG.soft;
+        ctx.font = "500 18px " + mono;
+        ctx.textAlign = "right";
+        ctx.fillText(codes, x + w, y + 2);
+        ctx.textAlign = "left";
+
+        y += 44;
+      });
+      y += 18;
+    });
+
+    // Rodape
+    ctx.fillStyle = IMG.faint;
+    ctx.font = "400 18px " + sans;
+    ctx.fillText("Cada codigo (A1, B2...) identifica o item na app, por area da casa.", x, y);
+    y += 24 + IMG.pad;
+
+    // A altura foi estimada por excesso: cortamos no fim real do conteudo
+    // para a imagem nao levar uma faixa branca no fundo.
+    var out = document.createElement("canvas");
+    out.width = IMG.w * scale;
+    out.height = Math.round(y * scale);
+    var outCtx = out.getContext("2d");
+    outCtx.fillStyle = IMG.paper;
+    outCtx.fillRect(0, 0, out.width, out.height);
+    outCtx.drawImage(canvas, 0, 0);
+    return out;
+  }
+
+  function canvasToBlob(canvas){
+    return new Promise(function(resolve){
+      if (canvas.toBlob) canvas.toBlob(function(blob){ resolve(blob); }, "image/png");
+      else resolve(null);
+    });
+  }
+
+  function buildShoppingCanvas(){
+    var stats = shoppingStats();
+    var groups = stats.groups;
+
+    var height = IMG.pad;
+    height += 118;                         // cabecalho
+    height += 130;                         // tiles + progresso
+    groups.forEach(function(g){
+      height += 70;                        // cabecalho do grupo
+      height += g.rows.length * 46;        // linhas
+      height += 16;
+    });
+    height += 70 + 240;                    // rodape e folga
+
+    var scale = 2;
+    var canvas = document.createElement("canvas");
+    canvas.width = IMG.w * scale;
+    canvas.height = height * scale;
+    var ctx = canvas.getContext("2d");
+    ctx.scale(scale, scale);
+
+    var sans = '"IBM Plex Sans", -apple-system, system-ui, sans-serif';
+    var cond = '"IBM Plex Sans Condensed", "IBM Plex Sans", system-ui, sans-serif';
+    var mono = '"IBM Plex Mono", ui-monospace, monospace';
+
+    ctx.fillStyle = IMG.paper;
+    ctx.fillRect(0, 0, IMG.w, height);
+    ctx.textBaseline = "top";
+
+    var x = IMG.pad, w = IMG.w - IMG.pad * 2, y = IMG.pad;
+
+    ctx.fillStyle = IMG.accent;
+    ctx.font = "600 20px " + sans;
+    ctx.fillText("OBRAS DE CASA", x, y);
+    y += 30;
+    ctx.fillStyle = IMG.ink;
+    ctx.font = "700 46px " + cond;
+    ctx.fillText("Lista de compras", x, y);
+    y += 54;
+    ctx.fillStyle = IMG.faint;
+    ctx.font = "400 20px " + sans;
+    ctx.fillText(new Date().toLocaleDateString("pt-PT", { day:"2-digit", month:"long", year:"numeric" }), x, y);
+    y += 46;
+
+    var tileW = (w - 12) / 2, tileH = 92;
+    [
+      { num:String(stats.pending), lbl:"Por comprar", color:IMG.ink },
+      { num:String(stats.done),    lbl:"Ja comprado", color:IMG.done }
+    ].forEach(function(t, i){
+      var tx = x + i * (tileW + 12);
+      ctx.fillStyle = IMG.panel;
+      roundRect(ctx, tx, y, tileW, tileH, 14);
+      ctx.fill();
+      ctx.fillStyle = t.color;
+      ctx.font = "600 38px " + mono;
+      ctx.fillText(t.num, tx + 18, y + 15);
+      ctx.fillStyle = IMG.soft;
+      ctx.font = "500 18px " + sans;
+      ctx.fillText(t.lbl, tx + 18, y + 60);
+    });
+    y += tileH + 18;
+
+    ctx.fillStyle = IMG.panel;
+    roundRect(ctx, x, y, w, 14, 7);
+    ctx.fill();
+    if (stats.pct > 0){
+      ctx.fillStyle = IMG.done;
+      roundRect(ctx, x, y, Math.max(w * stats.pct / 100, 14), 14, 7);
+      ctx.fill();
+    }
+    y += 44;
+
+    groups.forEach(function(group){
+      ctx.fillStyle = IMG.ink;
+      ctx.font = "700 26px " + cond;
+      ctx.fillText(group.label.toUpperCase(), x, y);
+      ctx.fillStyle = IMG.faint;
+      ctx.font = "400 19px " + sans;
+      ctx.textAlign = "right";
+      ctx.fillText(group.pending + " por comprar", x + w, y + 4);
+      ctx.textAlign = "left";
+      y += 36;
+
+      ctx.strokeStyle = IMG.line;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + w, y);
+      ctx.stroke();
+      y += 14;
+
+      group.rows.forEach(function(row){
+        var boxSize = 20, boxY = y + 1;
+        if (row.checked){
+          ctx.fillStyle = IMG.done;
+          roundRect(ctx, x, boxY, boxSize, boxSize, 5);
+          ctx.fill();
+          ctx.strokeStyle = IMG.paper;
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.moveTo(x + 5, boxY + 10);
+          ctx.lineTo(x + 8.5, boxY + 14);
+          ctx.lineTo(x + 15, boxY + 6);
+          ctx.stroke();
+        } else {
+          ctx.strokeStyle = IMG.line;
+          ctx.lineWidth = 2;
+          roundRect(ctx, x + 1, boxY + 1, boxSize - 2, boxSize - 2, 5);
+          ctx.stroke();
+        }
+
+        ctx.fillStyle = row.checked ? IMG.faint : IMG.ink;
+        ctx.font = "400 21px " + sans;
+        ctx.fillText(row.name, x + 34, y);
+
+        var right = "";
+        if (row.qtyLabel) right += row.qtyLabel;
+        if (row.codes.length) right += (right ? "  ·  " : "") + row.codes.join(", ");
+        if (right){
+          ctx.fillStyle = row.checked ? IMG.faint : IMG.soft;
+          ctx.font = "500 18px " + mono;
+          ctx.textAlign = "right";
+          ctx.fillText(right, x + w, y + 2);
+          ctx.textAlign = "left";
+        }
+        y += 46;
+      });
+      y += 16;
+    });
+
+    ctx.fillStyle = IMG.faint;
+    ctx.font = "400 18px " + sans;
+    ctx.fillText("Os codigos (A1, B2...) dizem em que arranjo o material vai ser usado.", x, y);
+    y += 24 + IMG.pad;
+
+    var out = document.createElement("canvas");
+    out.width = IMG.w * scale;
+    out.height = Math.round(y * scale);
+    var outCtx = out.getContext("2d");
+    outCtx.fillStyle = IMG.paper;
+    outCtx.fillRect(0, 0, out.width, out.height);
+    outCtx.drawImage(canvas, 0, 0);
+    return out;
+  }
+
+  function shareSummaryImage(){
+    return shareImage(buildSummaryCanvas);
+  }
+
+  function shareImage(buildCanvas){
+    var ready = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+    return ready.then(function(){
+      var canvas = buildCanvas();
+      return canvasToBlob(canvas).then(function(blob){
+        var file = null;
+        if (blob && typeof File === "function"){
+          try { file = new File([blob], "obras-de-casa.png", { type:"image/png" }); } catch(e){}
+        }
+        if (file && navigator.canShare && navigator.canShare({ files:[file] }) && navigator.share){
+          return navigator.share({ files:[file], title:"Obras de Casa" }).catch(function(){
+            showImagePreview(canvas);
+          });
+        }
+        showImagePreview(canvas);
+      });
+    }).catch(function(err){
+      showAlert("Nao foi possivel gerar a imagem: " + (err && err.message ? err.message : err));
+    });
+  }
+
+  function showImagePreview(canvas){
+    var overlay = document.createElement("div");
+    overlay.style.cssText = "position:fixed;inset:0;z-index:9998;background:rgba(10,12,11,.75);overflow:auto;padding:16px;";
+    var box = document.createElement("div");
+    box.style.cssText = "max-width:480px;margin:0 auto;";
+    var hint = document.createElement("div");
+    hint.textContent = "Mantem o dedo na imagem para guardar ou partilhar.";
+    hint.style.cssText = "color:#fff;font-size:13px;text-align:center;margin-bottom:10px;";
+    var img = document.createElement("img");
+    img.src = canvas.toDataURL("image/png");
+    img.style.cssText = "width:100%;border-radius:12px;display:block;";
+    var close = document.createElement("button");
+    close.textContent = "Fechar";
+    close.className = "btn-primary";
+    close.style.marginTop = "12px";
+    close.onclick = function(){ overlay.remove(); };
+    box.appendChild(hint);
+    box.appendChild(img);
+    box.appendChild(close);
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+  }
+
+  // ---------- lista de compras ----------
+  function normalizeName(name){
+    var text = String(name || "").trim().toLowerCase();
+    if (text.normalize) text = text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    return text;
+  }
+
+  function shoppingTradeOf(entry){
+    if (!entry.itemId) return null;
+    var item = state.items.find(function(it){ return it.id === entry.itemId; });
+    return item ? tradeById(item.trade) : null;
+  }
+
+  // Junta materiais com o mesmo nome numa so linha: interessa saber quanto
+  // levar da loja, nao quantas vezes foi apontado.
+  function buildShoppingGroups(){
+    var groups = [];
+    var index = {};
+
+    state.shopping.forEach(function(entry){
+      var trade = shoppingTradeOf(entry);
+      var key = trade ? trade.id : "_geral";
+      if (!index[key]){
+        index[key] = { key:key, trade:trade, label: trade ? trade.label : "Geral", emoji: trade ? trade.emoji : "🛒", rows:[], rowIndex:{} };
+        groups.push(index[key]);
+      }
+      var group = index[key];
+      var rowKey = normalizeName(entry.name);
+      if (!group.rowIndex[rowKey]){
+        group.rowIndex[rowKey] = { name:entry.name, entries:[], quantities:[], codes:[] };
+        group.rows.push(group.rowIndex[rowKey]);
+      }
+      var row = group.rowIndex[rowKey];
+      row.entries.push(entry);
+      if (entry.qty) row.quantities.push(entry.qty);
+      var item = entry.itemId ? state.items.find(function(it){ return it.id === entry.itemId; }) : null;
+      if (item) row.codes.push(itemCode(item));
+    });
+
+    groups.forEach(function(group){
+      group.rows.forEach(function(row){
+        row.checked = row.entries.every(function(e){ return e.checked; });
+        row.qtyLabel = quantityLabel(row);
+      });
+      group.rows.sort(function(a,b){ return (a.checked === b.checked) ? 0 : (a.checked ? 1 : -1); });
+      group.pending = group.rows.filter(function(r){ return !r.checked; }).length;
+    });
+
+    groups.sort(function(a,b){
+      if (a.key === "_geral") return 1;
+      if (b.key === "_geral") return -1;
+      return b.pending - a.pending;
+    });
+    return groups;
+  }
+
+  function quantityLabel(row){
+    if (row.quantities.length === 0) return row.entries.length > 1 ? ("x" + row.entries.length) : "";
+    var distinct = [];
+    row.quantities.forEach(function(q){ if (distinct.indexOf(q) === -1) distinct.push(q); });
+    if (distinct.length === 1){
+      return row.quantities.length > 1 ? (distinct[0] + " x" + row.quantities.length) : distinct[0];
+    }
+    return distinct.join(" + ");
+  }
+
+  function setShoppingChecked(entries, value){
+    if (ui.cloudMode && cloudDb){
+      var writes = entries.map(function(e){ return cloudDb.collection("shopping").doc(e.id).update({ checked: value }); });
+      withTimeout(Promise.all(writes), 8000).catch(function(err){
+        if (isConnectivityError(err)) fallbackToLocal(function(){ entries.forEach(function(e){ e.checked = value; }); });
+        else showDbError(err);
+      });
+    } else {
+      entries.forEach(function(e){ e.checked = value; });
+      render();
+    }
+  }
+
+  function deleteShoppingEntries(entries){
+    if (ui.cloudMode && cloudDb){
+      var writes = entries.map(function(e){ return cloudDb.collection("shopping").doc(e.id).delete(); });
+      withTimeout(Promise.all(writes), 8000).catch(function(err){
+        if (isConnectivityError(err)){
+          fallbackToLocal(function(){
+            var ids = entries.map(function(e){ return e.id; });
+            state.shopping = state.shopping.filter(function(x){ return ids.indexOf(x.id) === -1; });
+          });
+        } else showDbError(err);
+      });
+    } else {
+      var ids = entries.map(function(e){ return e.id; });
+      state.shopping = state.shopping.filter(function(x){ return ids.indexOf(x.id) === -1; });
+      render();
+    }
+  }
+
+  function shoppingStats(){
+    var groups = buildShoppingGroups();
+    var rows = [];
+    groups.forEach(function(g){ rows = rows.concat(g.rows); });
+    var done = rows.filter(function(r){ return r.checked; }).length;
+    return {
+      groups: groups,
+      totalRows: rows.length,
+      done: done,
+      pending: rows.length - done,
+      pct: rows.length === 0 ? 0 : Math.round((done / rows.length) * 100)
+    };
+  }
+
+  function renderShopping(){
+    var wrap = document.createDocumentFragment();
+    var stats = shoppingStats();
+
+    var addRow = document.createElement("div");
+    addRow.className = "add-row";
+    addRow.style.border = "1px dashed var(--line)";
+    addRow.style.borderRadius = "11px";
+    addRow.style.marginBottom = "14px";
+    addRow.innerHTML = "<span>+</span><span>Adicionar material</span>";
+    addRow.onclick = function(){ openManualShoppingSheet(); };
+    wrap.appendChild(addRow);
+
+    if (stats.totalRows === 0){
+      var empty = document.createElement("div");
+      empty.className = "empty-state";
+      empty.textContent = "Lista vazia. Os materiais que indicares em cada arranjo aparecem aqui automaticamente.";
+      wrap.appendChild(empty);
+      return wrap;
+    }
+
+    var tiles = document.createElement("div");
+    tiles.className = "stat-row";
+    tiles.innerHTML =
+      "<div class='stat-tile'><div class='stat-num'>" + stats.pending + "</div><div class='stat-lbl'>Por comprar</div></div>" +
+      "<div class='stat-tile'><div class='stat-num'>" + stats.done + "</div><div class='stat-lbl'>Ja comprado</div></div>" +
+      "<div class='stat-tile'><div class='stat-num'>" + stats.pct + "<span class='pct'>%</span></div><div class='stat-lbl'>Feito</div></div>";
+    wrap.appendChild(tiles);
+
+    var progress = document.createElement("div");
+    progress.className = "progress-block";
+    progress.style.marginBottom = "6px";
+    progress.innerHTML = "<div class='progress-track'><div class='progress-done' style='width:" + stats.pct + "%'></div></div>";
+    wrap.appendChild(progress);
+
+    stats.groups.forEach(function(group){
+      var card = document.createElement("div");
+      card.className = "summary-card";
+
+      var head = document.createElement("div");
+      head.className = "summary-head";
+      head.innerHTML =
+        "<div class='summary-code'>" + (group.trade ? group.trade.code : "GER") + "</div>" +
+        "<div class='summary-title'>" +
+          "<div class='name'>" + escapeHtml(group.label) + "</div>" +
+          "<div class='who'>" + (group.trade ? escapeHtml(group.trade.who) : "Materiais avulso") + "</div>" +
+        "</div>" +
+        "<div class='summary-count'>" + group.pending + "</div>";
+      card.appendChild(head);
+
+      var body = document.createElement("div");
+      body.className = "shop-body";
+      group.rows.forEach(function(row){ body.appendChild(renderShopRow(row)); });
+      card.appendChild(body);
+
+      var copyLink = document.createElement("div");
+      copyLink.className = "trade-copy";
+      copyLink.textContent = "Copiar so " + group.label.toLowerCase();
+      copyLink.onclick = function(){
+        copyTextWithFeedback(shoppingAsText(group.key), copyLink, "Copiar so " + group.label.toLowerCase());
+      };
+      card.appendChild(copyLink);
+
+      wrap.appendChild(card);
+    });
+
+    var actions = document.createElement("div");
+    actions.className = "summary-actions";
+
+    var shareBtn = document.createElement("button");
+    shareBtn.className = "btn-primary";
+    shareBtn.textContent = "Partilhar como imagem";
+    shareBtn.onclick = function(){
+      shareBtn.disabled = true;
+      shareBtn.textContent = "A preparar...";
+      shareImage(buildShoppingCanvas).catch(function(){}).then(function(){
+        shareBtn.disabled = false;
+        shareBtn.textContent = "Partilhar como imagem";
+      });
+    };
+    actions.appendChild(shareBtn);
+
+    var copyBtn = document.createElement("button");
+    copyBtn.className = "btn-secondary";
+    copyBtn.textContent = "Copiar como texto";
+    copyBtn.onclick = function(){ copyTextWithFeedback(shoppingAsText(), copyBtn, "Copiar como texto"); };
+    actions.appendChild(copyBtn);
+    wrap.appendChild(actions);
+
+    return wrap;
+  }
+
+  function copyTextWithFeedback(text, el, originalLabel){
+    var done = function(){
+      el.textContent = "Copiado";
+      setTimeout(function(){ el.textContent = originalLabel; }, 1800);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done).catch(function(){ showAlert(text); });
+    } else {
+      showAlert(text);
+    }
+  }
+
+  function renderShopRow(row){
+    var el = document.createElement("div");
+    el.className = "shop-line";
+
+    var check = document.createElement("div");
+    check.className = "check" + (row.checked ? " checked" : "");
+    check.innerHTML = row.checked ? "&#10003;" : "";
+    check.onclick = function(){ setShoppingChecked(row.entries, !row.checked); };
+    el.appendChild(check);
+
+    var main = document.createElement("div");
+    main.className = "shop-main";
+    main.innerHTML =
+      "<div class='shop-name" + (row.checked ? " checked" : "") + "'>" + escapeHtml(row.name) + "</div>" +
+      (row.codes.length ? "<div class='shop-origin'>" + row.codes.join(", ") + "</div>" : "");
+    el.appendChild(main);
+
+    if (row.qtyLabel){
+      var qty = document.createElement("div");
+      qty.className = "shop-qty";
+      qty.textContent = row.qtyLabel;
+      el.appendChild(qty);
+    }
+
+    var del = document.createElement("div");
+    del.className = "shop-del";
+    del.innerHTML = "&#10005;";
+    del.onclick = function(){ deleteShoppingEntries(row.entries); };
+    el.appendChild(del);
+
+    return el;
+  }
+
+  function shoppingAsText(groupKey){
+    var stats = shoppingStats();
+    var groups = stats.groups.filter(function(g){ return !groupKey || g.key === groupKey; });
+    if (groups.length === 0) return "Lista de compras vazia.";
+
+    var hoje = new Date().toLocaleDateString("pt-PT", { day:"2-digit", month:"long", year:"numeric" });
+    var lines = ["*OBRAS DE CASA*"];
+    lines.push("_Lista de compras · " + hoje + "_");
+    lines.push("");
+    if (!groupKey){
+      lines.push("🛒 *" + stats.pending + "* por comprar");
+      if (stats.done > 0) lines.push("✅ *" + stats.done + "* ja comprados  " + blocksBar(stats.pct, 100, 10, true));
+      lines.push("");
+    }
+
+    groups.forEach(function(group){
+      lines.push("*" + group.emoji + " " + group.label.toUpperCase() + "*");
+      group.rows.forEach(function(row){
+        var mark = row.checked ? "☑" : "☐";
+        var qty = row.qtyLabel ? "  ·  " + row.qtyLabel : "";
+        var codes = row.codes.length ? "  (" + row.codes.join(", ") + ")" : "";
+        lines.push(mark + " " + row.name + qty + codes);
+      });
+      lines.push("");
+    });
+
+    lines.push("_Os codigos (A1, B2...) dizem em que arranjo o material vai ser usado._");
+    return lines.join("\n");
+  }
+
+  function renderTabbar(){
+    var bar = document.createElement("div");
+    bar.className = "tabbar";
+
+    var tabObras = document.createElement("div");
+    tabObras.className = "tab" + (ui.tab === "obras" ? " active" : "");
+    tabObras.innerHTML = houseIcon() + "<span>Obras</span>";
+    tabObras.onclick = function(){ ui.tab = "obras"; render(); };
+
+    var tabResumo = document.createElement("div");
+    tabResumo.className = "tab" + (ui.tab === "resumo" ? " active" : "");
+    tabResumo.innerHTML = listIcon() + "<span>Resumo</span>";
+    tabResumo.onclick = function(){ ui.tab = "resumo"; render(); };
+
+    var tabCompras = document.createElement("div");
+    tabCompras.className = "tab" + (ui.tab === "compras" ? " active" : "");
+    var pendingCount = state.shopping.filter(function(s){ return !s.checked; }).length;
+    tabCompras.innerHTML = cartIcon() + "<span>Compras</span>" + (pendingCount ? "<span class='tab-badge'>" + pendingCount + "</span>" : "");
+    tabCompras.onclick = function(){ ui.tab = "compras"; render(); };
+
+    bar.appendChild(tabObras);
+    bar.appendChild(tabResumo);
+    bar.appendChild(tabCompras);
+    return bar;
+  }
+
+  function houseIcon(){
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5 12 4l8 7.5"/><path d="M6 10v9a1 1 0 0 0 1 1h3v-6h4v6h3a1 1 0 0 0 1-1v-9"/></svg>';
+  }
+  function listIcon(){
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></svg>';
+  }
+  function cartIcon(){
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/><path d="M3 4h2l2.2 11.1a1.6 1.6 0 0 0 1.6 1.3h7.9a1.6 1.6 0 0 0 1.6-1.3L20 8H6"/></svg>';
+  }
+
+  function escapeHtml(s){
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+      return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c];
+    });
+  }
+
+  // ---------- sheets ----------
+  var scrim = document.getElementById("scrim");
+  var sheet = document.getElementById("sheet");
+  var sheetTitle = document.getElementById("sheetTitle");
+  var sheetBody = document.getElementById("sheetBody");
+  document.getElementById("sheetClose").onclick = closeSheet;
+  scrim.onclick = closeSheet;
+
+  function openSheet(title){
+    sheetTitle.textContent = title;
+    scrim.classList.add("show");
+    requestAnimationFrame(function(){ sheet.classList.add("show"); });
+  }
+  function closeSheet(){
+    sheet.classList.remove("show");
+    scrim.classList.remove("show");
+    setTimeout(function(){ sheetBody.innerHTML = ""; }, 200);
+  }
+
+  // O gesto mais repetido e registar um arranjo, nao criar divisoes: o
+  // botao + vai directo ao item e so pergunta a area quando ha duvida.
+  function startNewItem(){
+    var areas = areasSorted();
+    if (areas.length === 0){ openAreaSheet(); return; }
+    if (areas.length === 1){ openItemSheet(areas[0].id, null); return; }
+    if (ui.openAreaId && areas.some(function(a){ return a.id === ui.openAreaId; })){
+      openItemSheet(ui.openAreaId, null);
+      return;
+    }
+    openAreaPickerSheet();
+  }
+
+  function openAreaPickerSheet(){
+    openSheet("Em que divisao?");
+    var areas = areasSorted();
+    sheetBody.innerHTML =
+      "<div class='area-picker' id='areaPicker'>" +
+      areas.map(function(a){
+        var count = allItemsForArea(a.id).length;
+        return "<div class='picker-opt' data-area='" + a.id + "'>" +
+          "<span class='picker-letter'>" + a.letter + "</span>" +
+          "<span class='picker-name'>" + escapeHtml(a.name) + "</span>" +
+          "<span class='picker-count'>" + (count === 0 ? "sem itens" : count + " " + (count === 1 ? "item" : "itens")) + "</span>" +
+        "</div>";
+      }).join("") +
+      "</div>" +
+      "<div class='add-material' id='pickerNewArea' style='margin-top:12px;'><span>+</span><span>Criar nova divisao</span></div>";
+
+    document.getElementById("areaPicker").querySelectorAll(".picker-opt").forEach(function(el){
+      el.onclick = function(){
+        var areaId = el.getAttribute("data-area");
+        ui.openAreaId = areaId;
+        openItemSheet(areaId, null);
+      };
+    });
+    document.getElementById("pickerNewArea").onclick = function(){ openAreaSheet(); };
+  }
+
+  function openAreaSheet(){
+    openSheet("Nova area");
+    var nextLetter = nextAreaLetter(state.areas);
+    sheetBody.innerHTML =
+      "<label class='field'><span class='lbl'>Nome da divisao</span>" +
+      "<input type='text' id='areaName' placeholder='Ex.: Cozinha, Sala, Quarto'></label>" +
+      "<div class='hint'>Esta area fica identificada como <span class='code-chip'>Area " + nextLetter + "</span>. Os itens dentro dela ficam " + nextLetter + "1, " + nextLetter + "2, e assim por diante.</div>" +
+      "<button class='btn-primary' id='saveArea' disabled>Guardar</button>";
+
+    var input = document.getElementById("areaName");
+    var btn = document.getElementById("saveArea");
+    input.addEventListener("input", function(){ btn.disabled = input.value.trim().length === 0; });
+    btn.onclick = function(){
+      var name = input.value.trim();
+      if (!name) return;
+      var id = uid();
+      var data = { letter: nextAreaLetter(state.areas), name:name, order: state.areas.length, example:false };
+      if (ui.cloudMode && cloudDb){
+        btn.disabled = true; btn.textContent = "A guardar...";
+        withTimeout(cloudDb.collection("areas").doc(id).set(data), 6000).then(function(){
+          ui.openAreaId = id;
+          closeSheet();
+        }).catch(function(err){
+          if (isConnectivityError(err)){
+            data.id = id;
+            fallbackToLocal(function(){ state.areas.push(data); ui.openAreaId = id; });
+            closeSheet();
+          } else {
+            btn.disabled = false; btn.textContent = "Guardar"; showDbError(err);
+          }
+        });
+      } else {
+        data.id = id;
+        state.areas.push(data);
+        ui.openAreaId = id;
+        closeSheet();
+        render();
+      }
+    };
+    setTimeout(function(){ input.focus(); }, 250);
+  }
+
+  var draftPhoto = null;
+  var draftMaterials = [];
+
+  function openItemSheet(areaId, itemId){
+    var area = state.areas.find(function(a){ return a.id === areaId; });
+    var editing = itemId ? state.items.find(function(it){ return it.id === itemId; }) : null;
+    draftPhoto = editing ? editing.photo : null;
+    draftMaterials = editing
+      ? state.shopping.filter(function(s){ return s.itemId === editing.id; }).map(function(s){ return { name:s.name, qty:s.qty }; })
+      : [];
+
+    var code = editing ? itemCode(editing) : (area.letter + nextItemNumber(state.items, areaId));
+    openSheet(editing ? ("Editar " + code) : "Novo item");
+
+    var selectedTrade = editing ? editing.trade : (ui.filterTrade || "alvenaria");
+    var selectedDefect = editing ? editing.defect : tradeById(selectedTrade).defects[0].id;
+    var selectedStatus = editing ? editing.status : "pendente";
+    var selectedPriority = editing ? (editing.priority || "normal") : "normal";
+
+    var tradeGrid = TRADES.map(function(t){
+      var active = selectedTrade === t.id;
+      return "<div class='code-opt" + (active ? " active" : "") + "' data-trade='" + t.id + "'><span class='sw'>" + t.code + "</span>" + t.label + "</div>";
+    }).join("");
+
+    var statusGrid = STATUSES.map(function(s){
+      var active = selectedStatus === s.id;
+      return "<div class='status-opt" + (active ? " active" : "") + "' data-status='" + s.id + "'>" + s.label + "</div>";
+    }).join("");
+
+    var priorityGrid = PRIORITIES.map(function(p){
+      var active = selectedPriority === p.id;
+      return "<div class='status-opt" + (active ? " active" : "") + "' data-priority='" + p.id + "'>" + p.label + "</div>";
+    }).join("");
+
+    sheetBody.innerHTML =
+      "<label class='field'><span class='lbl'>Codigo</span><div class='code-chip'>" + code + "</div></label>" +
+      "<label class='field'><span class='lbl'>Especialidade (quem arranja)</span><div class='code-grid' id='tradeGrid'>" + tradeGrid + "</div></label>" +
+      "<label class='field'><span class='lbl'>Tipo de defeito</span><div class='defect-list' id='defectList'></div></label>" +
+      "<div class='field' id='photoField'></div>" +
+      "<label class='field'><span class='lbl'>Descricao</span><input type='text' id='itemDesc' placeholder='Ex.: Buraco junto a janela, lado esquerdo' value='" + (editing ? escapeAttr(editing.desc) : "") + "'></label>" +
+      "<label class='field'><span class='lbl'>Notas</span><textarea id='itemNotes' placeholder='Medidas, referencias, o que combinaste'>" + (editing ? escapeHtml(editing.notes) : "") + "</textarea></label>" +
+      "<label class='field'><span class='lbl'>Prioridade</span><div class='status-grid' id='priorityGrid'>" + priorityGrid + "</div></label>" +
+      "<label class='field'><span class='lbl'>Estado</span><div class='status-grid' id='statusGrid'>" + statusGrid + "</div></label>" +
+      "<label class='field'><span class='lbl'>Materiais para a lista de compras</span>" +
+      "<div class='materials-list' id='materialsList'></div>" +
+      "<div class='add-material' id='addMaterial'><span>+</span><span>Adicionar material</span></div></label>" +
+      "<button class='btn-primary' id='saveItem'>Guardar</button>" +
+      (editing ? "<button class='btn-danger' id='deleteItem'>Eliminar item</button>" : "");
+
+    function renderDefectList(){
+      var listEl = document.getElementById("defectList");
+      if (!listEl) return;
+      listEl.innerHTML = tradeById(selectedTrade).defects.map(function(d){
+        var active = selectedDefect === d.id;
+        return "<div class='defect-opt" + (active ? " active" : "") + "' data-defect='" + d.id + "'>" + d.label + "</div>";
+      }).join("");
+      listEl.querySelectorAll(".defect-opt").forEach(function(el){
+        el.onclick = function(){
+          selectedDefect = el.getAttribute("data-defect");
+          listEl.querySelectorAll(".defect-opt").forEach(function(o){ o.classList.remove("active"); });
+          el.classList.add("active");
+        };
+      });
+    }
+
+    var tradeGridEl = document.getElementById("tradeGrid");
+    tradeGridEl.querySelectorAll(".code-opt").forEach(function(el){
+      el.onclick = function(){
+        selectedTrade = el.getAttribute("data-trade");
+        selectedDefect = tradeById(selectedTrade).defects[0].id;
+        tradeGridEl.querySelectorAll(".code-opt").forEach(function(o){ o.classList.remove("active"); });
+        el.classList.add("active");
+        renderDefectList();
+      };
+    });
+    renderDefectList();
+
+    var priorityGridEl = document.getElementById("priorityGrid");
+    priorityGridEl.querySelectorAll(".status-opt").forEach(function(el){
+      el.onclick = function(){
+        selectedPriority = el.getAttribute("data-priority");
+        priorityGridEl.querySelectorAll(".status-opt").forEach(function(o){ o.classList.remove("active"); });
+        el.classList.add("active");
+      };
+    });
+
+    var statusGridEl = document.getElementById("statusGrid");
+    statusGridEl.querySelectorAll(".status-opt").forEach(function(el){
+      el.onclick = function(){
+        selectedStatus = el.getAttribute("data-status");
+        statusGridEl.querySelectorAll(".status-opt").forEach(function(o){ o.classList.remove("active"); });
+        el.classList.add("active");
+      };
+    });
+
+    renderPhotoField();
+    renderMaterialsList();
+
+    document.getElementById("addMaterial").onclick = function(){
+      draftMaterials.push({ name:"", qty:"" });
+      renderMaterialsList();
+    };
+
+    document.getElementById("saveItem").onclick = function(){
+      var desc = document.getElementById("itemDesc").value.trim();
+      var notes = document.getElementById("itemNotes").value.trim();
+      var cleanMaterials = draftMaterials
+        .map(function(m){ return { name:m.name.trim(), qty:m.qty.trim() }; })
+        .filter(function(m){ return m.name.length > 0; });
+      var number = editing ? editing.number : nextItemNumber(state.items, areaId);
+      var itemData = { areaId:areaId, number:number, trade:selectedTrade, defect:selectedDefect, priority:selectedPriority, desc:desc, notes:notes, status:selectedStatus, photo:draftPhoto, example:false };
+      var saveBtn = this;
+
+      if (ui.cloudMode && cloudDb){
+        saveBtn.disabled = true; saveBtn.textContent = "A guardar...";
+        withTimeout(saveItemToCloud(cloudDb, editing ? editing.id : null, areaId, itemData, cleanMaterials), 8000)
+          .then(function(){ closeSheet(); })
+          .catch(function(err){
+            if (isConnectivityError(err)){
+              fallbackToLocal(function(){
+                if (editing){
+                  itemData.id = editing.id;
+                  state.items = state.items.map(function(it){ return it.id === editing.id ? itemData : it; });
+                  state.shopping = state.shopping.filter(function(s){ return s.itemId !== editing.id; });
+                } else {
+                  itemData.id = uid();
+                  state.items.push(itemData);
+                }
+                cleanMaterials.forEach(function(m){
+                  state.shopping.push({ id:uid(), name:m.name, qty:m.qty, checked:false, itemId:itemData.id, example:false });
+                });
+              });
+              closeSheet();
+            } else {
+              saveBtn.disabled = false; saveBtn.textContent = "Guardar"; showDbError(err);
+            }
+          });
+      } else {
+        if (editing){
+          itemData.id = editing.id;
+          state.items = state.items.map(function(it){ return it.id === editing.id ? itemData : it; });
+          state.shopping = state.shopping.filter(function(s){ return s.itemId !== editing.id; });
+          cleanMaterials.forEach(function(m){
+            state.shopping.push({ id:uid(), name:m.name, qty:m.qty, checked:false, itemId:editing.id, example:false });
+          });
+        } else {
+          itemData.id = uid();
+          state.items.push(itemData);
+          cleanMaterials.forEach(function(m){
+            state.shopping.push({ id:uid(), name:m.name, qty:m.qty, checked:false, itemId:itemData.id, example:false });
+          });
+        }
+        closeSheet();
+        render();
+      }
+    };
+
+    if (editing){
+      document.getElementById("deleteItem").onclick = function(){
+        if (ui.cloudMode && cloudDb){
+          withTimeout(deleteItemFromCloud(cloudDb, editing.id), 8000).then(function(){ closeSheet(); }).catch(function(err){
+            if (isConnectivityError(err)){
+              fallbackToLocal(function(){
+                state.items = state.items.filter(function(it){ return it.id !== editing.id; });
+                state.shopping = state.shopping.filter(function(s){ return s.itemId !== editing.id; });
+              });
+              closeSheet();
+            } else {
+              showDbError(err);
+            }
+          });
+        } else {
+          state.items = state.items.filter(function(it){ return it.id !== editing.id; });
+          state.shopping = state.shopping.filter(function(s){ return s.itemId !== editing.id; });
+          closeSheet();
+          render();
+        }
+      };
+    }
+  }
+
+  function renderPhotoField(){
+    var field = document.getElementById("photoField");
+    if (!field) return;
+    if (draftPhoto){
+      field.innerHTML =
+        "<span class='lbl'>Foto</span>" +
+        "<div class='photo-preview'><img src='" + draftPhoto + "'><div class='photo-remove' id='removePhoto'>&#10005;</div></div>";
+      document.getElementById("removePhoto").onclick = function(){ draftPhoto = null; renderPhotoField(); };
+    } else {
+      field.innerHTML =
+        "<span class='lbl'>Foto</span>" +
+        "<div class='photo-row'>" +
+        "<div class='photo-btn' id='btnCamera'>Tirar foto</div>" +
+        "<div class='photo-btn' id='btnLibrary'>Da galeria</div>" +
+        "</div>";
+      document.getElementById("btnCamera").onclick = function(){ document.getElementById("cameraInput").click(); };
+      document.getElementById("btnLibrary").onclick = function(){ document.getElementById("libraryInput").click(); };
+    }
+  }
+
+  function renderMaterialsList(){
+    var list = document.getElementById("materialsList");
+    if (!list) return;
+    list.innerHTML = "";
+    draftMaterials.forEach(function(m, idx){
+      var row = document.createElement("div");
+      row.className = "material-row";
+      row.innerHTML =
+        "<input type='text' placeholder='Ex.: Massa de vidraceiro' value='" + escapeAttr(m.name) + "'>" +
+        "<input type='text' class='qty' placeholder='Qtd.' value='" + escapeAttr(m.qty) + "'>" +
+        "<span class='rm'>&#10005;</span>";
+      var inputs = row.querySelectorAll("input");
+      inputs[0].oninput = function(){ draftMaterials[idx].name = inputs[0].value; };
+      inputs[1].oninput = function(){ draftMaterials[idx].qty = inputs[1].value; };
+      row.querySelector(".rm").onclick = function(){ draftMaterials.splice(idx,1); renderMaterialsList(); };
+      list.appendChild(row);
+    });
+  }
+
+  function openManualShoppingSheet(){
+    openSheet("Novo material");
+    sheetBody.innerHTML =
+      "<label class='field'><span class='lbl'>Material</span><input type='text' id='manName' placeholder='Ex.: Fita isoladora'></label>" +
+      "<label class='field'><span class='lbl'>Quantidade</span><input type='text' id='manQty' placeholder='Ex.: 2 un.'></label>" +
+      "<button class='btn-primary' id='saveMan' disabled>Adicionar</button>";
+    var name = document.getElementById("manName");
+    var qty = document.getElementById("manQty");
+    var btn = document.getElementById("saveMan");
+    name.addEventListener("input", function(){ btn.disabled = name.value.trim().length === 0; });
+    btn.onclick = function(){
+      if (!name.value.trim()) return;
+      var data = { name:name.value.trim(), qty:qty.value.trim(), checked:false, itemId:null, example:false };
+      var newId = uid();
+      if (ui.cloudMode && cloudDb){
+        btn.disabled = true; btn.textContent = "A guardar...";
+        withTimeout(cloudDb.collection("shopping").doc(newId).set(data), 6000).then(function(){ closeSheet(); })
+          .catch(function(err){
+            if (isConnectivityError(err)){
+              data.id = newId;
+              fallbackToLocal(function(){ state.shopping.push(data); });
+              closeSheet();
+            } else {
+              btn.disabled = false; btn.textContent = "Adicionar"; showDbError(err);
+            }
+          });
+      } else {
+        data.id = newId;
+        state.shopping.push(data);
+        closeSheet();
+        render();
+      }
+    };
+    setTimeout(function(){ name.focus(); }, 250);
+  }
+
+  function escapeAttr(s){ return escapeHtml(s).replace(/\n/g, " "); }
+
+  function openBackupSheet(){
+    openSheet("Copia de seguranca");
+    var json = JSON.stringify(state, null, 2);
+    var stamp = new Date().toLocaleDateString("pt-PT");
+    var introText = ui.cloudMode
+      ? "Os teus dados ja ficam guardados na tua conta Claude e sincronizados. Esta copia e so um extra, para teres tambem um ficheiro teu."
+      : "Guarda este texto num sitio seguro (Notas, Ficheiros, email) de vez em quando. Se o Safari limpar os dados, usa o botao Restaurar aqui em baixo para recuperar tudo.";
+    var restoreLabel = ui.cloudMode ? "Restaurar (acrescenta a conta, nao apaga nada)" : "Restaurar (substitui os dados atuais)";
+    sheetBody.innerHTML =
+      "<div class='hint' style='margin-bottom:14px;'>" + introText + "</div>" +
+      "<label class='field'><span class='lbl'>Exportar (" + stamp + ")</span>" +
+      "<textarea id='backupOut' readonly rows='6' style='font-family:\"IBM Plex Mono\";font-size:11px;'></textarea></label>" +
+      "<button class='btn-primary' id='copyBackup'>Copiar copia de seguranca</button>" +
+      "<div class='section-label' style='margin-top:22px;'>Restaurar</div>" +
+      "<label class='field'><span class='lbl'>Cola aqui uma copia de seguranca guardada</span>" +
+      "<textarea id='backupIn' rows='6' placeholder='Cola aqui o texto que copiaste antes' style='font-family:\"IBM Plex Mono\";font-size:11px;'></textarea></label>" +
+      "<button class='btn-danger' id='restoreBackup' style='border-color:var(--line);color:var(--ink-soft);'>" + restoreLabel + "</button>";
+
+    document.getElementById("backupOut").value = json;
+
+    document.getElementById("copyBackup").onclick = function(){
+      var out = document.getElementById("backupOut");
+      var btn = document.getElementById("copyBackup");
+      var done = function(){ btn.textContent = "Copiado"; setTimeout(function(){ btn.textContent = "Copiar copia de seguranca"; }, 1600); };
+      if (navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(out.value).then(done).catch(function(){ out.select(); document.execCommand("copy"); done(); });
+      } else {
+        out.select();
+        document.execCommand("copy");
+        done();
+      }
+    };
+
+    document.getElementById("restoreBackup").onclick = function(){
+      var text = document.getElementById("backupIn").value.trim();
+      if (!text) return;
+      var parsed;
+      try { parsed = JSON.parse(text); }
+      catch(e){ showAlert("Este texto nao parece uma copia de seguranca valida."); return; }
+      if (!parsed || !Array.isArray(parsed.areas) || !Array.isArray(parsed.items)){
+        showAlert("Este texto nao parece uma copia de seguranca valida.");
+        return;
+      }
+      var restoreBtn = document.getElementById("restoreBackup");
+      if (ui.cloudMode && cloudDb){
+        showConfirm("Isto acrescenta os itens desta copia de seguranca aos que ja tens guardados na conta (nao apaga nada). Continuar?", function(){
+          restoreBtn.disabled = true; restoreBtn.textContent = "A restaurar...";
+          withTimeout(importIntoCloud(cloudDb, parsed), 12000).then(function(){ closeSheet(); })
+            .catch(function(err){
+              if (isConnectivityError(err)){
+                fallbackToLocal(function(){
+                  state.areas = parsed.areas || [];
+                  state.items = parsed.items || [];
+                  state.shopping = parsed.shopping || [];
+                });
+                closeSheet();
+              } else {
+                restoreBtn.disabled = false; restoreBtn.textContent = "Restaurar (acrescenta a conta, nao apaga nada)"; showDbError(err);
+              }
+            });
+        }, "Restaurar");
+      } else {
+        showConfirm("Isto substitui tudo o que esta na app agora pelos dados da copia de seguranca. Continuar?", function(){
+          state.areas = parsed.areas || [];
+          state.items = parsed.items || [];
+          state.shopping = parsed.shopping || [];
+          closeSheet();
+          render();
+        }, "Restaurar");
+      }
+    };
+  }
+
+  // ---------- photo capture ----------
+  function handleFile(file){
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e){
+      var img = new Image();
+      img.onload = function(){
+        var maxDim = 760;
+        var scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+        var w = Math.round(img.width * scale), h = Math.round(img.height * scale);
+        var canvas = document.createElement("canvas");
+        canvas.width = w; canvas.height = h;
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, w, h);
+        draftPhoto = canvas.toDataURL("image/jpeg", 0.52);
+        renderPhotoField();
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+  document.getElementById("cameraInput").addEventListener("change", function(e){
+    handleFile(e.target.files[0]); e.target.value = "";
+  });
+  document.getElementById("libraryInput").addEventListener("change", function(e){
+    handleFile(e.target.files[0]); e.target.value = "";
+  });
+
+  initApp();
+})();
+</script>
