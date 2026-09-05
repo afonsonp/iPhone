@@ -8,13 +8,20 @@ Artifact publicado: https://claude.ai/code/artifact/664a18a5-1b2b-4753-9ac3-e07f
 
 ## Como está organizado
 
-12 missões em três trilhos, desbloqueadas por ordem dentro de cada trilho:
+17 missões em quatro trilhos, desbloqueadas por ordem dentro de cada trilho:
 
 | Trilho | Missões |
 |---|---|
 | Git e GitHub | primeiro commit, enviar para o GitHub, ramos, pull request, resolver conflito |
 | GitLab | vocabulário (merge request, group), primeiro `.gitlab-ci.yml`, pipeline vermelho |
 | Docker | imagem vs contentor, parar e limpar, construir imagem própria, compose |
+| Ciclo de vida | do computador ao ar, ambientes, produção em baixo, o que uma app precisa para durar, um pedido do princípio ao fim |
+
+O trilho do ciclo de vida é para quem decide sem programar: as peças são
+decisões (publicar em testes, reverter para a versão anterior, testar a
+reposição de uma cópia) em vez de comandos de terminal. As zonas passam a ser
+Computador, Repositório, Testes e Produção, e vê-se a versão a subir de
+ambiente em ambiente.
 
 Cada missão dá até três estrelas: perdem-se com enganos e com pistas pedidas.
 Há ainda um glossário consultável fora do jogo.
@@ -28,9 +35,13 @@ passam a Imagens e Contentores.
 
 Os enganos mais comuns têm resposta própria em vez de um erro genérico: `git
 commit` sem `-m`, `docker ps` quando o contentor está parado, `docker build`
-sem o ponto final, `docker rm` numa imagem. Duas armadilhas aparecem de
-propósito como opção errada, com explicação: `push --force` e apagar um teste
-para o pipeline ficar verde.
+sem o ponto final, `docker rm` numa imagem. A explicação de um engano vale em
+qualquer passo da missão, não só naquele onde está escrita.
+
+Algumas armadilhas aparecem de propósito como opção errada, com explicação:
+`push --force`, apagar um teste para o pipeline ficar verde, corrigir código
+diretamente dentro do servidor, escrever chaves no código, copiar dados reais
+de produção para o ambiente de testes.
 
 ## Estrutura do conteúdo
 

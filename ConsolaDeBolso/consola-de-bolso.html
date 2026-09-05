@@ -18,6 +18,8 @@
     --gitlab-tint:#FBE8DC;
     --docker:#1B6FC4;
     --docker-tint:#DEEAF7;
+    --ciclo:#6B4EA8;
+    --ciclo-tint:#E9E3F7;
     --good:#25795A;
     --good-tint:#DCEDE5;
     --bad:#A83A2C;
@@ -43,6 +45,8 @@
       --gitlab-tint:#331F14;
       --docker:#63A8E8;
       --docker-tint:#152738;
+      --ciclo:#A78CE0;
+      --ciclo-tint:#241C38;
       --good:#5CBE95;
       --good-tint:#12301F;
       --bad:#E28878;
@@ -68,6 +72,8 @@
     --gitlab-tint:#331F14;
     --docker:#63A8E8;
     --docker-tint:#152738;
+    --ciclo:#A78CE0;
+    --ciclo-tint:#241C38;
     --good:#5CBE95;
     --good-tint:#12301F;
     --bad:#E28878;
@@ -132,6 +138,7 @@
   .track-badge.git{ background:var(--git-tint); color:var(--git); }
   .track-badge.gitlab{ background:var(--gitlab-tint); color:var(--gitlab); }
   .track-badge.docker{ background:var(--docker-tint); color:var(--docker); }
+  .track-badge.ciclo{ background:var(--ciclo-tint); color:var(--ciclo); }
   .track-title{ flex:1; font-size:13px; font-weight:700; color:var(--ink-soft); }
   .track-progress{ font-family:"JetBrains Mono"; font-size:12px; color:var(--ink-faint); }
 
@@ -150,6 +157,7 @@
   .mission-num.git{ background:var(--git-tint); color:var(--git); }
   .mission-num.gitlab{ background:var(--gitlab-tint); color:var(--gitlab); }
   .mission-num.docker{ background:var(--docker-tint); color:var(--docker); }
+  .mission-num.ciclo{ background:var(--ciclo-tint); color:var(--ciclo); }
   .mission-main{ flex:1; min-width:0; }
   .mission-title{ font-size:14.5px; font-weight:700; }
   .mission-sub{ font-size:12px; color:var(--ink-soft); margin-top:2px; }
@@ -192,6 +200,7 @@
   .chip.img{ border-color:var(--docker); color:var(--docker); }
   .chip.run{ border-color:var(--good); color:var(--good); }
   .chip.stopped{ border-color:var(--ink-faint); color:var(--ink-faint); }
+  .chip.ver{ border-color:var(--ciclo); color:var(--ciclo); }
   .zone-empty{ font-size:10.5px; color:var(--ink-faint); text-align:center; padding-top:6px; }
 
   .state-extra{
@@ -317,14 +326,15 @@
   }
   .gloss-cmd{ font-family:"JetBrains Mono"; font-size:13px; font-weight:700; color:var(--ink); }
   .gloss-desc{ font-size:12.5px; color:var(--ink-soft); margin-top:4px; line-height:1.5; }
-  .gloss-filter{ display:flex; gap:6px; margin-bottom:12px; }
+  .gloss-filter{ display:flex; gap:5px; margin-bottom:12px; }
   .gloss-filter div{
-    flex:1; text-align:center; padding:8px; border-radius:9px; font-size:12.5px; font-weight:700;
+    flex:1; text-align:center; padding:8px 4px; border-radius:9px; font-size:11.5px; font-weight:700;
     border:1px solid var(--line); background:var(--surface); color:var(--ink-soft); cursor:pointer;
   }
   .gloss-filter div.active.git{ background:var(--git-tint); border-color:var(--git); color:var(--git); }
   .gloss-filter div.active.gitlab{ background:var(--gitlab-tint); border-color:var(--gitlab); color:var(--gitlab); }
   .gloss-filter div.active.docker{ background:var(--docker-tint); border-color:var(--docker); color:var(--docker); }
+  .gloss-filter div.active.ciclo{ background:var(--ciclo-tint); border-color:var(--ciclo); color:var(--ciclo); }
 
   .empty-state{
     border:1px dashed var(--line); border-radius:13px; padding:24px 18px;
@@ -360,7 +370,8 @@
   var TRACKS = {
     git:    { label:"Git e GitHub", cls:"git",    desc:"Do primeiro commit ao pull request" },
     gitlab: { label:"GitLab",       cls:"gitlab", desc:"Merge requests e pipelines" },
-    docker: { label:"Docker",       cls:"docker", desc:"Imagens, contentores e compose" }
+    docker: { label:"Docker",       cls:"docker", desc:"Imagens, contentores e compose" },
+    ciclo:  { label:"Ciclo de vida", cls:"ciclo",  desc:"Do teu computador ate estar no ar" }
   };
 
   function gitState(extra){
@@ -373,6 +384,15 @@
   }
   function dockerState(extra){
     var base = { kind:"docker", images:[], containers:[], compose:false, dockerfile:false };
+    for (var k in extra) base[k] = extra[k];
+    return base;
+  }
+  function cicloState(extra){
+    var base = {
+      kind:"ciclo", local:[], repo:[], testes:[], prod:[],
+      dominio:false, https:false, backups:false, backupTestado:false,
+      alertas:false, segredos:false, incidente:false, issue:null, pr:null, pipeline:null
+    };
     for (var k in extra) base[k] = extra[k];
     return base;
   }
@@ -945,6 +965,297 @@
         }
       ],
       lesson:"docker compose up -d levanta tudo, docker compose down desliga. Sem volumes definidos, os dados desaparecem com os contentores."
+    },
+
+    // ---------------- CICLO DE VIDA ----------------
+    // Este trilho nao e sobre comandos: e sobre as decisoes de quem manda
+    // publicar. As pecas sao accoes, nao linhas de terminal.
+    {
+      id:"cv1", track:"ciclo", title:"Do teu computador ate ao ar",
+      brief:"Escreveste uma app e ela corre no teu computador. Falta perceber o que acontece entre isso e alguem, no mundo, conseguir abri-la no telemovel.",
+      goal:"Levar a primeira versao do teu computador ate estar no ar, com endereco proprio.",
+      initial: cicloState({ local:["v1"] }),
+      tokens:[
+        { name:"onde poe o codigo", items:[{t:"enviar o codigo para o repositorio"},{t:"guardar o codigo numa pasta partilhada"}] },
+        { name:"preparar", items:[{t:"construir a imagem da app"},{t:"copiar os ficheiros para o servidor"}] },
+        { name:"onde vai correr", items:[{t:"alugar um servidor na cloud"},{t:"deixar a correr no teu computador"}] },
+        { name:"publicar", items:[{t:"fazer deploy da imagem"},{t:"apontar o dominio e activar o certificado"}] }
+      ],
+      steps:[
+        {
+          ask:"O codigo esta so no teu portatil. Poe-o num sitio de onde a equipa e as maquinas o consigam ir buscar.",
+          accept:["enviar o codigo para o repositorio"],
+          hint:"O sitio onde vive o codigo, com historico de tudo o que mudou.",
+          explain:"O repositorio passa a ser a fonte da verdade. Tudo o que for publicado sai dali, e nunca do computador de uma pessoa.",
+          wrong:{ "guardar o codigo numa pasta partilhada":"Uma pasta partilhada nao tem historico, nao sabe quem mudou o que, e nao serve para as maquinas irem buscar o codigo automaticamente. O sitio certo e um repositorio." },
+          apply:function(s){ s.local = []; s.repo = ["v1"]; return "codigo enviado para o repositorio"; }
+        },
+        {
+          ask:"Transforma o codigo numa coisa que corra igual em qualquer maquina.",
+          accept:["construir a imagem da app"],
+          hint:"E o passo que se chama build, e onde o Docker entra.",
+          explain:"Isto e o build: a app e tudo o que ela precisa ficam empacotados numa imagem. E o que faz acabar o famoso na minha maquina funciona.",
+          wrong:{ "copiar os ficheiros para o servidor":"Era assim ha quinze anos, e e a origem do na minha maquina funciona: o servidor tem outras versoes de tudo. Empacotar resolve isso." },
+          apply:function(s){ s.repo = ["v1","imagem v1"]; return "imagem v1 construida a partir do codigo"; }
+        },
+        {
+          ask:"Escolhe onde e que a app vai correr, ligada o dia todo.",
+          accept:["alugar um servidor na cloud"],
+          hint:"Alguem tem de ter uma maquina ligada 24 horas por dia.",
+          explain:"Pode ser AWS, Azure, Google Cloud ou um alojamento mais simples. Estas a alugar uma maquina ligada permanentemente, e pagas por ela todos os meses. E aqui que nasce o custo fixo da app.",
+          wrong:{ "deixar a correr no teu computador":"Funciona enquanto o portatil estiver ligado e com internet. Assim que o fechares, a app desaparece para toda a gente." },
+          apply:function(s){ s.servidor = true; return "servidor criado (1 vCPU, 2 GB) . custo estimado 12 euros por mes"; }
+        },
+        {
+          ask:"Poe a imagem a correr nesse servidor.",
+          accept:["fazer deploy da imagem"],
+          hint:"A palavra e deploy.",
+          explain:"Deploy e exatamente isto: a imagem passa a correr no servidor. A app ja esta no ar, mas por enquanto so se chega la por um endereco de numeros.",
+          apply:function(s){ s.prod = ["v1"]; return "deploy concluido . a app responde em 51.83.42.17"; },
+          outputType:"ok"
+        },
+        {
+          ask:"Da-lhe um endereco que as pessoas consigam escrever, e com cadeado.",
+          accept:["apontar o dominio e activar o certificado"],
+          hint:"Faltam duas coisas que andam sempre juntas: o nome e o https.",
+          explain:"O dominio aponta para o servidor e o certificado poe o https com o cadeado. Sem certificado, o browser avisa que o site nao e seguro e metade das pessoas foge.",
+          apply:function(s){ s.dominio = true; s.https = true; return "aminhaapp.pt aponta para o servidor . certificado activo"; },
+          outputType:"ok"
+        }
+      ],
+      lesson:"Codigo no repositorio, build para empacotar, servidor para correr, deploy para publicar, dominio e certificado para as pessoas chegarem la. Cada app no ar tem um custo fixo mensal."
+    },
+    {
+      id:"cv2", track:"ciclo", title:"Nunca mexer no que esta a servir pessoas",
+      brief:"A app esta no ar e ja tem utilizadores. Pediram-te uma alteracao grande. A tentacao e mexer diretamente onde ela esta a correr.",
+      goal:"Levar a alteracao ate producao sem arriscar o que ja funciona.",
+      initial: cicloState({ repo:["v1","v2"], prod:["v1"], dominio:true, https:true }),
+      tokens:[
+        { name:"onde experimentar", items:[{t:"publicar em testes"},{t:"publicar diretamente em producao"}] },
+        { name:"com que dados", items:[{t:"testar com dados de teste"},{t:"copiar a base de dados de producao para testes"}] },
+        { name:"passar a producao", items:[{t:"promover a mesma versao para producao"},{t:"voltar a construir a app para producao"}] },
+        { name:"a seguir", items:[{t:"verificar producao depois do deploy"}] }
+      ],
+      steps:[
+        {
+          ask:"Onde e que experimentas a alteracao?",
+          accept:["publicar em testes"],
+          hint:"Ha um ambiente que existe precisamente para se poder partir tudo.",
+          explain:"O ambiente de testes, a que muita gente chama staging, e uma copia parecida com producao onde podes partir a vontade. Ninguem de fora da por nada.",
+          wrong:{ "publicar diretamente em producao":"Se correr mal, quem esta a usar apanha o problema em direto. Producao e para o que ja foi verificado noutro sitio." },
+          apply:function(s){ s.testes = ["v2"]; return "v2 publicada em testes"; }
+        },
+        {
+          ask:"Vais testar. Que dados usas?",
+          accept:["testar com dados de teste"],
+          hint:"Cuidado com a opcao pratica.",
+          explain:"Dados inventados chegam para verificar se funciona. Copiar dados reais para um ambiente com menos protecao e mais gente com acesso e um problema legal, nao so tecnico.",
+          wrong:{ "copiar a base de dados de producao para testes":"E pratico e e das falhas de RGPD mais comuns: dados pessoais reais passam para um ambiente com menos protecao e mais gente com acesso." },
+          apply:function(s){ s.pipeline = "verdes"; return "testes corridos com dados fictícios . tudo a passar"; },
+          outputType:"ok"
+        },
+        {
+          ask:"Correu bem. Leva a alteracao para producao.",
+          accept:["promover a mesma versao para producao"],
+          hint:"A questao aqui e se vai a mesma coisa que testaste, ou uma nova.",
+          explain:"Promover em vez de reconstruir garante que o que entra em producao e exatamente aquilo que passou nos testes. Se voltares a construir, ja e outra coisa, ainda que parecida.",
+          wrong:{ "voltar a construir a app para producao":"Se reconstroi, ja nao e exatamente o que testaste: dependencias podem ter mudado nesse intervalo. Promove-se a mesma versao." },
+          apply:function(s){ s.prod = ["v2"]; return "v2 promovida de testes para producao"; },
+          outputType:"ok"
+        },
+        {
+          ask:"Ja esta. Falta uma coisa que quase toda a gente salta.",
+          accept:["verificar producao depois do deploy"],
+          hint:"Publicar nao e o mesmo que confirmar.",
+          explain:"Cinco minutos a abrir a app e a fazer duas coisas basicas apanham a maioria dos desastres, e apanham-nos antes dos utilizadores.",
+          apply:function(s){ return "app aberta e verificada . login e listagem a funcionar"; },
+          outputType:"ok"
+        }
+      ],
+      lesson:"Testes primeiro, com dados de teste, e para producao vai a mesma versao que passou. Verificar sempre depois de publicar."
+    },
+    {
+      id:"cv3", track:"ciclo", title:"Producao em baixo",
+      brief:"Sao seis da tarde. Publicaste ha dez minutos e comecam a chegar mensagens: a app nao abre. Isto vai acontecer-te, e a ordem das coisas importa mais do que a rapidez.",
+      goal:"Repor o servico primeiro, perceber a causa depois.",
+      initial: cicloState({ repo:["v2","v3"], prod:["v3 com problema"], dominio:true, https:true, incidente:true }),
+      tokens:[
+        { name:"perceber", items:[{t:"ver os logs de producao"},{t:"perguntar aos utilizadores o que fizeram"}] },
+        { name:"decidir", items:[{t:"reverter para a versao anterior"},{t:"corrigir o codigo com calma e publicar depois"},{t:"corrigir diretamente no servidor"}] },
+        { name:"investigar", items:[{t:"reproduzir o erro em testes"}] },
+        { name:"fechar", items:[{t:"corrigir, testar e voltar a promover"}] }
+      ],
+      steps:[
+        {
+          ask:"Primeiro: descobre o que a app diz que se passa.",
+          accept:["ver os logs de producao"],
+          hint:"A app escreveu o erro no momento em que aconteceu.",
+          explain:"Os logs dizem o erro e a hora exacta. E sempre o primeiro sitio, antes de qualquer teoria.",
+          wrong:{ "perguntar aos utilizadores o que fizeram":"Ajuda mais tarde, mas e lento e vago. A informacao precisa ja esta escrita nos logs." },
+          apply:function(s){ return "18:04 ERRO ligacao a base de dados recusada\n18:04 a app arrancou sem a variavel DB_HOST"; },
+          outputType:"err"
+        },
+        {
+          ask:"Ha utilizadores parados neste momento. Qual e a prioridade?",
+          accept:["reverter para a versao anterior"],
+          hint:"Entre repor o servico e encontrar o culpado, uma das coisas pode esperar.",
+          explain:"Isto chama-se rollback: voltar a versao que funcionava. O servico volta em minutos e a investigacao passa a ser feita sem ninguem a espera. Foi a alteracao mais recente que partiu, por isso desfaze-la e a aposta mais segura.",
+          wrong:{ "corrigir o codigo com calma e publicar depois":"Enquanto procuras a causa, ninguem consegue usar a app. Repoe primeiro, investiga a seguir.",
+                  "corrigir diretamente no servidor":"A correcao fica so ali, fora do repositorio, ninguem sabe o que mudaste, e desaparece no proximo deploy. Nunca se corrige dentro do servidor." },
+          apply:function(s){ s.prod = ["v2"]; s.incidente = false; return "rollback concluido . v2 no ar . servico reposto"; },
+          outputType:"ok"
+        },
+        {
+          ask:"Servico reposto. Agora percebe a causa, sem afetar ninguem.",
+          accept:["reproduzir o erro em testes"],
+          hint:"Ha um ambiente onde podes partir tudo.",
+          explain:"Se conseguires repetir o erro em testes, tens o problema apanhado e podes experimentar solucoes a vontade. Neste caso faltava uma variavel de configuracao que existia em testes mas nunca tinha sido criada em producao.",
+          apply:function(s){ s.testes = ["v3"]; return "erro reproduzido em testes . falta a variavel DB_HOST na configuracao de producao"; }
+        },
+        {
+          ask:"Fecha o assunto pelo caminho normal.",
+          accept:["corrigir, testar e voltar a promover"],
+          hint:"Sem atalhos, mesmo com a pressa do incidente.",
+          explain:"Foi um atalho que trouxe o problema. Vale ainda a pena escrever depois o que aconteceu e porque nao foi apanhado antes, para nao se repetir.",
+          apply:function(s){ s.prod = ["v3"]; s.pipeline = "verdes"; return "configuracao corrigida . testes verdes . v3 promovida"; },
+          outputType:"ok"
+        }
+      ],
+      lesson:"Num incidente a ordem e: ler os logs, repor o servico com um rollback, reproduzir em testes, corrigir. Nunca corrigir a mao dentro do servidor."
+    },
+    {
+      id:"cv4", track:"ciclo", title:"Para durar mais do que um ano",
+      brief:"A app esta no ar e estavel. Falta a parte que ninguem ve e que so se nota no dia em que falha. E tambem a parte que interessa a quem assina contratos.",
+      goal:"Deixar a app preparada para sobreviver a acidentes e a saidas da equipa.",
+      initial: cicloState({ repo:["v3"], prod:["v3"], dominio:true, https:true }),
+      tokens:[
+        { name:"dados", items:[{t:"configurar copias automaticas"},{t:"testar a reposicao a partir de uma copia"},{t:"assumir que as copias funcionam"}] },
+        { name:"saber que caiu", items:[{t:"ligar alertas de disponibilidade"},{t:"esperar que alguem avise"}] },
+        { name:"chaves e senhas", items:[{t:"guardar as chaves num cofre de segredos"},{t:"escrever as chaves no codigo"}] },
+        { name:"pessoas", items:[{t:"retirar os acessos a producao"}] }
+      ],
+      steps:[
+        {
+          ask:"Trata das copias de seguranca da base de dados.",
+          accept:["configurar copias automaticas"],
+          hint:"A mao esquece-se sempre.",
+          explain:"Copias automaticas, todos os dias, guardadas noutro sitio que nao o mesmo servidor. Se o servidor arder, a copia nao pode arder com ele.",
+          apply:function(s){ s.backups = true; return "copia diaria as 03:00 . guardada em armazenamento separado"; }
+        },
+        {
+          ask:"Falta a parte que quase ninguem faz.",
+          accept:["testar a reposicao a partir de uma copia"],
+          hint:"Ter copias e uma coisa. Saber que servem e outra.",
+          explain:"Uma copia que nunca foi reposta e uma esperanca, nao e um backup. Testar a reposicao uma vez por ano e o minimo, e e o tipo de coisa que se pergunta num contrato.",
+          wrong:{ "assumir que as copias funcionam":"Muitas copias de seguranca do mundo nunca foram testadas, e boa parte delas nao presta. So conta depois de a teres reposto uma vez." },
+          apply:function(s){ s.backupTestado = true; return "reposicao testada num ambiente separado . 14 minutos ate a app estar de pe"; },
+          outputType:"ok"
+        },
+        {
+          ask:"Como e que ficas a saber que a app caiu, antes de te dizerem?",
+          accept:["ligar alertas de disponibilidade"],
+          hint:"No incidente anterior soubeste pelos utilizadores.",
+          explain:"Um servico verifica a app de minuto a minuto e avisa quando ela para, a qualquer hora. Sem isto, o teu sistema de monitorizacao sao os clientes, e isso custa reputacao.",
+          wrong:{ "esperar que alguem avise":"Foi o que aconteceu da ultima vez: soubeste pelos utilizadores, ja com toda a gente parada." },
+          apply:function(s){ s.alertas = true; return "verificacao a cada minuto . alerta por email e telemovel"; }
+        },
+        {
+          ask:"As palavras-passe e chaves de acesso, onde ficam?",
+          accept:["guardar as chaves num cofre de segredos"],
+          hint:"Uma das opcoes parece pratica e e das falhas mais caras que existem.",
+          explain:"Segredos ficam num cofre, fora do codigo, e sao entregues a app quando ela arranca. Escritos no codigo, ficam no repositorio para sempre, e no historico mesmo depois de os apagares.",
+          wrong:{ "escrever as chaves no codigo":"Ficam visiveis a toda a gente com acesso ao repositorio, e permanecem no historico mesmo que as apagues depois. E das falhas de seguranca mais comuns e mais caras." },
+          apply:function(s){ s.segredos = true; return "chaves movidas para o cofre . removidas do codigo e do historico"; },
+          outputType:"ok"
+        },
+        {
+          ask:"Alguem saiu da equipa esta semana.",
+          accept:["retirar os acessos a producao"],
+          hint:"Faz parte da saida, como entregar o portatil.",
+          explain:"As saidas sao o momento em que os acessos ficam esquecidos durante anos. Convem existir uma lista de quem tem acesso a que, e ser revista de tempos a tempos.",
+          apply:function(s){ return "acessos revogados . lista de acessos actualizada"; }
+        }
+      ],
+      lesson:"Copias automaticas e testadas, alertas para saberes antes dos utilizadores, segredos fora do codigo, e acessos revistos quando alguem sai. E disto que se fala quando se diz que uma app esta bem entregue."
+    },
+    {
+      id:"cv5", track:"ciclo", title:"Um pedido do principio ao fim",
+      brief:"Um cliente pede uma alteracao por email. Esta missao junta tudo o que viste nos outros trilhos, pela ordem em que acontece na vida real.",
+      goal:"Levar o pedido do email ate producao, sem saltar passos.",
+      initial: cicloState({ repo:["v3"], prod:["v3"], dominio:true, https:true, backups:true, backupTestado:true, alertas:true }),
+      tokens:[
+        { name:"registar", items:[{t:"abrir um issue com o pedido"},{t:"responder ao email e comecar logo"}] },
+        { name:"comando", items:[{t:"git",cls:"cmd"}] },
+        { name:"subcomando", items:[{t:"checkout"}] },
+        { name:"argumentos", items:[{t:"-b feature/pedido",cls:"flag"}] },
+        { name:"propor e verificar", items:[{t:"abrir pull request"},{t:"os testes automaticos do pipeline"},{t:"nada, a revisao e que apanha tudo"},{t:"pedir revisao e fazer merge"}] },
+        { name:"publicar", items:[{t:"publicar em testes"},{t:"promover para producao e verificar"}] },
+        { name:"fechar", items:[{t:"responder ao cliente e fechar o issue"}] }
+      ],
+      steps:[
+        {
+          ask:"O pedido chegou por email. Poe-no onde nao se perca.",
+          accept:["abrir um issue com o pedido"],
+          hint:"O email e a caixa de uma pessoa so.",
+          explain:"Um issue fica no projeto, com historico, e qualquer pessoa da equipa sabe o que foi pedido e em que pe esta. O email fica na caixa de uma pessoa, e se ela estiver de ferias o pedido desaparece.",
+          wrong:{ "responder ao email e comecar logo":"O pedido fica so na caixa de correio de uma pessoa. Ninguem mais o ve, e nao ha registo do que foi combinado." },
+          apply:function(s){ s.issue = "#42 exportar relatorio em PDF"; return "issue #42 aberto e atribuido"; }
+        },
+        {
+          ask:"Cria o sitio onde vais trabalhar sem mexer no principal.",
+          accept:["git checkout -b feature/pedido"],
+          hint:"Isto ja viste no trilho do Git.",
+          explain:"O ramo isola o trabalho. O main continua a ser a versao boa enquanto isto nao estiver pronto.",
+          apply:function(s){ return "Switched to a new branch 'feature/pedido'"; }
+        },
+        {
+          ask:"Trabalho feito e enviado. Propoe que entre no principal.",
+          accept:["abrir pull request"],
+          hint:"No GitLab chamar-se-ia merge request.",
+          explain:"O pull request e onde a alteracao fica visivel para ser discutida antes de entrar.",
+          apply:function(s){ s.pr = "PR aberto"; return "pull request aberto . liga ao issue #42"; }
+        },
+        {
+          ask:"Antes de qualquer pessoa rever, o que e que corre sozinho?",
+          accept:["os testes automaticos do pipeline"],
+          hint:"Ha um robo que trabalha antes das pessoas.",
+          explain:"O pipeline corre primeiro e apanha logo o obvio, sem gastar o tempo de ninguem. A revisao humana fica livre para olhar para o que interessa: se a solucao faz sentido.",
+          wrong:{ "nada, a revisao e que apanha tudo":"Uma pessoa cansada nao ve o que um teste ve sempre. As duas coisas servem para coisas diferentes e nao se substituem." },
+          apply:function(s){ s.pipeline = "verdes"; return "pipeline #513 . build ok . testes ok"; },
+          outputType:"ok"
+        },
+        {
+          ask:"Testes verdes. Falta a parte humana.",
+          accept:["pedir revisao e fazer merge"],
+          hint:"Alguem tem de olhar para aquilo antes de entrar.",
+          explain:"Depois do merge, a alteracao esta no principal, mas ainda nao esta a servir ninguem. Estar no repositorio nao e estar no ar.",
+          apply:function(s){ s.pr = "PR fechado"; s.repo = ["v3","v4"]; return "aprovado por @rita . merge feito no main"; }
+        },
+        {
+          ask:"Onde e que vai primeiro?",
+          accept:["publicar em testes"],
+          hint:"A regra do ambiente de testes vale sempre.",
+          explain:"Mesmo com testes automaticos verdes, alguem ve a coisa a funcionar num ambiente parecido com o real antes de ir para as pessoas.",
+          apply:function(s){ s.testes = ["v4"]; return "v4 publicada em testes . verificada a mao"; }
+        },
+        {
+          ask:"E finalmente.",
+          accept:["promover para producao e verificar"],
+          hint:"A mesma versao que passou, e confirmar depois.",
+          explain:"A mesma versao que foi verificada em testes passa para producao, e confirma-se logo a seguir.",
+          apply:function(s){ s.prod = ["v4"]; return "v4 em producao . verificada"; },
+          outputType:"ok"
+        },
+        {
+          ask:"Falta o passo mais esquecido de todos.",
+          accept:["responder ao cliente e fechar o issue"],
+          hint:"Alguem esta a espera de saber.",
+          explain:"Para quem pediu, o trabalho so acabou quando lhe dizem que acabou. Fechar o issue tambem deixa o registo completo para quem vier a seguir.",
+          apply:function(s){ s.issue = null; return "cliente informado . issue #42 fechado"; },
+          outputType:"ok"
+        }
+      ],
+      lesson:"Pedido registado, ramo, pull request, testes automaticos, revisao, merge, ambiente de testes, producao, verificar, e avisar quem pediu. Estar no repositorio nao e estar no ar."
     }
   ];
 
@@ -979,7 +1290,19 @@
     { track:"docker", cmd:"docker exec -it <id> sh", desc:"Abre uma linha de comandos dentro do contentor a correr." },
     { track:"docker", cmd:"docker compose up -d", desc:"Levanta todos os servicos do docker-compose.yml em segundo plano." },
     { track:"docker", cmd:"docker compose down", desc:"Para e remove os contentores e a rede do projeto." },
-    { track:"docker", cmd:"volume", desc:"Guarda dados fora do contentor, para nao se perderem quando ele e removido." }
+    { track:"docker", cmd:"volume", desc:"Guarda dados fora do contentor, para nao se perderem quando ele e removido." },
+    { track:"ciclo", cmd:"Build", desc:"Transformar codigo em algo executavel e empacotado, normalmente uma imagem." },
+    { track:"ciclo", cmd:"Deploy", desc:"Por essa imagem a correr num servidor, onde as pessoas lhe conseguem chegar." },
+    { track:"ciclo", cmd:"Ambientes", desc:"Desenvolvimento (quem programa), testes ou staging (copia para experimentar) e producao (o que serve pessoas)." },
+    { track:"ciclo", cmd:"Promover", desc:"Passar para producao exatamente a versao que passou nos testes, em vez de a voltar a construir." },
+    { track:"ciclo", cmd:"Rollback", desc:"Voltar a versao anterior. E a primeira coisa a fazer quando producao esta em baixo." },
+    { track:"ciclo", cmd:"Logs", desc:"O que a app escreveu enquanto corria. Primeiro sitio a consultar quando algo falha." },
+    { track:"ciclo", cmd:"Monitorizacao e alertas", desc:"Verificacao automatica que avisa quando a app cai, antes de os utilizadores avisarem." },
+    { track:"ciclo", cmd:"Backup testado", desc:"Copia de seguranca que ja foi reposta pelo menos uma vez. Sem esse teste, e so uma esperanca." },
+    { track:"ciclo", cmd:"Segredos (secrets)", desc:"Palavras-passe e chaves guardadas num cofre, fora do codigo, entregues a app quando arranca." },
+    { track:"ciclo", cmd:"Dominio e certificado", desc:"O endereco que as pessoas escrevem e o que poe o https com o cadeado." },
+    { track:"ciclo", cmd:"Issue", desc:"Registo de um pedido ou de um problema no proprio projeto, em vez de ficar num email." },
+    { track:"ciclo", cmd:"Custo fixo", desc:"Uma app no ar paga servidor, base de dados e dominio todos os meses, mesmo sem ninguem a usar." }
   ];
 
   // ================= estado =================
@@ -1162,7 +1485,7 @@
   function renderMissionList(){
     var wrap = document.createDocumentFragment();
 
-    ["git","gitlab","docker"].forEach(function(trackId){
+    ["git","gitlab","docker","ciclo"].forEach(function(trackId){
       var track = TRACKS[trackId];
       var list = missionsOfTrack(trackId);
       var doneCount = list.filter(function(m){ return progress[m.id] && progress[m.id].done; }).length;
@@ -1323,6 +1646,11 @@
       zones.appendChild(zone("Local", s.commits.map(function(c,i){ return (i+1) + ". " + c; }), "commit"));
       zones.appendChild(zone(s.remote === "gitlab" ? "GitLab" : "GitHub",
         s.remote ? [s.remoteCommits + " commits"] : [], "commit"));
+    } else if (s.kind === "ciclo"){
+      zones.appendChild(zone("Computador", s.local, "new"));
+      zones.appendChild(zone("Repositorio", s.repo, "ver"));
+      zones.appendChild(zone("Testes", s.testes, "staged"));
+      zones.appendChild(zone("Producao", s.prod, s.incidente ? "stopped" : "run"));
     } else {
       zones.appendChild(zone("Imagens", s.images, "img"));
       zones.appendChild(zone("Contentores", s.containers.map(function(c){
@@ -1337,6 +1665,16 @@
       if (s.conflict) tags.push({ t:"conflito por resolver", cls:"fail" });
       if (s.pr) tags.push({ t:s.pr === "aberto" ? "PR aberto" : s.pr, cls: s.pr === "fechado" ? "ok" : "" });
       if (s.pipeline) tags.push({ t:"pipeline " + s.pipeline, cls: s.pipeline === "passou" ? "ok" : "fail" });
+    } else if (s.kind === "ciclo"){
+      if (s.incidente) tags.push({ t:"producao em baixo", cls:"fail" });
+      if (s.issue) tags.push({ t:"issue: " + s.issue });
+      if (s.pr) tags.push({ t:s.pr });
+      if (s.pipeline) tags.push({ t:"testes " + s.pipeline, cls: s.pipeline === "verdes" ? "ok" : "fail" });
+      if (s.dominio) tags.push({ t:"dominio ligado", cls:"ok" });
+      if (s.https) tags.push({ t:"https", cls:"ok" });
+      if (s.backups) tags.push({ t: s.backupTestado ? "copias testadas" : "copias por testar", cls: s.backupTestado ? "ok" : "" });
+      if (s.alertas) tags.push({ t:"alertas ligados", cls:"ok" });
+      if (s.segredos) tags.push({ t:"segredos no cofre", cls:"ok" });
     } else {
       if (s.dockerfile) tags.push({ t:"Dockerfile" });
       if (s.compose) tags.push({ t:"docker-compose.yml" });
@@ -1440,10 +1778,21 @@
     }
 
     run.errors++;
+    // A explicacao de um engano vale em qualquer passo, nao so naquele onde
+    // esta escrita: quem erra a ordem merece a mesma resposta.
     var wrongMsg = null;
     if (step.wrong){
       for (var key in step.wrong){
         if (normalize(key) === norm){ wrongMsg = step.wrong[key]; break; }
+      }
+    }
+    if (!wrongMsg){
+      for (var si = 0; si < m.steps.length && !wrongMsg; si++){
+        var outro = m.steps[si].wrong;
+        if (!outro) continue;
+        for (var k2 in outro){
+          if (normalize(k2) === norm){ wrongMsg = outro[k2]; break; }
+        }
       }
     }
     run.log.push({ cmd: typed, out: wrongMsg ? "" : "comando nao produz o efeito pretendido aqui", type:"err" });
@@ -1457,10 +1806,10 @@
 
     var filter = document.createElement("div");
     filter.className = "gloss-filter";
-    ["git","gitlab","docker"].forEach(function(t){
+    ["git","gitlab","docker","ciclo"].forEach(function(t){
       var d = document.createElement("div");
       d.className = (ui.glossTrack === t ? "active " + t : "");
-      d.textContent = t === "git" ? "Git" : t === "gitlab" ? "GitLab" : "Docker";
+      d.textContent = t === "git" ? "Git" : t === "gitlab" ? "GitLab" : t === "docker" ? "Docker" : "Ciclo";
       d.onclick = function(){ ui.glossTrack = t; render(); };
       filter.appendChild(d);
     });
