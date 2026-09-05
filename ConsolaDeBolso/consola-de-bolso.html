@@ -20,6 +20,16 @@
     --docker-tint:#DEEAF7;
     --ciclo:#6B4EA8;
     --ciclo-tint:#E9E3F7;
+    --terminal:#3A4654;
+    --terminal-tint:#E3E7EC;
+    --k8s:#0E7490;
+    --k8s-tint:#DCEEF3;
+    --bd:#1F7A4D;
+    --bd-tint:#DDEEE4;
+    --redes:#9B3D7A;
+    --redes-tint:#F5E1EE;
+    --seg:#A32F4E;
+    --seg-tint:#F7E0E6;
     --good:#25795A;
     --good-tint:#DCEDE5;
     --bad:#A83A2C;
@@ -47,6 +57,16 @@
       --docker-tint:#152738;
       --ciclo:#A78CE0;
       --ciclo-tint:#241C38;
+      --terminal:#A7B6C6;
+      --terminal-tint:#212832;
+      --k8s:#56B8CE;
+      --k8s-tint:#0F2A33;
+      --bd:#5EC08C;
+      --bd-tint:#12301F;
+      --redes:#DB8FC2;
+      --redes-tint:#331B2B;
+      --seg:#E58098;
+      --seg-tint:#35181F;
       --good:#5CBE95;
       --good-tint:#12301F;
       --bad:#E28878;
@@ -74,6 +94,16 @@
     --docker-tint:#152738;
     --ciclo:#A78CE0;
     --ciclo-tint:#241C38;
+    --terminal:#A7B6C6;
+    --terminal-tint:#212832;
+    --k8s:#56B8CE;
+    --k8s-tint:#0F2A33;
+    --bd:#5EC08C;
+    --bd-tint:#12301F;
+    --redes:#DB8FC2;
+    --redes-tint:#331B2B;
+    --seg:#E58098;
+    --seg-tint:#35181F;
     --good:#5CBE95;
     --good-tint:#12301F;
     --bad:#E28878;
@@ -129,8 +159,13 @@
   .content{ flex:1; padding:14px; }
 
   /* Trilhos e missoes */
-  .track-head{ display:flex; align-items:center; gap:9px; margin:18px 2px 9px; }
+  .track-head{
+    display:flex; align-items:center; gap:9px; margin:14px 2px 9px;
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+  }
   .track-head:first-child{ margin-top:2px; }
+  .track-chevron{ flex:none; color:var(--ink-faint); font-size:11px; transition:transform .15s ease; }
+  .track-head.open .track-chevron{ transform:rotate(90deg); }
   .track-badge{
     font-family:"JetBrains Mono"; font-size:11px; font-weight:700;
     padding:3px 8px; border-radius:6px;
@@ -139,6 +174,11 @@
   .track-badge.gitlab{ background:var(--gitlab-tint); color:var(--gitlab); }
   .track-badge.docker{ background:var(--docker-tint); color:var(--docker); }
   .track-badge.ciclo{ background:var(--ciclo-tint); color:var(--ciclo); }
+  .track-badge.terminal{ background:var(--terminal-tint); color:var(--terminal); }
+  .track-badge.k8s{ background:var(--k8s-tint); color:var(--k8s); }
+  .track-badge.bd{ background:var(--bd-tint); color:var(--bd); }
+  .track-badge.redes{ background:var(--redes-tint); color:var(--redes); }
+  .track-badge.seg{ background:var(--seg-tint); color:var(--seg); }
   .track-title{ flex:1; font-size:13px; font-weight:700; color:var(--ink-soft); }
   .track-progress{ font-family:"JetBrains Mono"; font-size:12px; color:var(--ink-faint); }
 
@@ -158,6 +198,11 @@
   .mission-num.gitlab{ background:var(--gitlab-tint); color:var(--gitlab); }
   .mission-num.docker{ background:var(--docker-tint); color:var(--docker); }
   .mission-num.ciclo{ background:var(--ciclo-tint); color:var(--ciclo); }
+  .mission-num.terminal{ background:var(--terminal-tint); color:var(--terminal); }
+  .mission-num.k8s{ background:var(--k8s-tint); color:var(--k8s); }
+  .mission-num.bd{ background:var(--bd-tint); color:var(--bd); }
+  .mission-num.redes{ background:var(--redes-tint); color:var(--redes); }
+  .mission-num.seg{ background:var(--seg-tint); color:var(--seg); }
   .mission-main{ flex:1; min-width:0; }
   .mission-title{ font-size:14.5px; font-weight:700; }
   .mission-sub{ font-size:12px; color:var(--ink-soft); margin-top:2px; }
@@ -326,15 +371,25 @@
   }
   .gloss-cmd{ font-family:"JetBrains Mono"; font-size:13px; font-weight:700; color:var(--ink); }
   .gloss-desc{ font-size:12.5px; color:var(--ink-soft); margin-top:4px; line-height:1.5; }
-  .gloss-filter{ display:flex; gap:5px; margin-bottom:12px; }
+  .gloss-filter{
+    display:flex; gap:6px; margin-bottom:12px; overflow-x:auto;
+    padding-bottom:2px; scrollbar-width:none;
+  }
+  .gloss-filter::-webkit-scrollbar{ display:none; }
   .gloss-filter div{
-    flex:1; text-align:center; padding:8px 4px; border-radius:9px; font-size:11.5px; font-weight:700;
-    border:1px solid var(--line); background:var(--surface); color:var(--ink-soft); cursor:pointer;
+    flex:none; text-align:center; padding:8px 12px; border-radius:9px; font-size:12px; font-weight:700;
+    border:1px solid var(--line); background:var(--surface); color:var(--ink-soft);
+    cursor:pointer; white-space:nowrap;
   }
   .gloss-filter div.active.git{ background:var(--git-tint); border-color:var(--git); color:var(--git); }
   .gloss-filter div.active.gitlab{ background:var(--gitlab-tint); border-color:var(--gitlab); color:var(--gitlab); }
   .gloss-filter div.active.docker{ background:var(--docker-tint); border-color:var(--docker); color:var(--docker); }
   .gloss-filter div.active.ciclo{ background:var(--ciclo-tint); border-color:var(--ciclo); color:var(--ciclo); }
+  .gloss-filter div.active.terminal{ background:var(--terminal-tint); border-color:var(--terminal); color:var(--terminal); }
+  .gloss-filter div.active.k8s{ background:var(--k8s-tint); border-color:var(--k8s); color:var(--k8s); }
+  .gloss-filter div.active.bd{ background:var(--bd-tint); border-color:var(--bd); color:var(--bd); }
+  .gloss-filter div.active.redes{ background:var(--redes-tint); border-color:var(--redes); color:var(--redes); }
+  .gloss-filter div.active.seg{ background:var(--seg-tint); border-color:var(--seg); color:var(--seg); }
 
   .empty-state{
     border:1px dashed var(--line); border-radius:13px; padding:24px 18px;
@@ -367,11 +422,18 @@
   // Cada missao tem passos; cada passo aceita um ou mais comandos escritos
   // da forma correcta, e sabe explicar os enganos mais comuns.
 
+  var ORDEM_TRILHOS = ["terminal","git","gitlab","docker","k8s","bd","redes","seg","ciclo"];
+
   var TRACKS = {
     git:    { label:"Git e GitHub", cls:"git",    desc:"Do primeiro commit ao pull request" },
     gitlab: { label:"GitLab",       cls:"gitlab", desc:"Merge requests e pipelines" },
     docker: { label:"Docker",       cls:"docker", desc:"Imagens, contentores e compose" },
-    ciclo:  { label:"Ciclo de vida", cls:"ciclo",  desc:"Do teu computador ate estar no ar" }
+    terminal:{ label:"Terminal",     cls:"terminal", desc:"Andar por uma maquina sem rato" },
+    ciclo:  { label:"Ciclo de vida", cls:"ciclo",  desc:"Do teu computador ate estar no ar" },
+    k8s:    { label:"Kubernetes",   cls:"k8s",    desc:"Quando um contentor deixa de chegar" },
+    bd:     { label:"Bases de dados", cls:"bd",   desc:"Consultar e alterar sem estragar" },
+    redes:  { label:"Redes e DNS",  cls:"redes",  desc:"Porque e que o site nao abre" },
+    seg:    { label:"Seguranca",    cls:"seg",    desc:"O que se perde quando corre mal" }
   };
 
   function gitState(extra){
@@ -387,6 +449,31 @@
     for (var k in extra) base[k] = extra[k];
     return base;
   }
+  function terminalState(extra){
+    var base = { kind:"terminal", cwd:"/home/afonso", ficheiros:["projeto/","notas.txt"], remoto:false };
+    for (var k in extra) base[k] = extra[k];
+    return base;
+  }
+  function bdState(extra){
+    var base = { kind:"bd", tabelas:[], resultado:null, transacao:false, copia:false, copiaTestada:false };
+    for (var k in extra) base[k] = extra[k];
+    return base;
+  }
+  function redesState(extra){
+    var base = { kind:"redes", dns:null, servidor:"em pe", portas:[], certificado:null, instancias:1, balanceador:false };
+    for (var k in extra) base[k] = extra[k];
+    return base;
+  }
+  function segState(extra){
+    var base = { kind:"seg", contas:[], mfa:false, privilegios:"amplos", dependencias:"por rever", copias:"nenhumas", incidente:false };
+    for (var k in extra) base[k] = extra[k];
+    return base;
+  }
+  function k8sState(extra){
+    var base = { kind:"k8s", deployments:[], pods:[], replicas:0 };
+    for (var k in extra) base[k] = extra[k];
+    return base;
+  }
   function cicloState(extra){
     var base = {
       kind:"ciclo", local:[], repo:[], testes:[], prod:[],
@@ -398,6 +485,163 @@
   }
 
   var MISSIONS = [
+    // ---------------- TERMINAL ----------------
+    {
+      id:"t1", track:"terminal", title:"Onde estou e o que ha aqui",
+      brief:"O terminal assusta porque nao mostra nada. Nao ha janelas nem icones: ou perguntas onde estas, ou nao sabes. Tres comandos resolvem noventa por cento das vezes.",
+      goal:"Saber onde estas, ver o que la esta e mudar de pasta.",
+      initial: terminalState({}),
+      tokens:[
+        { name:"comandos", items:[{t:"pwd",cls:"cmd"},{t:"ls",cls:"cmd"},{t:"cd",cls:"cmd"},{t:"clear",cls:"cmd"}] },
+        { name:"argumentos", items:[{t:"-la",cls:"flag"},{t:"projeto"},{t:".."},{t:"/var/log"}] }
+      ],
+      steps:[
+        {
+          ask:"Descobre em que pasta estas.",
+          accept:["pwd"],
+          hint:"Tres letras, de print working directory.",
+          explain:"pwd escreve o caminho completo da pasta onde estas. E a pergunta onde estou, e vale sempre a pena antes de fazer seja o que for.",
+          apply:function(s){ return "/home/afonso"; }
+        },
+        {
+          ask:"Ve o que esta nesta pasta.",
+          accept:["ls"],
+          hint:"Duas letras, de list.",
+          explain:"ls lista o que la esta. Nomes acabados em barra sao pastas.",
+          apply:function(s){ return "projeto/  notas.txt"; }
+        },
+        {
+          ask:"Ve tudo, incluindo os ficheiros escondidos e quem manda em cada um.",
+          accept:["ls -la"],
+          hint:"Falta uma flag. O l e de lista comprida, o a e de all.",
+          explain:"Com -la aparecem os ficheiros escondidos (comecados por ponto, como o .git) e as permissoes de cada um. E assim que se descobre que existe um .env com as palavras-passe la dentro.",
+          apply:function(s){ return "drwxr-xr-x  afonso  projeto/\n-rw-r--r--  afonso  notas.txt\n-rw-------  afonso  .env"; }
+        },
+        {
+          ask:"Entra na pasta do projeto.",
+          accept:["cd projeto"],
+          hint:"Duas letras, de change directory.",
+          explain:"cd muda de pasta. Para voltar atras usa-se cd .. , e o ponto ponto significa a pasta acima.",
+          apply:function(s){ s.cwd = "/home/afonso/projeto"; s.ficheiros = ["src/","README.md",".git/"]; return ""; }
+        },
+        {
+          ask:"Volta atras uma pasta.",
+          accept:["cd .."],
+          hint:"Dois pontos significam a pasta de cima.",
+          explain:"Estes quatro comandos chegam para andar em qualquer maquina Linux, e sao os mesmos ha cinquenta anos.",
+          apply:function(s){ s.cwd = "/home/afonso"; s.ficheiros = ["projeto/","notas.txt"]; return ""; }
+        }
+      ],
+      lesson:"pwd diz onde estas, ls mostra o que ha, ls -la mostra tudo incluindo escondidos e permissoes, cd entra e cd .. volta atras."
+    },
+    {
+      id:"t2", track:"terminal", title:"Ler um ficheiro de registos",
+      brief:"Um ficheiro de logs pode ter milhoes de linhas. Abrir de uma vez enche o ecra e nao ajuda nada. Ha maneiras certas de o ler.",
+      goal:"Ver o fim do ficheiro, segui-lo em direto e procurar so os erros.",
+      initial: terminalState({ cwd:"/var/log", ficheiros:["app.log (2,4 GB)"] }),
+      tokens:[
+        { name:"comandos", items:[{t:"cat",cls:"cmd"},{t:"tail",cls:"cmd"},{t:"grep",cls:"cmd"},{t:"less",cls:"cmd"}] },
+        { name:"argumentos", items:[{t:"app.log"},{t:"-n 50",cls:"flag"},{t:"-f",cls:"flag"},{t:"ERRO"},{t:"-i",cls:"flag"}] }
+      ],
+      steps:[
+        {
+          ask:"Ve as ultimas 50 linhas do ficheiro.",
+          accept:["tail -n 50 app.log"],
+          hint:"tail e cauda, o fim do ficheiro. O -n diz quantas linhas.",
+          explain:"O que interessa num log esta quase sempre no fim, que e o que aconteceu ha menos tempo.",
+          wrong:{ "cat app.log":"O cat despeja o ficheiro inteiro no ecra. Com 2,4 GB, o terminal fica preso a scrollar durante minutos e nao ves nada de util." },
+          apply:function(s){ return "12:41:02 pedido /clientes 200 OK\n12:41:03 pedido /login 200 OK\n12:41:09 ERRO ligacao a base de dados recusada"; }
+        },
+        {
+          ask:"Deixa o ficheiro aberto a mostrar o que for acontecendo, em direto.",
+          accept:["tail -f app.log"],
+          hint:"O f e de follow, seguir.",
+          explain:"tail -f fica agarrado ao ficheiro e mostra cada linha nova assim que aparece. E o que se deixa aberto num canto do ecra enquanto se testa uma correcao. Sai-se com Ctrl+C.",
+          apply:function(s){ return "12:41:15 pedido /clientes 200 OK\n12:41:18 ERRO ligacao a base de dados recusada\n(a seguir o ficheiro . Ctrl+C para sair)"; }
+        },
+        {
+          ask:"Procura so as linhas que falam de erros.",
+          accept:["grep ERRO app.log"],
+          hint:"grep procura texto dentro de ficheiros.",
+          explain:"grep filtra as linhas que contem o texto. Num ficheiro gigante, e a diferenca entre procurar a olho e ter a resposta em dois segundos. Com -i ignora maiusculas e minusculas.",
+          apply:function(s){ return "12:41:09 ERRO ligacao a base de dados recusada\n12:41:18 ERRO ligacao a base de dados recusada\n12:42:02 ERRO ligacao a base de dados recusada"; },
+          outputType:"err"
+        }
+      ],
+      lesson:"tail -n 50 ve o fim, tail -f segue em direto, grep filtra o que interessa. Nunca cat num ficheiro grande."
+    },
+    {
+      id:"t3", track:"terminal", title:"Copiar, mover e apagar",
+      brief:"No terminal nao ha caixote do lixo. O que se apaga desaparece, sem perguntar e sem voltar. Convem saber isto antes de escrever o comando.",
+      goal:"Fazer uma copia de seguranca de um ficheiro, arrumar e apagar com cuidado.",
+      initial: terminalState({ cwd:"/var/www/app", ficheiros:["config.yml","antigo.log","temp/"] }),
+      tokens:[
+        { name:"comandos", items:[{t:"cp",cls:"cmd"},{t:"mv",cls:"cmd"},{t:"rm",cls:"cmd"},{t:"ls",cls:"cmd"}] },
+        { name:"argumentos", items:[{t:"config.yml"},{t:"config.yml.bak"},{t:"antigo.log"},{t:"temp/"},{t:"-r",cls:"flag"},{t:"-rf /",cls:"flag"},{t:"-i",cls:"flag"}] }
+      ],
+      steps:[
+        {
+          ask:"Antes de mexer no ficheiro de configuracao, faz uma copia dele.",
+          accept:["cp config.yml config.yml.bak"],
+          hint:"cp de copy, primeiro a origem, depois o destino.",
+          explain:"Trinta segundos de copia poupam uma noite. E o habito mais barato que existe antes de editar configuracoes num servidor.",
+          apply:function(s){ s.ficheiros = ["config.yml","config.yml.bak","antigo.log","temp/"]; return ""; }
+        },
+        {
+          ask:"Apaga o registo antigo, mas com confirmacao.",
+          accept:["rm -i antigo.log"],
+          hint:"O -i pergunta antes de apagar cada coisa.",
+          explain:"rm apaga sem rede de seguranca. O -i obriga a confirmar, e e um bom habito quando se esta num servidor a serio.",
+          wrong:{ "rm -rf /":"Esse comando apaga o sistema inteiro a partir da raiz, sem perguntar nada. E o comando mais destrutivo que existe e ja apagou empresas por inteiro. Nunca, em circunstancia nenhuma.",
+                  "rm antigo.log":"Funciona, mas apaga sem perguntar. Neste caso ate era o que querias, so que num servidor vale a pena o -i." },
+          apply:function(s){ s.ficheiros = ["config.yml","config.yml.bak","temp/"]; return "rm: apagar ficheiro comum 'antigo.log'? s"; }
+        },
+        {
+          ask:"Apaga a pasta temp e tudo o que esta la dentro.",
+          accept:["rm -r temp/"],
+          hint:"Para pastas e preciso dizer ao rm que va tambem pelo que esta dentro.",
+          explain:"O -r e recursivo: entra na pasta e apaga tudo. E util e e perigoso, e por isso e que rm -rf com o caminho errado faz tanto estrago.",
+          apply:function(s){ s.ficheiros = ["config.yml","config.yml.bak"]; return ""; }
+        }
+      ],
+      lesson:"cp copia, mv move ou muda o nome, rm apaga sem caixote do lixo. Copia antes de editar, e desconfia sempre de um rm -rf."
+    },
+    {
+      id:"t4", track:"terminal", title:"Entrar noutra maquina",
+      brief:"O servidor onde a app corre nao esta a tua frente: esta num centro de dados algures. Chega-se la por ssh, que e uma linha de comandos remota e cifrada.",
+      goal:"Entrar no servidor, ver os registos e sair.",
+      initial: terminalState({ cwd:"/home/afonso", ficheiros:["projeto/","notas.txt"] }),
+      tokens:[
+        { name:"comandos", items:[{t:"ssh",cls:"cmd"},{t:"scp",cls:"cmd"},{t:"tail",cls:"cmd"},{t:"exit",cls:"cmd"}] },
+        { name:"argumentos", items:[{t:"afonso@51.83.42.17"},{t:"-f /var/log/app.log",cls:"flag"},{t:"config.yml"},{t:"afonso@51.83.42.17:/tmp/"}] }
+      ],
+      steps:[
+        {
+          ask:"Liga-te ao servidor.",
+          accept:["ssh afonso@51.83.42.17"],
+          hint:"ssh, depois utilizador arroba endereco.",
+          explain:"A partir daqui, o que escreves corre no servidor e nao no teu computador. E a mesma coisa que estar sentado a frente dele. A ligacao vai cifrada, e normalmente entra-se com uma chave em vez de palavra-passe.",
+          apply:function(s){ s.remoto = true; s.cwd = "servidor:/home/afonso"; s.ficheiros = ["app/","logs/"]; return "Welcome to Ubuntu 22.04.3 LTS\nLast login: Tue Sep 2 18:11:04"; },
+          outputType:"ok"
+        },
+        {
+          ask:"Ja la dentro, segue os registos da app em direto.",
+          accept:["tail -f /var/log/app.log"],
+          hint:"O mesmo comando de antes, agora do lado de la.",
+          explain:"Repara que os comandos sao os mesmos: quando entras por ssh, e so outra maquina, com os mesmos comandos de sempre.",
+          apply:function(s){ return "12:52:31 pedido /clientes 200 OK\n12:52:33 pedido /relatorio 200 OK"; }
+        },
+        {
+          ask:"Sai do servidor e volta ao teu computador.",
+          accept:["exit"],
+          hint:"Uma palavra.",
+          explain:"exit fecha a sessao. Convem ter sempre presente em que maquina se esta: apagar ficheiros julgando estar no portatil e uma classica.",
+          apply:function(s){ s.remoto = false; s.cwd = "/home/afonso"; s.ficheiros = ["projeto/","notas.txt"]; return "logout . ligacao fechada"; }
+        }
+      ],
+      lesson:"ssh utilizador@endereco entra na maquina remota, os comandos sao os mesmos la dentro, e exit sai. Confirma sempre em que maquina estas."
+    },
+
     // ---------------- GIT ----------------
     {
       id:"git1", track:"git", title:"O primeiro commit",
@@ -967,6 +1211,513 @@
       lesson:"docker compose up -d levanta tudo, docker compose down desliga. Sem volumes definidos, os dados desaparecem com os contentores."
     },
 
+    // ---------------- KUBERNETES ----------------
+    {
+      id:"k1", track:"k8s", title:"Quando um contentor deixa de chegar",
+      brief:"Com Docker corres contentores a mao, um a um. Se um morre de madrugada, fica morto. Se precisas de dez copias, arrancas dez a mao. O Kubernetes existe para tratar disso sozinho: dizes-lhe o que queres, e ele trata de manter.",
+      goal:"Perceber a diferenca entre pedir e manter, e ver os pods a correr.",
+      initial: k8sState({}),
+      tokens:[
+        { name:"comando", items:[{t:"kubectl",cls:"cmd docker"}] },
+        { name:"subcomando", items:[{t:"apply"},{t:"get"},{t:"describe"},{t:"delete"}] },
+        { name:"argumentos", items:[{t:"-f deployment.yaml",cls:"flag"},{t:"pods"},{t:"deployments"},{t:"pod app-7d4f"}] }
+      ],
+      steps:[
+        {
+          ask:"Entrega ao cluster o ficheiro que descreve o que queres a correr.",
+          accept:["kubectl apply -f deployment.yaml"],
+          hint:"apply de aplicar, com -f a apontar o ficheiro.",
+          explain:"O ficheiro diz o estado desejado: quero tres copias desta imagem, sempre. O Kubernetes passa a ser responsavel por manter isso, e nao apenas por arrancar uma vez.",
+          apply:function(s){
+            s.deployments = ["app (3 replicas)"]; s.replicas = 3;
+            s.pods = [{nome:"app-7d4f", estado:"Running"},{nome:"app-9k2m", estado:"Running"},{nome:"app-2x8p", estado:"Running"}];
+            return "deployment.apps/app created";
+          },
+          outputType:"ok"
+        },
+        {
+          ask:"Ve as copias que estao a correr.",
+          accept:["kubectl get pods"],
+          hint:"get de obter, pods sao as copias a correr.",
+          explain:"Um pod e a unidade que corre, normalmente um contentor. Repara que ha tres, sem tu teres arrancado tres: foi o cluster a cumprir o que pediste.",
+          apply:function(s){ return "NAME        READY   STATUS    RESTARTS\napp-7d4f    1/1     Running   0\napp-9k2m    1/1     Running   0\napp-2x8p    1/1     Running   0"; }
+        },
+        {
+          ask:"Apaga um dos pods, para ver o que acontece.",
+          accept:["kubectl delete pod app-7d4f"],
+          hint:"delete, e o nome do pod.",
+          explain:"Repara: mataste um e apareceu outro sozinho, com nome novo. Tu pediste tres copias, e o cluster mantem tres. E esta a diferenca para o Docker a mao, onde o que morre fica morto.",
+          apply:function(s){
+            s.pods = [{nome:"app-9k2m", estado:"Running"},{nome:"app-2x8p", estado:"Running"},{nome:"app-b3n1", estado:"Running"}];
+            return "pod app-7d4f deleted\n(o deployment criou app-b3n1 no lugar dele)";
+          },
+          outputType:"ok"
+        }
+      ],
+      lesson:"No Docker dizes arranca isto. No Kubernetes dizes quero isto sempre a correr, e ele trata de repor. E por isso que se usa quando a app nao pode ir abaixo."
+    },
+    {
+      id:"k2", track:"k8s", title:"Um pod que nao arranca",
+      brief:"Publicaste uma versao nova e um dos pods fica a reiniciar sem parar. O estado chama-se CrashLoopBackOff e assusta pelo nome, mas diagnostica-se sempre da mesma maneira.",
+      goal:"Perceber porque o pod nao arranca e repor a versao anterior.",
+      initial: k8sState({ deployments:["app (3 replicas)"], replicas:3, pods:[{nome:"app-9k2m",estado:"Running"},{nome:"app-2x8p",estado:"Running"},{nome:"app-b3n1",estado:"CrashLoopBackOff"}] }),
+      tokens:[
+        { name:"comando", items:[{t:"kubectl",cls:"cmd docker"}] },
+        { name:"subcomando", items:[{t:"get"},{t:"describe"},{t:"logs"},{t:"rollout"},{t:"delete"}] },
+        { name:"argumentos", items:[{t:"pods"},{t:"pod app-b3n1"},{t:"app-b3n1"},{t:"undo deployment/app",cls:"flag"},{t:"status deployment/app",cls:"flag"}] }
+      ],
+      steps:[
+        {
+          ask:"Ve o estado dos pods.",
+          accept:["kubectl get pods"],
+          hint:"O de sempre.",
+          explain:"CrashLoopBackOff quer dizer que o pod arranca, morre, e o cluster volta a tentar, cada vez com mais intervalo. O numero de restarts a subir e o sinal.",
+          apply:function(s){ return "NAME        READY   STATUS             RESTARTS\napp-9k2m    1/1     Running            0\napp-2x8p    1/1     Running            0\napp-b3n1    0/1     CrashLoopBackOff   7"; },
+          outputType:"err"
+        },
+        {
+          ask:"Ve o que a app escreveu antes de morrer.",
+          accept:["kubectl logs app-b3n1"],
+          hint:"O mesmo raciocinio do docker logs.",
+          explain:"Os logs mostram a razao real. Aqui faltava uma variavel de configuracao, e a app desiste no arranque.",
+          apply:function(s){ return "Error: variavel DATABASE_URL nao definida\n  at arranque (server.js:12)"; },
+          outputType:"err"
+        },
+        {
+          ask:"Ha utilizadores a apanhar erros. Repoe a versao anterior.",
+          accept:["kubectl rollout undo deployment/app"],
+          hint:"Desfazer a ultima entrega, como o rollback do trilho do ciclo de vida.",
+          explain:"O undo faz voltar a versao anterior do deployment, pod a pod. Mesma logica de sempre: repor o servico primeiro, investigar depois, sem gente a espera.",
+          apply:function(s){
+            s.pods = [{nome:"app-9k2m",estado:"Running"},{nome:"app-2x8p",estado:"Running"},{nome:"app-c5t9",estado:"Running"}];
+            return "deployment.apps/app rolled back";
+          },
+          outputType:"ok"
+        }
+      ],
+      lesson:"CrashLoopBackOff quer dizer que arranca e morre em ciclo. kubectl logs diz porque, kubectl rollout undo repoe a versao anterior."
+    },
+
+    // ---------------- BASES DE DADOS ----------------
+    {
+      id:"b1", track:"bd", title:"Perguntar a base de dados",
+      brief:"Quase tudo o que uma app guarda vive numa base de dados, em tabelas com linhas e colunas, como uma folha de Excel gigante. Perguntam-se coisas em SQL, e a estrutura da pergunta e sempre a mesma.",
+      goal:"Consultar dados sem trazer o que nao interessa.",
+      initial: bdState({ tabelas:["clientes (1.284)","pedidos (9.712)"] }),
+      tokens:[
+        { name:"o que queres", items:[{t:"SELECT *",cls:"cmd"},{t:"SELECT nome, email",cls:"cmd"},{t:"SELECT COUNT(*)",cls:"cmd"}] },
+        { name:"de onde", items:[{t:"FROM clientes"},{t:"FROM pedidos"}] },
+        { name:"filtros", items:[{t:"WHERE cidade = 'Lisboa'",cls:"flag"},{t:"LIMIT 10",cls:"flag"},{t:"ORDER BY nome",cls:"flag"},{t:";"}] }
+      ],
+      steps:[
+        {
+          ask:"Espreita dez linhas da tabela de clientes, para veres o que la esta.",
+          accept:["select * from clientes limit 10 ;"],
+          hint:"SELECT o que, FROM onde, e um limite para nao trazer tudo. Nao te esquecas do ponto e virgula.",
+          explain:"O asterisco significa todas as colunas. O LIMIT evita trazer mil linhas para o ecra, e numa base de dados de producao evita tambem sobrecarregar o servidor.",
+          apply:function(s){ s.resultado = "10 linhas"; return "id | nome           | email              | cidade\n 1 | Ana Ribeiro    | ana@exemplo.pt     | Lisboa\n 2 | Carlos Nunes   | carlos@exemplo.pt  | Porto\n(10 linhas)"; }
+        },
+        {
+          ask:"Traz so o nome e o email dos clientes de Lisboa.",
+          accept:["select nome, email from clientes where cidade = 'lisboa' ;"],
+          hint:"Escolhe as colunas em vez do asterisco, e filtra com WHERE.",
+          explain:"Pedir so as colunas que interessam e filtrar no WHERE e o que separa uma consulta rapida de uma que arrasta a base de dados toda.",
+          apply:function(s){ s.resultado = "412 linhas"; return "nome         | email\nAna Ribeiro  | ana@exemplo.pt\nJoao Matos   | joao@exemplo.pt\n(412 linhas)"; }
+        },
+        {
+          ask:"Quantos pedidos existem ao todo?",
+          accept:["select count(*) from pedidos ;"],
+          hint:"Ha uma funcao para contar.",
+          explain:"COUNT conta linhas sem as trazer. Para uma pergunta de negocio (quantos clientes temos, quantos pedidos este mes) e sempre isto, e nao trazer tudo para contar a mao.",
+          apply:function(s){ s.resultado = "9.712"; return "count\n9712"; }
+        }
+      ],
+      lesson:"SELECT colunas FROM tabela WHERE condicao. Pedir so o que interessa e usar LIMIT sao habitos que evitam derrubar bases de dados."
+    },
+    {
+      id:"b2", track:"bd", title:"Alterar sem estragar",
+      brief:"Consultar nao faz mal a ninguem. Alterar e outra conversa: um UPDATE mal escrito altera a tabela inteira em menos de um segundo, e nao ha desfazer.",
+      goal:"Corrigir o email de um cliente, com rede de seguranca.",
+      initial: bdState({ tabelas:["clientes (1.284)"] }),
+      tokens:[
+        { name:"transacao", items:[{t:"BEGIN;",cls:"cmd"},{t:"COMMIT;",cls:"cmd"},{t:"ROLLBACK;",cls:"cmd"}] },
+        { name:"comandos", items:[{t:"SELECT *",cls:"cmd"},{t:"UPDATE clientes",cls:"cmd"},{t:"DELETE",cls:"cmd"}] },
+        { name:"resto", items:[{t:"SET email = 'ana.ribeiro@exemplo.pt'",cls:"flag"},{t:"WHERE id = 1",cls:"flag"},{t:"FROM clientes"},{t:";"}] }
+      ],
+      steps:[
+        {
+          ask:"Antes de alterar, abre uma transacao para poderes voltar atras.",
+          accept:["begin;"],
+          hint:"Uma palavra. E o que permite desfazer se correr mal.",
+          explain:"Dentro de uma transacao, nada fica gravado a serio ate dizeres COMMIT. Se te enganares, ROLLBACK desfaz tudo. Num servidor de producao, isto e a diferenca entre um susto e um desastre.",
+          apply:function(s){ s.transacao = true; return "BEGIN"; }
+        },
+        {
+          ask:"Corrige o email do cliente numero 1.",
+          accept:["update clientes set email = 'ana.ribeiro@exemplo.pt' where id = 1 ;"],
+          hint:"UPDATE tabela SET coluna igual valor WHERE qual linha. A ultima parte e a mais importante.",
+          explain:"O WHERE diz quais as linhas a alterar. Sem ele, o UPDATE aplica-se a todas: os 1.284 clientes ficariam com o mesmo email.",
+          wrong:{ "update clientes set email = 'ana.ribeiro@exemplo.pt' ;":"Sem WHERE, isto altera o email dos 1.284 clientes de uma vez. E o erro classico, e acontece a gente com muita experiencia." },
+          apply:function(s){ return "UPDATE 1"; }
+        },
+        {
+          ask:"Confirma que so mexeu numa linha antes de gravar.",
+          accept:["select * from clientes where id = 1 ;"],
+          hint:"Consulta a linha para ver como ficou.",
+          explain:"Dentro da transacao ja ves o resultado, mas ainda ninguem de fora o ve. E o momento de confirmar que fizeste o que querias.",
+          apply:function(s){ s.resultado = "1 linha"; return "id | nome        | email\n 1 | Ana Ribeiro | ana.ribeiro@exemplo.pt"; }
+        },
+        {
+          ask:"Esta certo. Grava.",
+          accept:["commit;"],
+          hint:"Confirmar em ingles.",
+          explain:"Com o COMMIT a alteracao fica gravada e visivel para todos. Se tivesses visto 1.284 linhas alteradas em vez de uma, era o ROLLBACK que salvava o dia.",
+          apply:function(s){ s.transacao = false; return "COMMIT"; },
+          outputType:"ok"
+        }
+      ],
+      lesson:"UPDATE e DELETE sem WHERE aplicam-se a tabela inteira. BEGIN antes, confirmar no meio, COMMIT no fim, e ROLLBACK se algo cheirar mal."
+    },
+    {
+      id:"b3", track:"bd", title:"A copia que salva o negocio",
+      brief:"Os dados sao a unica parte da app que nao se consegue voltar a fazer. O codigo reescreve-se, o servidor recria-se, os dados dos clientes nao.",
+      goal:"Fazer uma copia, e confirmar que ela serve mesmo para alguma coisa.",
+      initial: bdState({ tabelas:["clientes (1.284)","pedidos (9.712)"] }),
+      tokens:[
+        { name:"copia", items:[{t:"pg_dump",cls:"cmd"},{t:"pg_restore",cls:"cmd"}] },
+        { name:"argumentos", items:[{t:"producao > copia.sql",cls:"flag"},{t:"copia.sql -d ambiente_teste",cls:"flag"},{t:"copia.sql -d producao",cls:"flag"}] },
+        { name:"decisoes", items:[{t:"agendar a copia todos os dias"},{t:"guardar a copia no mesmo servidor"},{t:"guardar a copia noutro sitio"},{t:"contar quantos clientes tem a copia reposta"}] }
+      ],
+      steps:[
+        {
+          ask:"Tira uma copia da base de dados de producao.",
+          accept:["pg_dump producao > copia.sql"],
+          hint:"dump e despejar o conteudo para um ficheiro.",
+          explain:"Isto gera um ficheiro com tudo o que e preciso para reconstruir a base de dados. Cada motor tem a sua ferramenta, mas a ideia e a mesma.",
+          apply:function(s){ s.copia = true; return "copia.sql criado . 84 MB"; }
+        },
+        {
+          ask:"Onde e que guardas a copia?",
+          accept:["guardar a copia noutro sitio"],
+          hint:"Pensa no dia em que o servidor arde ou e cifrado.",
+          explain:"Uma copia no mesmo servidor desaparece com ele, seja por avaria, seja por ransomware. Tem de estar noutro sitio, de preferencia num armazenamento que nem sequer permita apagar durante uns dias.",
+          wrong:{ "guardar a copia no mesmo servidor":"Se o servidor arder, for roubado ou for cifrado por ransomware, a copia vai junto. Ter copias no mesmo sitio dos dados e quase o mesmo que nao ter copias." },
+          apply:function(s){ return "copia enviada para armazenamento separado"; }
+        },
+        {
+          ask:"Repoe a copia num ambiente de teste.",
+          accept:["pg_restore copia.sql -d ambiente_teste"],
+          hint:"Restaurar, mas nao para producao.",
+          explain:"Repoe-se para um ambiente separado, nunca por cima de producao. E aqui que se descobre se a copia presta.",
+          wrong:{ "pg_restore copia.sql -d producao":"Repor por cima de producao apaga o que la esta agora. Testa-se sempre num ambiente separado." },
+          apply:function(s){ return "base de dados reposta em ambiente_teste"; }
+        },
+        {
+          ask:"Confirma que a copia esta completa.",
+          accept:["contar quantos clientes tem a copia reposta"],
+          hint:"Ter reposto nao chega. Falta ver se os dados la estao todos.",
+          explain:"1.284 clientes na copia contra 1.284 em producao: agora sim, isto e um backup. Ate esta contagem, era so um ficheiro grande com boas intencoes.",
+          apply:function(s){ s.copiaTestada = true; s.resultado = "1.284 = 1.284"; return "SELECT COUNT(*) FROM clientes . 1284\nigual a producao . copia valida"; },
+          outputType:"ok"
+        },
+        {
+          ask:"Trata de que isto passe a acontecer sem ninguem se lembrar.",
+          accept:["agendar a copia todos os dias"],
+          hint:"O que depende de memoria humana falha.",
+          explain:"Copia diaria automatica, guardada noutro sitio, e reposicao testada de vez em quando. E o minimo defensavel, e e o que um cliente vai perguntar num contrato.",
+          apply:function(s){ return "copia diaria agendada as 03:00 . retencao de 30 dias"; },
+          outputType:"ok"
+        }
+      ],
+      lesson:"Copia diaria, guardada fora do servidor, reposta num ambiente de teste e conferida. Uma copia que nunca foi reposta nao conta."
+    },
+
+    // ---------------- REDES E DNS ----------------
+    {
+      id:"r1", track:"redes", title:"O site nao abre",
+      brief:"Chega a mensagem que ninguem quer: o site nao abre. Pode ser a app, o servidor, o endereco ou o certificado. Ha uma ordem para descobrir, e comeca sempre de fora para dentro.",
+      goal:"Isolar onde esta a falha em vez de adivinhar.",
+      initial: redesState({ dns:"aminhaapp.pt aponta para 51.83.42.17", servidor:"em pe", portas:["443 aberta"], certificado:"valido" }),
+      tokens:[
+        { name:"diagnostico", items:[{t:"dig aminhaapp.pt",cls:"cmd"},{t:"ping 51.83.42.17",cls:"cmd"},{t:"curl -I https://aminhaapp.pt",cls:"cmd"}] },
+        { name:"decisoes", items:[{t:"reiniciar o servidor as cegas"},{t:"reiniciar a aplicacao"},{t:"ver os logs da aplicacao"}] }
+      ],
+      steps:[
+        {
+          ask:"Primeiro: o endereco ainda aponta para o sitio certo?",
+          accept:["dig aminhaapp.pt"],
+          hint:"E a pergunta ao DNS, o servico que traduz nomes em enderecos.",
+          explain:"O DNS e a lista telefonica da internet: traduz aminhaapp.pt para um endereco IP. Se apontar para o sitio errado, ou nao apontar para nada, nem chegas ao servidor. Acontece quando um dominio expira ou alguem mexeu na configuracao.",
+          wrong:{ "reiniciar o servidor as cegas":"Reiniciar sem saber o que se passa e o equivalente a bater na televisao. As vezes resolve, e nunca aprendes o que era, por isso volta a acontecer." },
+          apply:function(s){ return "aminhaapp.pt.  300  IN  A  51.83.42.17\n(o endereco esta correcto)"; }
+        },
+        {
+          ask:"O endereco esta certo. A maquina responde?",
+          accept:["ping 51.83.42.17"],
+          hint:"O comando que ve se a maquina esta viva.",
+          explain:"O ping diz se a maquina esta ligada e alcancavel pela rede. Responde, portanto o servidor esta de pe: o problema esta mais para dentro.",
+          apply:function(s){ return "64 bytes de 51.83.42.17: tempo=12.4 ms\n64 bytes de 51.83.42.17: tempo=11.9 ms"; }
+        },
+        {
+          ask:"A maquina esta viva. O que e que a app responde?",
+          accept:["curl -I https://aminhaapp.pt"],
+          hint:"curl faz um pedido como faria o browser. O -I traz so os cabecalhos.",
+          explain:"Um 502 quer dizer que o servidor web esta de pe mas nao consegue falar com a aplicacao por tras. Ou seja: rede e servidor bem, aplicacao em baixo. Ja sabes onde procurar.",
+          apply:function(s){ return "HTTP/2 502 Bad Gateway\nserver: nginx"; },
+          outputType:"err"
+        },
+        {
+          ask:"Sabes onde e o problema. Confirma a causa.",
+          accept:["ver os logs da aplicacao"],
+          hint:"Sempre o mesmo sitio.",
+          explain:"De fora para dentro: DNS, rede, servidor web, aplicacao, e por fim logs. Assim nao se reinicia nada as cegas, e sabe-se sempre o que se corrigiu.",
+          apply:function(s){ return "a aplicacao morreu por falta de memoria as 14:02"; },
+          outputType:"err"
+        }
+      ],
+      lesson:"A ordem e de fora para dentro: DNS aponta bem, maquina responde, servidor web responde, aplicacao responde. So depois se mexe."
+    },
+    {
+      id:"r2", track:"redes", title:"Portas e certificados",
+      brief:"Um servidor tem portas, e cada uma e uma entrada. Deixar entradas abertas ao mundo inteiro e como deixar janelas destrancadas. E ha o certificado, que expira sempre no pior dia.",
+      goal:"Fechar o que nao deve estar aberto e resolver um certificado expirado.",
+      initial: redesState({ dns:"aminhaapp.pt aponta para 51.83.42.17", servidor:"em pe", portas:["22 aberta ao mundo","443 aberta","5432 aberta ao mundo"], certificado:"expirado" }),
+      tokens:[
+        { name:"portas", items:[{t:"fechar a porta 5432 ao mundo"},{t:"limitar a porta 22 aos IP da empresa"},{t:"fechar a porta 443"}] },
+        { name:"certificado", items:[{t:"renovar o certificado"},{t:"activar a renovacao automatica"},{t:"dizer as pessoas para ignorarem o aviso"}] }
+      ],
+      steps:[
+        {
+          ask:"A porta 5432 e a da base de dados, e esta aberta a internet inteira.",
+          accept:["fechar a porta 5432 ao mundo"],
+          hint:"A base de dados nao tem nada que falar com o mundo.",
+          explain:"A base de dados so precisa de falar com a aplicacao, que esta na mesma rede. Aberta ao mundo, e alvo de tentativas automaticas de entrada a toda a hora. E das falhas mais encontradas em auditorias.",
+          apply:function(s){ s.portas = ["22 aberta ao mundo","443 aberta"]; return "porta 5432 acessivel apenas na rede interna"; },
+          outputType:"ok"
+        },
+        {
+          ask:"A porta 22 e a do ssh. Nao a podes fechar, mas podes restringi-la.",
+          accept:["limitar a porta 22 aos IP da empresa"],
+          hint:"Precisas dela para administrar, mas nao a partir do mundo inteiro.",
+          explain:"Limitar a origem reduz a exposicao sem tirar o acesso a quem precisa. A alternativa comum e obrigar a passar por VPN.",
+          wrong:{ "fechar a porta 443":"Essa e a porta do https, e por onde entram os utilizadores. Fechar essa e desligar o site." },
+          apply:function(s){ s.portas = ["22 so da rede da empresa","443 aberta"]; return "regra aplicada . 22 restrita a 3 enderecos"; },
+          outputType:"ok"
+        },
+        {
+          ask:"O certificado expirou e o browser mostra aviso de site inseguro.",
+          accept:["renovar o certificado"],
+          hint:"Ha uma opcao que e um remendo e nao uma solucao.",
+          explain:"Um certificado expirado poe um aviso vermelho no browser, e a maioria das pessoas fecha a pagina. Custa reputacao e vendas, e resolve-se em minutos.",
+          wrong:{ "dizer as pessoas para ignorarem o aviso":"Alem de nao resolver, ensina os utilizadores a ignorar avisos de seguranca, que e exatamente o habito que os phishings exploram." },
+          apply:function(s){ s.certificado = "valido"; return "certificado renovado . valido por 90 dias"; },
+          outputType:"ok"
+        },
+        {
+          ask:"Trata de que isto nao volte a acontecer.",
+          accept:["activar a renovacao automatica"],
+          hint:"O que depende de alguem se lembrar daqui a 90 dias vai falhar.",
+          explain:"Os certificados de hoje duram 90 dias precisamente para forcar a automatizacao. Renovacao automatica mais um alerta se falhar, e o assunto desaparece da tua vida.",
+          apply:function(s){ return "renovacao automatica activa . alerta se falhar"; },
+          outputType:"ok"
+        }
+      ],
+      lesson:"So fica aberto ao mundo o que tem mesmo de estar. Base de dados nunca. Certificados renovam-se sozinhos, e nunca se pede a alguem para ignorar um aviso de seguranca."
+    },
+    {
+      id:"r3", track:"redes", title:"Muita gente ao mesmo tempo",
+      brief:"Saiu uma noticia sobre o vosso servico e chegam dez vezes mais pessoas do que o normal. O servidor comeca a arrastar-se e depois deixa de responder.",
+      goal:"Aguentar a carga sem deitar tudo abaixo.",
+      initial: redesState({ dns:"aminhaapp.pt aponta para 51.83.42.17", servidor:"a arrastar", portas:["443 aberta"], certificado:"valido", instancias:1 }),
+      tokens:[
+        { name:"medidas", items:[{t:"por mais instancias da app a correr"},{t:"por um balanceador de carga a frente"},{t:"comprar um servidor maior"},{t:"pedir as pessoas para voltarem mais tarde"}] },
+        { name:"a seguir", items:[{t:"definir um limite de escalar automatico"},{t:"deixar a escalar sem limite"}] }
+      ],
+      steps:[
+        {
+          ask:"Uma so copia da app nao chega. Poe mais.",
+          accept:["por mais instancias da app a correr"],
+          hint:"Em vez de uma maquina maior, mais maquinas iguais.",
+          explain:"Crescer para o lado (mais copias) costuma ser melhor do que crescer para cima (maquina maior): e mais barato, e se uma cair as outras aguentam. Comprar um servidor maior tambem funciona, mas tem tecto e continua a ser um unico ponto de falha.",
+          apply:function(s){ s.instancias = 4; return "4 instancias da app a correr"; }
+        },
+        {
+          ask:"Agora ha quatro copias. Como e que os visitantes sabem para qual devem ir?",
+          accept:["por um balanceador de carga a frente"],
+          hint:"Alguem tem de distribuir o transito.",
+          explain:"O balanceador recebe todos os pedidos e reparte-os pelas copias disponiveis. Se uma deixar de responder, para de lhe mandar gente. E tambem ele que segura o certificado.",
+          apply:function(s){ s.balanceador = true; s.servidor = "em pe"; return "balanceador activo . a distribuir por 4 instancias"; },
+          outputType:"ok"
+        },
+        {
+          ask:"A festa passa e as quatro copias ficam a custar dinheiro. Trata disso.",
+          accept:["definir um limite de escalar automatico"],
+          hint:"Subir sozinho e bom. Descer sozinho tambem, com um tecto definido.",
+          explain:"Escalar automatico ajusta o numero de copias a procura, entre um minimo e um maximo. O maximo e importante: sem tecto, um pico invulgar ou um ataque geram uma fatura de milhares de euros.",
+          wrong:{ "deixar a escalar sem limite":"Sem tecto, um ataque ou um erro em ciclo faz a app escalar ate onde a fatura doer. Ha historias reais de contas de dezenas de milhares de euros num fim de semana." },
+          apply:function(s){ return "escalar automatico entre 2 e 8 instancias"; },
+          outputType:"ok"
+        }
+      ],
+      lesson:"Mais copias em vez de uma maquina maior, um balanceador a distribuir, e escalar automatico com tecto definido para a fatura nao fugir."
+    },
+
+    // ---------------- SEGURANCA ----------------
+    {
+      id:"s1", track:"seg", title:"Quem entra e como",
+      brief:"A maioria das entradas indevidas nao e feita a martelo: e feita com credenciais validas. Palavras-passe reutilizadas, contas partilhadas e acessos que ficaram de quem ja saiu.",
+      goal:"Deixar os acessos em estado defensavel.",
+      initial: segState({ contas:["admin (partilhada)","afonso","joao (ja saiu)"], mfa:false, privilegios:"amplos" }),
+      tokens:[
+        { name:"contas", items:[{t:"acabar com a conta partilhada"},{t:"criar conta nominal para cada pessoa"},{t:"mudar a palavra-passe da conta partilhada"}] },
+        { name:"proteccao", items:[{t:"activar dois fatores em todas as contas"},{t:"obrigar a palavras-passe muito compridas"}] },
+        { name:"limpeza", items:[{t:"remover quem ja saiu"},{t:"rever os acessos de tres em tres meses"}] }
+      ],
+      steps:[
+        {
+          ask:"Ha uma conta admin que varias pessoas usam. Resolve isso.",
+          accept:["acabar com a conta partilhada"],
+          hint:"O problema nao e a palavra-passe dela.",
+          explain:"Com uma conta partilhada nao ha forma de saber quem fez o que, nao se pode tirar acesso a uma pessoa sem afetar as outras, e a palavra-passe anda em conversas. Cada pessoa tem de ter a sua.",
+          wrong:{ "mudar a palavra-passe da conta partilhada":"Continua partilhada. Daqui a um mes anda outra vez em mensagens, e continua sem se saber quem fez o que." },
+          apply:function(s){ s.contas = ["afonso","joao (ja saiu)"]; return "conta partilhada desactivada"; }
+        },
+        {
+          ask:"Poe a proteccao que trava a maioria dos ataques a contas.",
+          accept:["activar dois fatores em todas as contas"],
+          hint:"Uma palavra-passe sozinha nao chega, por mais comprida que seja.",
+          explain:"O segundo fator (aplicacao no telemovel ou chave fisica) trava praticamente todos os ataques com palavras-passe roubadas ou reutilizadas. E a medida com melhor relacao entre esforco e proteccao que existe.",
+          apply:function(s){ s.mfa = true; return "dois fatores obrigatorio . 2 contas configuradas"; },
+          outputType:"ok"
+        },
+        {
+          ask:"O Joao saiu ha dois meses e continua na lista.",
+          accept:["remover quem ja saiu"],
+          hint:"Devia ter acontecido no dia em que saiu.",
+          explain:"Acessos de quem saiu sao das portas mais usadas em incidentes, sobretudo em saidas mal resolvidas. Tirar acessos tem de fazer parte da saida, como entregar o portatil.",
+          apply:function(s){ s.contas = ["afonso"]; return "conta de joao removida . sessoes terminadas"; }
+        },
+        {
+          ask:"Trata de que a lista nao volte a encher-se de gente a mais.",
+          accept:["rever os acessos de tres em tres meses"],
+          hint:"Sem revisao periodica, a lista so cresce.",
+          explain:"Uma revisao trimestral de quem tem acesso a que apanha o que escapou. Se trabalhas com sector publico, e o tipo de evidencia que uma auditoria pede.",
+          apply:function(s){ return "revisao trimestral agendada"; },
+          outputType:"ok"
+        }
+      ],
+      lesson:"Contas nominais e nunca partilhadas, dois fatores em todas, remover acessos no dia da saida, e rever a lista periodicamente."
+    },
+    {
+      id:"s2", track:"seg", title:"Dar so o que e preciso",
+      brief:"Menor privilegio quer dizer: cada pessoa e cada sistema recebem apenas o acesso indispensavel. Nao e desconfianca, e limitar o estrago quando alguma coisa corre mal.",
+      goal:"Reduzir privilegios sem impedir ninguem de trabalhar.",
+      initial: segState({ contas:["afonso","rita","app"], mfa:true, privilegios:"amplos" }),
+      tokens:[
+        { name:"pessoas", items:[{t:"dar acesso de leitura a quem so consulta"},{t:"dar acesso total a toda a equipa"}] },
+        { name:"sistemas", items:[{t:"dar a app acesso so a base de dados dela"},{t:"correr a app como administrador do servidor"}] },
+        { name:"emergencia", items:[{t:"criar um acesso de emergencia registado"},{t:"guardar as chaves num cofre de segredos"}] }
+      ],
+      steps:[
+        {
+          ask:"A Rita so precisa de consultar relatorios.",
+          accept:["dar acesso de leitura a quem so consulta"],
+          hint:"Consultar nao e o mesmo que poder alterar.",
+          explain:"Acesso de leitura chega para o trabalho dela e elimina a hipotese de um apagar acidental. Boa parte dos incidentes de dados nao e maldade, e um clique errado com permissoes a mais.",
+          wrong:{ "dar acesso total a toda a equipa":"E o caminho mais rapido e o que transforma qualquer engano num incidente grave. Tambem torna impossivel dizer numa auditoria quem podia fazer o que." },
+          apply:function(s){ return "rita: acesso de leitura aos relatorios"; }
+        },
+        {
+          ask:"A propria aplicacao liga-se a base de dados. Com que permissoes?",
+          accept:["dar a app acesso so a base de dados dela"],
+          hint:"Tambem os sistemas tem privilegios a mais.",
+          explain:"Se a app for comprometida, o atacante fica com os privilegios dela. Se ela for administradora do servidor, perdeu-se a maquina inteira. Se so acede a uma base de dados, limita-se o estrago.",
+          wrong:{ "correr a app como administrador do servidor":"E comodo e transforma qualquer falha da aplicacao no controlo total da maquina. Nunca se corre uma aplicacao como administrador." },
+          apply:function(s){ s.privilegios = "minimos"; return "utilizador da app limitado a base de dados da app"; },
+          outputType:"ok"
+        },
+        {
+          ask:"As palavras-passe que a app usa, onde ficam?",
+          accept:["guardar as chaves num cofre de segredos"],
+          hint:"Ja viste isto no trilho do ciclo de vida.",
+          explain:"Fora do codigo, num cofre, entregues a app quando arranca. Assim tambem se trocam sem mexer no codigo, o que interessa no dia em que houver suspeita de fuga.",
+          apply:function(s){ return "chaves no cofre . rotacao trimestral activa"; }
+        },
+        {
+          ask:"E quando alguem precisar mesmo de privilegios altos, a meio da noite?",
+          accept:["criar um acesso de emergencia registado"],
+          hint:"Negar sempre leva as pessoas a arranjar atalhos escondidos.",
+          explain:"Um acesso de emergencia que se pede, dura pouco tempo e fica registado resolve a urgencia sem abrir a porta em permanencia. Sem isso, as pessoas criam acessos paralelos que ninguem controla.",
+          apply:function(s){ return "acesso de emergencia . pedido, 4 horas, registado"; },
+          outputType:"ok"
+        }
+      ],
+      lesson:"Cada pessoa e cada sistema com o minimo indispensavel, chaves num cofre, e um acesso de emergencia registado em vez de privilegios permanentes."
+    },
+    {
+      id:"s3", track:"seg", title:"O dia em que corre mal",
+      brief:"Um dia recebes a mensagem: os ficheiros estao cifrados e pedem resgate. O que decide o desfecho nao e a sorte, e o que ja estava preparado antes.",
+      goal:"Perceber o que salva e o que nao salva.",
+      initial: segState({ contas:["afonso","rita"], mfa:true, privilegios:"minimos", dependencias:"por rever", copias:"diarias no mesmo servidor", incidente:true }),
+      tokens:[
+        { name:"prevencao", items:[{t:"ver os alertas de vulnerabilidades das dependencias"},{t:"actualizar as dependencias com falhas conhecidas"},{t:"guardar copias fora do alcance de quem entrar"}] },
+        { name:"no momento", items:[{t:"isolar as maquinas afetadas"},{t:"repor a partir de uma copia limpa"},{t:"pagar o resgate"},{t:"apagar tudo e recomecar sem perceber a entrada"}] },
+        { name:"depois", items:[{t:"perceber por onde entraram"}] }
+      ],
+      steps:[
+        {
+          ask:"Antes do incidente. A app usa dezenas de bibliotecas de terceiros. O que fazes com elas?",
+          accept:["ver os alertas de vulnerabilidades das dependencias"],
+          hint:"O GitHub e o GitLab avisam sozinhos sobre isto.",
+          explain:"A maioria do codigo de uma app moderna nao foi escrita por quem a fez: sao bibliotecas de terceiros. Quando aparece uma falha conhecida numa delas, existe alerta automatico. Ignorar esses alertas e deixar a porta assinalada num mapa publico.",
+          apply:function(s){ return "3 alertas: 1 critico numa biblioteca de tratamento de imagens"; },
+          outputType:"err"
+        },
+        {
+          ask:"Trata do alerta critico.",
+          accept:["actualizar as dependencias com falhas conhecidas"],
+          hint:"Normalmente e so subir a versao.",
+          explain:"Quase sempre e uma actualizacao de versao. O trabalho e pequeno, e a diferenca entre fazer isto todos os meses ou nunca e enorme.",
+          apply:function(s){ s.dependencias = "actualizadas"; return "biblioteca actualizada . alerta critico fechado"; },
+          outputType:"ok"
+        },
+        {
+          ask:"As copias sao diarias mas ficam no mesmo servidor. Corrige antes que seja tarde.",
+          accept:["guardar copias fora do alcance de quem entrar"],
+          hint:"Quem cifra o servidor cifra o que estiver la dentro.",
+          explain:"Ransomware procura e cifra tambem as copias que consiga alcancar. Uma copia fora da rede, ou num armazenamento que nao permite apagar durante uns dias, e o que faz a diferenca entre repor e pagar.",
+          apply:function(s){ s.copias = "diarias, fora da rede, imutaveis 14 dias"; return "copias movidas para armazenamento imutavel"; },
+          outputType:"ok"
+        },
+        {
+          ask:"Acontece o incidente. Primeira coisa a fazer.",
+          accept:["isolar as maquinas afetadas"],
+          hint:"Antes de recuperar, travar a propagacao.",
+          explain:"Isolar impede que se espalhe para o resto da rede. Repor enquanto o atacante ainda tem acesso e repor para ser cifrado outra vez.",
+          apply:function(s){ return "maquinas isoladas da rede"; }
+        },
+        {
+          ask:"Contido. Agora recupera.",
+          accept:["repor a partir de uma copia limpa"],
+          hint:"Ha uma opcao que financia o crime e nao garante nada.",
+          explain:"Repor de uma copia anterior ao incidente e o caminho. Pagar nao garante a chave, marca a empresa como pagadora, e em muitos casos tem implicacoes legais proprias.",
+          wrong:{ "pagar o resgate":"Nao garante recuperar nada, financia quem atacou, marca a empresa como pagadora para a proxima, e tem implicacoes legais.",
+                  "apagar tudo e recomecar sem perceber a entrada":"Sem saber por onde entraram, voltam pela mesma porta na semana seguinte." },
+          apply:function(s){ s.incidente = false; return "reposto a partir da copia de ontem . servico de volta"; },
+          outputType:"ok"
+        },
+        {
+          ask:"Servico reposto. Falta o mais importante para nao repetir.",
+          accept:["perceber por onde entraram"],
+          hint:"Sem isto, o mesmo acontece outra vez.",
+          explain:"Sem saber a porta de entrada, a recuperacao e temporaria. E tambem o que se tem de conseguir explicar a clientes e, conforme o caso, comunicar as autoridades dentro do prazo legal.",
+          apply:function(s){ return "entrada identificada . credenciais de um fornecedor sem dois fatores"; },
+          outputType:"ok"
+        }
+      ],
+      lesson:"Dependencias actualizadas, copias fora do alcance e imutaveis, isolar antes de repor, repor em vez de pagar, e perceber sempre por onde entraram."
+    },
+
     // ---------------- CICLO DE VIDA ----------------
     // Este trilho nao e sobre comandos: e sobre as decisoes de quem manda
     // publicar. As pecas sao accoes, nao linhas de terminal.
@@ -1260,6 +2011,43 @@
   ];
 
   var GLOSSARY = [
+    { track:"terminal", cmd:"pwd", desc:"Diz em que pasta estas. A primeira pergunta a fazer no terminal." },
+    { track:"terminal", cmd:"ls / ls -la", desc:"Lista o que ha na pasta. Com -la mostra escondidos e permissoes." },
+    { track:"terminal", cmd:"cd pasta / cd ..", desc:"Entra numa pasta, ou volta a pasta de cima." },
+    { track:"terminal", cmd:"tail -n 50 ficheiro", desc:"Mostra as ultimas linhas. Num log e onde esta o que interessa." },
+    { track:"terminal", cmd:"tail -f ficheiro", desc:"Fica a mostrar as linhas novas em direto. Sai-se com Ctrl+C." },
+    { track:"terminal", cmd:"grep texto ficheiro", desc:"Mostra so as linhas que contem o texto. Com -i ignora maiusculas." },
+    { track:"terminal", cmd:"cp / mv / rm", desc:"Copiar, mover ou mudar o nome, apagar. Nao ha caixote do lixo." },
+    { track:"terminal", cmd:"rm -rf", desc:"Apaga pastas inteiras sem perguntar. O comando mais destrutivo que existe." },
+    { track:"terminal", cmd:"ssh utilizador@endereco", desc:"Abre uma linha de comandos noutra maquina, cifrada. Sai-se com exit." },
+    { track:"k8s", cmd:"Cluster", desc:"Conjunto de maquinas geridas em conjunto, onde os contentores correm." },
+    { track:"k8s", cmd:"Pod", desc:"A unidade que corre no Kubernetes, normalmente um contentor." },
+    { track:"k8s", cmd:"Deployment", desc:"A declaracao do que queres a correr e em quantas copias. O cluster mantem isso." },
+    { track:"k8s", cmd:"kubectl get pods", desc:"Lista as copias a correr e o estado de cada uma." },
+    { track:"k8s", cmd:"kubectl logs pod", desc:"Mostra o que a app escreveu dentro daquele pod." },
+    { track:"k8s", cmd:"kubectl rollout undo deployment/nome", desc:"Volta a versao anterior. O rollback do Kubernetes." },
+    { track:"k8s", cmd:"CrashLoopBackOff", desc:"O pod arranca, morre e volta a tentar em ciclo. Ver os logs para saber porque." },
+    { track:"bd", cmd:"SELECT colunas FROM tabela", desc:"A pergunta basica: o que queres, de onde." },
+    { track:"bd", cmd:"WHERE condicao", desc:"Filtra as linhas. Em UPDATE e DELETE, e o que evita mexer em tudo." },
+    { track:"bd", cmd:"LIMIT n", desc:"Traz no maximo n linhas. Habito essencial em bases de dados grandes." },
+    { track:"bd", cmd:"COUNT(*)", desc:"Conta linhas sem as trazer. Para perguntas de quantidade." },
+    { track:"bd", cmd:"UPDATE sem WHERE", desc:"Altera a tabela inteira. O erro classico, e nao ha desfazer sem transacao." },
+    { track:"bd", cmd:"BEGIN / COMMIT / ROLLBACK", desc:"Abre uma transacao, grava ou desfaz. A rede de seguranca antes de alterar." },
+    { track:"bd", cmd:"pg_dump / pg_restore", desc:"Tirar e repor uma copia da base de dados. Repor sempre num ambiente de teste." },
+    { track:"redes", cmd:"DNS", desc:"Traduz nomes (aminhaapp.pt) em enderecos IP. Se falhar, nem chegas ao servidor." },
+    { track:"redes", cmd:"dig / nslookup", desc:"Pergunta ao DNS para onde aponta um dominio." },
+    { track:"redes", cmd:"ping endereco", desc:"Ve se a maquina esta viva e alcancavel pela rede." },
+    { track:"redes", cmd:"curl -I endereco", desc:"Faz um pedido como o browser e mostra a resposta do servidor." },
+    { track:"redes", cmd:"Porta", desc:"Entrada num servidor. 443 e https, 22 e ssh, 5432 e uma base de dados." },
+    { track:"redes", cmd:"Certificado", desc:"O que poe o https e o cadeado. Expira, e deve renovar-se automaticamente." },
+    { track:"redes", cmd:"Balanceador de carga", desc:"Distribui os visitantes por varias copias da app e evita as que nao respondem." },
+    { track:"redes", cmd:"Escalar automatico", desc:"Ajusta o numero de copias a procura. Definir sempre um maximo, pela fatura." },
+    { track:"seg", cmd:"Dois fatores (MFA)", desc:"Segunda prova alem da palavra-passe. Trava a maioria dos ataques a contas." },
+    { track:"seg", cmd:"Menor privilegio", desc:"Cada pessoa e cada sistema com o minimo acesso indispensavel." },
+    { track:"seg", cmd:"Conta nominal", desc:"Uma conta por pessoa. Contas partilhadas impedem saber quem fez o que." },
+    { track:"seg", cmd:"Dependencias", desc:"Bibliotecas de terceiros que a app usa. Tem falhas conhecidas e alertas automaticos." },
+    { track:"seg", cmd:"Copia imutavel", desc:"Copia que nao pode ser apagada durante um periodo. E o que sobrevive a ransomware." },
+    { track:"seg", cmd:"Isolar", desc:"Cortar da rede as maquinas afetadas, antes de tentar recuperar." },
     { track:"git", cmd:"git init", desc:"Transforma a pasta actual num repositorio Git." },
     { track:"git", cmd:"git status", desc:"Mostra o que mudou e em que zona esta. O comando que mais vais usar." },
     { track:"git", cmd:"git add .", desc:"Poe as alteracoes em staging, prontas para o proximo commit." },
@@ -1307,7 +2095,7 @@
 
   // ================= estado =================
   var progress = {};              // { missaoId: { stars, done } }
-  var ui = { tab:"missoes", mission:null, glossTrack:"git", cloudMode:null };
+  var ui = { tab:"missoes", mission:null, glossTrack:"terminal", openTrack:null, cloudMode:null };
   var cloudDb = null, storeReady = false;
   var STORAGE_KEY = "consoladebolso.v1";
 
@@ -1485,18 +2273,31 @@
   function renderMissionList(){
     var wrap = document.createDocumentFragment();
 
-    ["git","gitlab","docker","ciclo"].forEach(function(trackId){
+    // Abre sozinho o primeiro trilho que ainda tenha missoes por fazer,
+    // para nao aterrares numa lista toda fechada.
+    if (ui.openTrack === null){
+      ui.openTrack = ORDEM_TRILHOS.find(function(t){
+        return missionsOfTrack(t).some(function(m){ return !(progress[m.id] && progress[m.id].done); });
+      }) || ORDEM_TRILHOS[0];
+    }
+
+    ORDEM_TRILHOS.forEach(function(trackId){
       var track = TRACKS[trackId];
       var list = missionsOfTrack(trackId);
       var doneCount = list.filter(function(m){ return progress[m.id] && progress[m.id].done; }).length;
 
+      var aberto = ui.openTrack === trackId;
       var head = document.createElement("div");
-      head.className = "track-head";
+      head.className = "track-head" + (aberto ? " open" : "");
       head.innerHTML =
         "<span class='track-badge " + track.cls + "'>" + track.label + "</span>" +
         "<span class='track-title'>" + track.desc + "</span>" +
-        "<span class='track-progress'>" + doneCount + "/" + list.length + "</span>";
+        "<span class='track-progress'>" + doneCount + "/" + list.length + "</span>" +
+        "<span class='track-chevron'>&#9656;</span>";
+      head.onclick = function(){ ui.openTrack = aberto ? null : trackId; render(); };
       wrap.appendChild(head);
+
+      if (!aberto) return;
 
       list.forEach(function(mission, i){
         var prog = progress[mission.id];
@@ -1646,6 +2447,23 @@
       zones.appendChild(zone("Local", s.commits.map(function(c,i){ return (i+1) + ". " + c; }), "commit"));
       zones.appendChild(zone(s.remote === "gitlab" ? "GitLab" : "GitHub",
         s.remote ? [s.remoteCommits + " commits"] : [], "commit"));
+    } else if (s.kind === "terminal"){
+      zones.appendChild(zone("Pasta actual", [s.cwd], "ver"));
+      zones.appendChild(zone("Conteudo", s.ficheiros, "new"));
+    } else if (s.kind === "bd"){
+      zones.appendChild(zone("Tabelas", s.tabelas, "img"));
+      zones.appendChild(zone("Resultado", s.resultado ? [s.resultado] : [], "commit"));
+    } else if (s.kind === "redes"){
+      zones.appendChild(zone("DNS", s.dns ? [s.dns] : [], "ver"));
+      zones.appendChild(zone("Servidor", [s.servidor + (s.instancias > 1 ? " x" + s.instancias : "")], s.servidor === "em pe" ? "run" : "stopped"));
+      zones.appendChild(zone("Portas", s.portas.length ? s.portas : [], "staged"));
+    } else if (s.kind === "seg"){
+      zones.appendChild(zone("Contas", s.contas.length ? s.contas : [], s.mfa ? "run" : "new"));
+      zones.appendChild(zone("Copias", [s.copias], s.copias === "nenhumas" ? "stopped" : "commit"));
+    } else if (s.kind === "k8s"){
+      zones.appendChild(zone("Deployments", s.deployments, "img"));
+      zones.appendChild(zone("Pods", s.pods.map(function(p){ return p.nome + " " + p.estado; }),
+        s.pods.some(function(p){ return p.estado !== "Running"; }) ? "stopped" : "run"));
     } else if (s.kind === "ciclo"){
       zones.appendChild(zone("Computador", s.local, "new"));
       zones.appendChild(zone("Repositorio", s.repo, "ver"));
@@ -1665,6 +2483,21 @@
       if (s.conflict) tags.push({ t:"conflito por resolver", cls:"fail" });
       if (s.pr) tags.push({ t:s.pr === "aberto" ? "PR aberto" : s.pr, cls: s.pr === "fechado" ? "ok" : "" });
       if (s.pipeline) tags.push({ t:"pipeline " + s.pipeline, cls: s.pipeline === "passou" ? "ok" : "fail" });
+    } else if (s.kind === "terminal"){
+      if (s.remoto) tags.push({ t:"ligado ao servidor por ssh", cls:"ok" });
+    } else if (s.kind === "bd"){
+      if (s.transacao) tags.push({ t:"transacao aberta", cls:"" });
+      if (s.copia) tags.push({ t: s.copiaTestada ? "copia testada" : "copia por testar", cls: s.copiaTestada ? "ok" : "" });
+    } else if (s.kind === "redes"){
+      if (s.certificado) tags.push({ t:"certificado " + s.certificado, cls: s.certificado === "valido" ? "ok" : "fail" });
+      if (s.balanceador) tags.push({ t:"balanceador de carga", cls:"ok" });
+    } else if (s.kind === "seg"){
+      tags.push({ t:"privilegios: " + s.privilegios, cls: s.privilegios === "minimos" ? "ok" : "" });
+      tags.push({ t:"dependencias: " + s.dependencias, cls: s.dependencias === "actualizadas" ? "ok" : "fail" });
+      if (s.mfa) tags.push({ t:"dois fatores activo", cls:"ok" });
+      if (s.incidente) tags.push({ t:"incidente em curso", cls:"fail" });
+    } else if (s.kind === "k8s"){
+      if (s.replicas) tags.push({ t:s.replicas + " replicas pedidas" });
     } else if (s.kind === "ciclo"){
       if (s.incidente) tags.push({ t:"producao em baixo", cls:"fail" });
       if (s.issue) tags.push({ t:"issue: " + s.issue });
@@ -1806,10 +2639,10 @@
 
     var filter = document.createElement("div");
     filter.className = "gloss-filter";
-    ["git","gitlab","docker","ciclo"].forEach(function(t){
+    ORDEM_TRILHOS.forEach(function(t){
       var d = document.createElement("div");
       d.className = (ui.glossTrack === t ? "active " + t : "");
-      d.textContent = t === "git" ? "Git" : t === "gitlab" ? "GitLab" : t === "docker" ? "Docker" : "Ciclo";
+      d.textContent = TRACKS[t].label;
       d.onclick = function(){ ui.glossTrack = t; render(); };
       filter.appendChild(d);
     });
