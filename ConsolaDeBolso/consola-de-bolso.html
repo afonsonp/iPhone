@@ -1,0 +1,1499 @@
+<title>Consola de Bolso</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+  :root{
+    --paper:#F2F3F5;
+    --surface:#FFFFFF;
+    --surface-2:#E9EBEF;
+    --ink:#161A20;
+    --ink-soft:#525A66;
+    --ink-faint:#878F9C;
+    --line:#DDE0E6;
+    --console-bg:#12151B;
+    --console-ink:#E8EAF0;
+    --console-dim:#7E8899;
+    --git:#E8552D;
+    --git-tint:#FBE7E1;
+    --gitlab:#D4551A;
+    --gitlab-tint:#FBE8DC;
+    --docker:#1B6FC4;
+    --docker-tint:#DEEAF7;
+    --good:#25795A;
+    --good-tint:#DCEDE5;
+    --bad:#A83A2C;
+    --bad-tint:#F7E2DE;
+    --star:#B5851F;
+    --shadow:0 1px 2px rgba(15,20,28,.05), 0 10px 26px -14px rgba(15,20,28,.22);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0F1216;
+      --surface:#181C22;
+      --surface-2:#222831;
+      --ink:#EDEFF3;
+      --ink-soft:#9BA4B1;
+      --ink-faint:#6C7583;
+      --line:#2A313A;
+      --console-bg:#0A0C10;
+      --console-ink:#E8EAF0;
+      --console-dim:#79839A;
+      --git:#FF7B57;
+      --git-tint:#33201A;
+      --gitlab:#F5813E;
+      --gitlab-tint:#331F14;
+      --docker:#63A8E8;
+      --docker-tint:#152738;
+      --good:#5CBE95;
+      --good-tint:#12301F;
+      --bad:#E28878;
+      --bad-tint:#361F1B;
+      --star:#DEB055;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 26px -14px rgba(0,0,0,.7);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0F1216;
+    --surface:#181C22;
+    --surface-2:#222831;
+    --ink:#EDEFF3;
+    --ink-soft:#9BA4B1;
+    --ink-faint:#6C7583;
+    --line:#2A313A;
+    --console-bg:#0A0C10;
+    --console-ink:#E8EAF0;
+    --console-dim:#79839A;
+    --git:#FF7B57;
+    --git-tint:#33201A;
+    --gitlab:#F5813E;
+    --gitlab-tint:#331F14;
+    --docker:#63A8E8;
+    --docker-tint:#152738;
+    --good:#5CBE95;
+    --good-tint:#12301F;
+    --bad:#E28878;
+    --bad-tint:#361F1B;
+    --star:#DEB055;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 26px -14px rgba(0,0,0,.7);
+  }
+
+  *{ box-sizing:border-box; }
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:"Manrope", -apple-system, system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono, code{ font-family:"JetBrains Mono", ui-monospace, monospace; }
+
+  .app{
+    max-width:480px; margin:0 auto;
+    min-height:100vh; min-height:100svh;
+    display:flex; flex-direction:column; position:relative;
+    background:var(--paper);
+    padding-left:env(safe-area-inset-left); padding-right:env(safe-area-inset-right);
+  }
+
+  .topbar{
+    position:sticky; top:0; z-index:20;
+    background:var(--paper); border-bottom:1px solid var(--line);
+    padding:10px 14px 9px; padding-top:calc(10px + env(safe-area-inset-top));
+  }
+  .topbar-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .topbar h1{ margin:0; font-size:19px; font-weight:800; letter-spacing:-.02em; }
+  .xp-pill{
+    display:flex; align-items:center; gap:5px;
+    background:var(--surface-2); border:1px solid var(--line); border-radius:20px;
+    padding:5px 11px; font-size:12.5px; font-weight:700; color:var(--ink-soft);
+  }
+  .xp-pill b{ font-family:"JetBrains Mono"; color:var(--star); }
+  .sync-dot{ width:8px; height:8px; border-radius:50%; background:var(--ink-faint); cursor:pointer; flex:none; }
+  .sync-dot.good{ background:var(--good); }
+  .sync-dot.warn{ background:var(--star); }
+
+  .tabbar{
+    display:flex; gap:4px; background:var(--surface-2); border:1px solid var(--line);
+    border-radius:10px; padding:3px; margin-top:9px;
+  }
+  .tab{
+    flex:1; text-align:center; padding:8px 4px; border-radius:8px;
+    color:var(--ink-soft); font-size:12.5px; font-weight:700;
+    cursor:pointer; -webkit-tap-highlight-color:transparent; white-space:nowrap;
+  }
+  .tab.active{ background:var(--surface); color:var(--ink); box-shadow:var(--shadow); }
+
+  .content{ flex:1; padding:14px; }
+
+  /* Trilhos e missoes */
+  .track-head{ display:flex; align-items:center; gap:9px; margin:18px 2px 9px; }
+  .track-head:first-child{ margin-top:2px; }
+  .track-badge{
+    font-family:"JetBrains Mono"; font-size:11px; font-weight:700;
+    padding:3px 8px; border-radius:6px;
+  }
+  .track-badge.git{ background:var(--git-tint); color:var(--git); }
+  .track-badge.gitlab{ background:var(--gitlab-tint); color:var(--gitlab); }
+  .track-badge.docker{ background:var(--docker-tint); color:var(--docker); }
+  .track-title{ flex:1; font-size:13px; font-weight:700; color:var(--ink-soft); }
+  .track-progress{ font-family:"JetBrains Mono"; font-size:12px; color:var(--ink-faint); }
+
+  .mission-card{
+    display:flex; align-items:center; gap:12px;
+    background:var(--surface); border:1px solid var(--line); border-radius:13px;
+    padding:12px; margin-bottom:8px; box-shadow:var(--shadow);
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+  }
+  .mission-card.locked{ opacity:.55; cursor:default; }
+  .mission-num{
+    flex:none; width:34px; height:34px; border-radius:9px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:"JetBrains Mono"; font-weight:700; font-size:14px;
+  }
+  .mission-num.git{ background:var(--git-tint); color:var(--git); }
+  .mission-num.gitlab{ background:var(--gitlab-tint); color:var(--gitlab); }
+  .mission-num.docker{ background:var(--docker-tint); color:var(--docker); }
+  .mission-main{ flex:1; min-width:0; }
+  .mission-title{ font-size:14.5px; font-weight:700; }
+  .mission-sub{ font-size:12px; color:var(--ink-soft); margin-top:2px; }
+  .stars{ flex:none; font-size:13px; color:var(--star); letter-spacing:1px; }
+  .stars .off{ color:var(--line); }
+  .lock{ flex:none; color:var(--ink-faint); font-size:15px; }
+
+  /* Ecra da missao */
+  .brief{
+    background:var(--surface); border:1px solid var(--line); border-radius:13px;
+    padding:14px; margin-bottom:12px; box-shadow:var(--shadow);
+  }
+  .brief h2{ font-size:17px; font-weight:800; margin:0 0 6px; }
+  .brief p{ margin:0; font-size:13.5px; line-height:1.55; color:var(--ink-soft); }
+  .goal{
+    margin-top:10px; padding-top:10px; border-top:1px solid var(--line);
+    font-size:13px; color:var(--ink);
+  }
+  .goal b{ font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); display:block; margin-bottom:3px; }
+
+  /* Visualizacao do estado */
+  .zones{ display:flex; gap:6px; margin-bottom:12px; }
+  .zone{
+    flex:1; min-width:0; background:var(--surface); border:1px solid var(--line);
+    border-radius:11px; padding:9px 8px; min-height:92px;
+  }
+  .zone.active{ border-color:var(--git); box-shadow:0 0 0 2px var(--git-tint); }
+  .zone-name{
+    font-size:9.5px; letter-spacing:.05em; text-transform:uppercase;
+    color:var(--ink-faint); font-weight:800; margin-bottom:6px; text-align:center;
+  }
+  .chip{
+    display:block; font-family:"JetBrains Mono"; font-size:10.5px;
+    background:var(--surface-2); border:1px solid var(--line); border-radius:5px;
+    padding:3px 5px; margin-bottom:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+  .chip.new{ border-color:var(--git); color:var(--git); }
+  .chip.staged{ border-color:var(--star); color:var(--star); }
+  .chip.commit{ border-color:var(--good); color:var(--good); }
+  .chip.img{ border-color:var(--docker); color:var(--docker); }
+  .chip.run{ border-color:var(--good); color:var(--good); }
+  .chip.stopped{ border-color:var(--ink-faint); color:var(--ink-faint); }
+  .zone-empty{ font-size:10.5px; color:var(--ink-faint); text-align:center; padding-top:6px; }
+
+  .state-extra{
+    display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;
+  }
+  .state-tag{
+    font-family:"JetBrains Mono"; font-size:11px;
+    background:var(--surface-2); border:1px solid var(--line); border-radius:6px;
+    padding:4px 8px; color:var(--ink-soft);
+  }
+  .state-tag.ok{ background:var(--good-tint); border-color:var(--good); color:var(--good); }
+  .state-tag.fail{ background:var(--bad-tint); border-color:var(--bad); color:var(--bad); }
+
+  /* Consola */
+  .console{
+    background:var(--console-bg); border-radius:12px; padding:11px 12px;
+    font-family:"JetBrains Mono"; font-size:11.5px; line-height:1.6;
+    color:var(--console-ink); margin-bottom:12px;
+    max-height:190px; overflow-y:auto;
+  }
+  .console .cmd{ color:var(--console-ink); }
+  .console .cmd::before{ content:"$ "; color:var(--git); }
+  .console .out{ color:var(--console-dim); white-space:pre-wrap; }
+  .console .err{ color:#E8836F; }
+  .console .ok{ color:#6FCF9F; }
+
+  /* Passo actual */
+  .step-box{
+    background:var(--surface); border:1px solid var(--line); border-radius:13px;
+    padding:13px; margin-bottom:12px; box-shadow:var(--shadow);
+  }
+  .step-count{
+    font-size:10.5px; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--ink-faint); font-weight:800; margin-bottom:5px;
+  }
+  .step-ask{ font-size:14.5px; font-weight:700; line-height:1.4; }
+  .step-hint{
+    margin-top:9px; font-size:12.5px; color:var(--ink-soft); line-height:1.5;
+    background:var(--surface-2); border-radius:8px; padding:9px 10px;
+  }
+  .feedback{
+    margin-top:10px; border-radius:9px; padding:10px 11px;
+    font-size:13px; line-height:1.55;
+  }
+  .feedback.ok{ background:var(--good-tint); color:var(--good); border:1px solid var(--good); }
+  .feedback.no{ background:var(--bad-tint); color:var(--bad); border:1px solid var(--bad); }
+  .feedback code{ background:rgba(0,0,0,.08); padding:1px 4px; border-radius:4px; }
+
+  /* Construtor de comandos */
+  .cmdline{
+    background:var(--console-bg); border-radius:10px 10px 0 0;
+    padding:11px 12px; font-family:"JetBrains Mono"; font-size:13px;
+    color:var(--console-ink); min-height:42px; display:flex; align-items:center; gap:6px;
+    overflow-x:auto; white-space:nowrap;
+  }
+  .cmdline .prompt{ color:var(--git); flex:none; }
+  .cmdline .empty{ color:var(--console-dim); }
+  .cmdline .caret{
+    display:inline-block; width:7px; height:15px; background:var(--console-ink);
+    animation:blink 1.1s steps(1) infinite; flex:none;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+  @media (prefers-reduced-motion: reduce){ .cmdline .caret{ animation:none; } }
+
+  .cmd-actions{
+    display:flex; gap:6px; background:var(--console-bg);
+    border-radius:0 0 10px 10px; padding:0 8px 8px; margin-bottom:10px;
+  }
+  .cmd-actions button{
+    flex:1; border-radius:8px; padding:9px; font-size:12.5px; font-weight:700;
+    font-family:inherit; cursor:pointer; border:none;
+  }
+  .btn-run{ background:var(--good); color:#fff; }
+  .btn-run:disabled{ opacity:.4; }
+  .btn-clear{ background:#2A303B; color:#C7CEDA; flex:0 0 88px !important; }
+
+  .token-groups{ display:flex; flex-direction:column; gap:8px; }
+  .token-group{ }
+  .token-group-name{
+    font-size:10px; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--ink-faint); font-weight:800; margin-bottom:5px;
+  }
+  .tokens{ display:flex; flex-wrap:wrap; gap:6px; }
+  .token{
+    font-family:"JetBrains Mono"; font-size:12.5px;
+    background:var(--surface); border:1px solid var(--line); border-radius:8px;
+    padding:8px 10px; cursor:pointer; -webkit-tap-highlight-color:transparent;
+    color:var(--ink); box-shadow:var(--shadow);
+  }
+  .token:active{ background:var(--surface-2); }
+  .token.cmd{ border-color:var(--git); color:var(--git); font-weight:700; }
+  .token.cmd.docker{ border-color:var(--docker); color:var(--docker); }
+  .token.flag{ color:var(--ink-soft); }
+
+  .mission-done{
+    background:var(--good-tint); border:1px solid var(--good); border-radius:13px;
+    padding:16px; text-align:center; margin-bottom:12px;
+  }
+  .mission-done h3{ margin:0 0 4px; font-size:18px; font-weight:800; color:var(--good); }
+  .mission-done p{ margin:0; font-size:13.5px; color:var(--ink-soft); line-height:1.55; }
+  .mission-done .stars-big{ font-size:26px; color:var(--star); letter-spacing:3px; margin:8px 0; }
+  .mission-done .stars-big .off{ color:var(--line); }
+
+  .btn-primary{
+    width:100%; background:var(--ink); color:var(--paper); border:none; border-radius:11px;
+    padding:13px; font-size:15px; font-weight:800; cursor:pointer; font-family:inherit;
+  }
+  .btn-secondary{
+    width:100%; background:var(--surface); color:var(--ink-soft);
+    border:1px solid var(--line); border-radius:11px;
+    padding:11px; font-size:13.5px; font-weight:700; cursor:pointer; font-family:inherit; margin-top:8px;
+  }
+
+  .back-link{
+    display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:700;
+    color:var(--ink-soft); cursor:pointer; margin-bottom:10px;
+  }
+
+  /* Glossario */
+  .gloss-item{
+    background:var(--surface); border:1px solid var(--line); border-radius:11px;
+    padding:11px 12px; margin-bottom:7px; box-shadow:var(--shadow);
+  }
+  .gloss-cmd{ font-family:"JetBrains Mono"; font-size:13px; font-weight:700; color:var(--ink); }
+  .gloss-desc{ font-size:12.5px; color:var(--ink-soft); margin-top:4px; line-height:1.5; }
+  .gloss-filter{ display:flex; gap:6px; margin-bottom:12px; }
+  .gloss-filter div{
+    flex:1; text-align:center; padding:8px; border-radius:9px; font-size:12.5px; font-weight:700;
+    border:1px solid var(--line); background:var(--surface); color:var(--ink-soft); cursor:pointer;
+  }
+  .gloss-filter div.active.git{ background:var(--git-tint); border-color:var(--git); color:var(--git); }
+  .gloss-filter div.active.gitlab{ background:var(--gitlab-tint); border-color:var(--gitlab); color:var(--gitlab); }
+  .gloss-filter div.active.docker{ background:var(--docker-tint); border-color:var(--docker); color:var(--docker); }
+
+  .empty-state{
+    border:1px dashed var(--line); border-radius:13px; padding:24px 18px;
+    text-align:center; color:var(--ink-soft); font-size:13.5px; line-height:1.55;
+  }
+  .hint{ font-size:12px; color:var(--ink-faint); line-height:1.5; }
+</style>
+
+<div class="app" id="app"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  function showDebugError(msg){
+    var el = document.getElementById("debugError");
+    if (!el){
+      el = document.createElement("div");
+      el.id = "debugError";
+      el.style.cssText = "position:fixed;left:8px;right:8px;top:8px;z-index:9999;background:#A83A2C;color:#fff;padding:10px 12px;border-radius:10px;font-size:11.5px;font-family:ui-monospace,monospace;white-space:pre-wrap;max-height:42vh;overflow:auto;";
+      document.body.appendChild(el);
+    }
+    el.textContent += (el.textContent ? "\n\n" : "") + msg;
+  }
+  window.addEventListener("error", function(e){
+    showDebugError("Erro: " + (e.message || e) + (e.lineno ? (" (linha " + e.lineno + ")") : ""));
+  });
+
+  // ================= conteudo =================
+  // Cada missao tem passos; cada passo aceita um ou mais comandos escritos
+  // da forma correcta, e sabe explicar os enganos mais comuns.
+
+  var TRACKS = {
+    git:    { label:"Git e GitHub", cls:"git",    desc:"Do primeiro commit ao pull request" },
+    gitlab: { label:"GitLab",       cls:"gitlab", desc:"Merge requests e pipelines" },
+    docker: { label:"Docker",       cls:"docker", desc:"Imagens, contentores e compose" }
+  };
+
+  function gitState(extra){
+    var base = {
+      kind:"git", repo:false, work:[], stage:[], commits:[], remote:null, remoteCommits:0,
+      branch:"main", branches:["main"], pr:null, pipeline:null, conflict:false
+    };
+    for (var k in extra) base[k] = extra[k];
+    return base;
+  }
+  function dockerState(extra){
+    var base = { kind:"docker", images:[], containers:[], compose:false, dockerfile:false };
+    for (var k in extra) base[k] = extra[k];
+    return base;
+  }
+
+  var MISSIONS = [
+    // ---------------- GIT ----------------
+    {
+      id:"git1", track:"git", title:"O primeiro commit",
+      brief:"Tens uma pasta com o teu projeto no computador. Ainda nao esta em Git nenhum. Vamos transformar a pasta num repositorio e guardar a primeira versao.",
+      goal:"Ficar com um commit feito no repositorio local.",
+      initial: gitState({ work:["index.html","style.css"] }),
+      tokens:[
+        { name:"comando", items:[{t:"git",cls:"cmd"}] },
+        { name:"subcomando", items:[{t:"init"},{t:"status"},{t:"add"},{t:"commit"},{t:"push"},{t:"log"}] },
+        { name:"argumentos", items:[{t:"."},{t:"index.html"},{t:'-m "primeira versao"',cls:"flag"},{t:"-a",cls:"flag"}] }
+      ],
+      steps:[
+        {
+          ask:"Transforma esta pasta num repositorio Git.",
+          accept:["git init"],
+          hint:"O comando que arranca um repositorio novo tem o nome de inicializar.",
+          explain:"git init cria a pasta escondida .git, onde fica todo o historico. A partir daqui o Git passa a olhar para esta pasta.",
+          wrong:{ "git status":"Ainda nao ha repositorio nenhum para consultar. Primeiro cria o repositorio.",
+                  "git add .":"Nao podes adicionar ficheiros a um repositorio que ainda nao existe." },
+          apply:function(s){ s.repo = true; return "Initialized empty Git repository in ./.git/"; }
+        },
+        {
+          ask:"Ve em que estado estao os teus ficheiros.",
+          accept:["git status"],
+          hint:"E o comando que usas mais vezes no dia a dia, para saber onde estas.",
+          explain:"git status mostra o que mudou e em que zona esta. Repara que os dois ficheiros aparecem como untracked, ou seja, o Git ainda nao os segue.",
+          wrong:{ "git log":"Ainda nao ha commits nenhuns para mostrar no historico." },
+          apply:function(s){ return "Untracked files:\n  index.html\n  style.css"; }
+        },
+        {
+          ask:"Poe os dois ficheiros prontos a serem guardados.",
+          accept:["git add .","git add index.html style.css"],
+          hint:"O ponto significa tudo o que esta nesta pasta.",
+          explain:"git add move os ficheiros para a staging area, a zona de espera. Ainda nao guardaste nada no historico: so escolheste o que vai entrar no proximo commit.",
+          wrong:{ "git commit -m \"primeira versao\"":"Um commit so guarda o que esta em staging, e por agora essa zona esta vazia. Primeiro tens de adicionar." },
+          apply:function(s){ s.stage = s.work.slice(); s.work = []; return "2 ficheiros adicionados a staging"; }
+        },
+        {
+          ask:"Guarda esta versao no historico, com uma mensagem.",
+          accept:['git commit -m "primeira versao"'],
+          hint:"Um commit sem mensagem nao passa. A mensagem vai a seguir a -m.",
+          explain:"O commit e um ponto de gravacao no historico, so no teu computador. O -m escreve a mensagem ali mesmo; sem ele, o Git abre um editor de texto a pedi-la.",
+          wrong:{ "git commit":"Sem -m o Git abre um editor de texto para escreveres a mensagem, o que no telemovel seria uma armadilha. Usa -m com a mensagem.",
+                  "git push":"Ainda nao ha nada para enviar, e tambem ainda nao ha servidor configurado." },
+          apply:function(s){ s.commits.push("primeira versao"); s.stage = []; return "[main (root-commit)] primeira versao\n 2 files changed"; }
+        }
+      ],
+      lesson:"Ficheiros passam por tres zonas: pasta de trabalho, staging (git add) e repositorio local (git commit). Nada disto saiu ainda do teu computador."
+    },
+    {
+      id:"git2", track:"git", title:"Enviar para o GitHub",
+      brief:"O teu commit esta so no portatil. Se ele se estragar hoje, perdes tudo. Vamos ligar o repositorio ao GitHub e enviar o trabalho.",
+      goal:"Ter o commit tambem no GitHub.",
+      initial: gitState({ repo:true, commits:["primeira versao"] }),
+      tokens:[
+        { name:"comando", items:[{t:"git",cls:"cmd"}] },
+        { name:"subcomando", items:[{t:"remote"},{t:"push"},{t:"pull"},{t:"clone"},{t:"status"}] },
+        { name:"argumentos", items:[{t:"add origin"},{t:"git@github.com:afonso/projeto.git"},{t:"origin"},{t:"main"},{t:"-u",cls:"flag"}] }
+      ],
+      steps:[
+        {
+          ask:"Diz ao Git onde fica o repositorio no GitHub. Ja criaste la o repositorio vazio.",
+          accept:["git remote add origin git@github.com:afonso/projeto.git"],
+          hint:"Comeca por git remote, depois add origin, depois o endereco.",
+          explain:"origin e apenas um nome curto para o endereco do servidor. Podia chamar-se outra coisa, mas por convencao chama-se origin.",
+          wrong:{ "git clone git@github.com:afonso/projeto.git":"O clone serve para trazer um repositorio que ja existe la para o teu computador. Aqui e o contrario: ja tens o repositorio local e queres liga-lo ao servidor." },
+          apply:function(s){ s.remote = "github"; return "remote origin adicionado"; }
+        },
+        {
+          ask:"Envia o teu ramo main para o GitHub, deixando-o associado.",
+          accept:["git push -u origin main"],
+          hint:"O -u faz a ligacao entre o teu ramo local e o do servidor, para depois bastar escrever git push.",
+          explain:"push envia os teus commits para o servidor. O -u (de upstream) guarda a associacao, e por isso das proximas vezes basta git push.",
+          wrong:{ "git push":"Ainda nao existe associacao entre o teu ramo e o servidor, por isso o Git nao sabe para onde enviar. Da-lhe origin e main, com -u.",
+                  "git pull":"Pull traz o que esta no servidor para ti. Aqui queres o contrario." },
+          apply:function(s){ s.remoteCommits = s.commits.length; return "To github.com:afonso/projeto.git\n * [new branch] main -> main"; }
+        }
+      ],
+      lesson:"push envia, pull traz. origin e o nome do servidor, main e o nome do ramo. O -u so e preciso da primeira vez."
+    },
+    {
+      id:"git3", track:"git", title:"Trabalhar num ramo",
+      brief:"Vais fazer uma alteracao com risco: mexer no login. Se trabalhares diretamente no main e correr mal, estragas o que ja funciona. Faz-se num ramo separado.",
+      goal:"Criar um ramo, fazer o trabalho la e envia-lo para o GitHub.",
+      initial: gitState({ repo:true, remote:"github", commits:["primeira versao"], remoteCommits:1, work:["login.js"] }),
+      tokens:[
+        { name:"comando", items:[{t:"git",cls:"cmd"}] },
+        { name:"subcomando", items:[{t:"checkout"},{t:"branch"},{t:"add"},{t:"commit"},{t:"push"},{t:"merge"}] },
+        { name:"argumentos", items:[{t:"-b feature/login",cls:"flag"},{t:"feature/login"},{t:"."},{t:'-m "novo login"',cls:"flag"},{t:"-u origin",cls:"flag"},{t:"main"}] }
+      ],
+      steps:[
+        {
+          ask:"Cria um ramo chamado feature/login e passa a trabalhar nele.",
+          accept:["git checkout -b feature/login"],
+          hint:"checkout com -b cria e muda para o ramo de uma vez. (O git switch -c faz o mesmo, e mais recente.)",
+          explain:"Um ramo e uma linha de trabalho paralela. O main fica intacto enquanto experimentas aqui.",
+          wrong:{ "git branch feature/login":"Isto cria o ramo mas deixa-te no main. Falta mudares para la. O -b do checkout faz as duas coisas." },
+          apply:function(s){ s.branch = "feature/login"; s.branches.push("feature/login"); return "Switched to a new branch 'feature/login'"; }
+        },
+        {
+          ask:"Poe o ficheiro do login em staging.",
+          accept:["git add .","git add login.js"],
+          hint:"O mesmo comando de sempre para preparar ficheiros.",
+          explain:"O ciclo repete-se em qualquer ramo: add, depois commit.",
+          apply:function(s){ s.stage = s.work.slice(); s.work = []; return "1 ficheiro adicionado a staging"; }
+        },
+        {
+          ask:"Guarda a alteracao com a mensagem novo login.",
+          accept:['git commit -m "novo login"'],
+          hint:"Commit com mensagem, como da outra vez.",
+          explain:"Este commit fica no ramo feature/login. O main continua exatamente como estava.",
+          apply:function(s){ s.commits.push("novo login"); s.stage = []; return "[feature/login] novo login"; }
+        },
+        {
+          ask:"Envia este ramo novo para o GitHub.",
+          accept:["git push -u origin feature/login"],
+          hint:"O ramo ainda nao existe no servidor, por isso precisa outra vez do -u e do nome.",
+          explain:"Agora o ramo existe nos dois lados. E deste estado que nasce um pull request.",
+          wrong:{ "git push -u origin main":"Estas a trabalhar no ramo feature/login, e e esse que queres enviar, nao o main." },
+          apply:function(s){ s.remoteBranch = "feature/login"; return "* [new branch] feature/login -> feature/login"; }
+        }
+      ],
+      lesson:"Ramos servem para isolar trabalho. Criar (checkout -b), trabalhar (add e commit) e enviar (push -u origin nome-do-ramo)."
+    },
+    {
+      id:"git4", track:"git", title:"O pull request",
+      brief:"O teu ramo esta no GitHub. Agora queres que o trabalho entre no main, mas com alguem a ver primeiro. E para isso que serve um pull request.",
+      goal:"Fazer o merge do teu trabalho no main e actualizar o teu computador.",
+      initial: gitState({ repo:true, remote:"github", branch:"feature/login", branches:["main","feature/login"], commits:["primeira versao","novo login"], remoteCommits:2, remoteBranch:"feature/login" }),
+      tokens:[
+        { name:"no GitHub (nao e comando)", items:[{t:"abrir pull request"},{t:"pedir revisao"},{t:"fazer merge do PR"}] },
+        { name:"comando", items:[{t:"git",cls:"cmd"}] },
+        { name:"subcomando", items:[{t:"checkout"},{t:"pull"},{t:"push"},{t:"branch"}] },
+        { name:"argumentos", items:[{t:"main"},{t:"-d feature/login",cls:"flag"}] }
+      ],
+      steps:[
+        {
+          ask:"No site do GitHub, propoe que o teu ramo entre no main.",
+          accept:["abrir pull request"],
+          hint:"Isto nao e um comando de terminal, e uma accao no site.",
+          explain:"Um pull request e um pedido: quero juntar este ramo ao main. Fica um sitio proprio para discussao e revisao antes de decidir.",
+          apply:function(s){ s.pr = "aberto"; return "Pull request #1 aberto: feature/login -> main"; }
+        },
+        {
+          ask:"Pede a alguem da equipa que reveja o teu codigo.",
+          accept:["pedir revisao"],
+          hint:"Tambem e uma accao no site, no painel do pull request.",
+          explain:"A revisao e o ponto do processo: outra pessoa le a alteracao antes de ela entrar no main. E aqui que se apanham erros e se aprende.",
+          apply:function(s){ s.pr = "aprovado"; return "Revisao aprovada por @rita"; }
+        },
+        {
+          ask:"Junta finalmente o trabalho ao main.",
+          accept:["fazer merge do pr"],
+          hint:"Botao verde no site, depois da aprovacao.",
+          explain:"O merge junta os commits do ramo ao main, no servidor. O teu computador ainda nao sabe disto.",
+          apply:function(s){ s.pr = "fechado"; s.mainMerged = true; s.remoteCommits = 2; return "Pull request #1 merged"; }
+        },
+        {
+          ask:"Volta ao ramo main no teu computador.",
+          accept:["git checkout main"],
+          hint:"Mudar de ramo, sem criar nenhum.",
+          explain:"Sem -b, o checkout muda para um ramo que ja existe.",
+          apply:function(s){ s.branch = "main"; return "Switched to branch 'main'"; }
+        },
+        {
+          ask:"Traz para o teu computador o main ja com o trabalho juntado.",
+          accept:["git pull"],
+          hint:"O contrario do push.",
+          explain:"pull vai buscar ao servidor o que ha de novo e aplica-o no teu ramo. Agora os dois lados estao iguais.",
+          wrong:{ "git push":"Nao tens nada de novo para enviar. O que ha de novo esta no servidor e falta-te a ti." },
+          apply:function(s){ s.commits = ["primeira versao","novo login"]; return "Updating 1a2b3c..4d5e6f\nFast-forward"; }
+        }
+      ],
+      lesson:"O ciclo completo: ramo, push, pull request, revisao, merge, e no fim voltar ao main e fazer pull."
+    },
+    {
+      id:"git5", track:"git", title:"Um conflito",
+      brief:"Enquanto trabalhavas, um colega alterou a mesma linha do mesmo ficheiro e ja fez merge. Quando tentares enviar, o Git vai recusar. Isto assusta toda a gente na primeira vez, e resolve-se sempre da mesma maneira.",
+      goal:"Resolver o conflito e ficar com o teu trabalho enviado.",
+      initial: gitState({ repo:true, remote:"github", commits:["primeira versao","novo login","ajuste no menu"], remoteCommits:4, work:[] }),
+      tokens:[
+        { name:"comando", items:[{t:"git",cls:"cmd"}] },
+        { name:"subcomando", items:[{t:"push"},{t:"pull"},{t:"add"},{t:"commit"},{t:"status"},{t:"merge"}] },
+        { name:"argumentos", items:[{t:"."},{t:"menu.js"},{t:'-m "resolve conflito no menu"',cls:"flag"},{t:"--force",cls:"flag"}] },
+        { name:"no editor", items:[{t:"escolher as linhas certas"}] }
+      ],
+      steps:[
+        {
+          ask:"Tenta enviar o teu trabalho.",
+          accept:["git push"],
+          hint:"O comando normal de enviar.",
+          explain:"O Git recusou. Nao e um erro teu: o servidor tem commits que tu ainda nao tens, e ele nao deixa escrever por cima.",
+          apply:function(s){ s.rejected = true; return "! [rejected] main -> main (fetch first)\nhint: Updates were rejected because the remote contains work that you do not have locally."; },
+          outputType:"err"
+        },
+        {
+          ask:"Traz primeiro o que esta no servidor.",
+          accept:["git pull"],
+          hint:"O proprio erro sugere fetch first. Puxa o trabalho dos outros para ti.",
+          explain:"O Git tentou juntar automaticamente e conseguiu em quase tudo, mas na mesma linha do menu.js nao consegue adivinhar qual das versoes vale. Marcou o ficheiro como em conflito.",
+          apply:function(s){ s.conflict = true; s.work = ["menu.js (conflito)"]; return "CONFLICT (content): Merge conflict in menu.js\nAutomatic merge failed; fix conflicts and then commit the result."; },
+          outputType:"err"
+        },
+        {
+          ask:"Abre o ficheiro e decide que linhas ficam.",
+          accept:["escolher as linhas certas"],
+          hint:"Isto faz-se no editor, nao no terminal. O Git marcou as duas versoes no ficheiro.",
+          explain:"O Git escreve as duas versoes no ficheiro, separadas por <<<<<<< e >>>>>>>. Apagas os marcadores e deixas o codigo como deve ficar. Nao ha magia, es tu a decidir.",
+          wrong:{ "git push --force":"Nunca. O force apaga o trabalho do teu colega no servidor. E a forma mais rapida de estragar o dia a alguem." },
+          apply:function(s){ s.work = ["menu.js"]; return "menu.js corrigido a mao"; }
+        },
+        {
+          ask:"Marca o conflito como resolvido.",
+          accept:["git add .","git add menu.js"],
+          hint:"Adicionar o ficheiro e a forma de dizer ao Git que ja esta tratado.",
+          explain:"Fazer add a um ficheiro que estava em conflito e a maneira de dizer ao Git que ja decidiste.",
+          apply:function(s){ s.stage = s.work.slice(); s.work = []; return "conflito marcado como resolvido"; }
+        },
+        {
+          ask:"Fecha a juncao com um commit.",
+          accept:['git commit -m "resolve conflito no menu"',"git commit"],
+          hint:"Neste caso o Git ate aceita um commit sem -m, porque ja tem uma mensagem preparada para o merge.",
+          explain:"Este commit fecha a juncao. Repara que num merge o commit sem -m funciona, porque o Git ja tem a mensagem escrita.",
+          apply:function(s){ s.commits.push("resolve conflito no menu"); s.stage = []; s.conflict = false; return "[main] resolve conflito no menu"; }
+        },
+        {
+          ask:"Agora sim, envia.",
+          accept:["git push"],
+          hint:"O mesmo comando do inicio, agora ja com o trabalho dos dois juntado.",
+          explain:"Agora o servidor aceita, porque o teu historico ja inclui o trabalho dele.",
+          apply:function(s){ s.rejected = false; s.remoteCommits = s.commits.length; return "main -> main (tudo enviado)"; }
+        }
+      ],
+      lesson:"Um conflito nao e uma avaria. E o Git a dizer que duas pessoas mexeram na mesma linha e que a decisao tem de ser tua. Nunca resolvas com push --force."
+    },
+
+    // ---------------- GITLAB ----------------
+    {
+      id:"gl1", track:"gitlab", title:"GitLab, as mesmas pecas com outros nomes",
+      brief:"O GitLab faz o mesmo que o GitHub e usa exatamente os mesmos comandos git. O que muda sao os nomes das coisas no site e a integracao com pipelines.",
+      goal:"Enviar o projeto para o GitLab e abrir um merge request.",
+      initial: gitState({ repo:true, commits:["primeira versao"], branch:"feature/relatorio", branches:["main","feature/relatorio"] }),
+      tokens:[
+        { name:"comando", items:[{t:"git",cls:"cmd"}] },
+        { name:"subcomando", items:[{t:"remote"},{t:"push"},{t:"pull"}] },
+        { name:"argumentos", items:[{t:"add origin"},{t:"git@gitlab.com:conkord/projeto.git"},{t:"-u origin",cls:"flag"},{t:"feature/relatorio"}] },
+        { name:"no GitLab (nao e comando)", items:[{t:"abrir merge request"},{t:"abrir pull request"}] }
+      ],
+      steps:[
+        {
+          ask:"Liga o repositorio ao GitLab.",
+          accept:["git remote add origin git@gitlab.com:conkord/projeto.git"],
+          hint:"Exatamente o mesmo comando do GitHub, so muda o endereco.",
+          explain:"Os comandos git sao iguais em qualquer servidor. GitHub, GitLab, Bitbucket ou um servidor da empresa: muda so o endereco.",
+          apply:function(s){ s.remote = "gitlab"; return "remote origin adicionado (gitlab.com)"; }
+        },
+        {
+          ask:"Envia o teu ramo.",
+          accept:["git push -u origin feature/relatorio"],
+          hint:"Igual ao GitHub.",
+          explain:"O GitLab responde ao push com uma sugestao de link para criar logo o merge request.",
+          apply:function(s){ s.remoteBranch = "feature/relatorio"; return "remote: To create a merge request for feature/relatorio, visit:\nremote:   https://gitlab.com/conkord/projeto/-/merge_requests/new"; }
+        },
+        {
+          ask:"Propoe a juncao do teu ramo. Atencao ao nome certo no GitLab.",
+          accept:["abrir merge request"],
+          hint:"No GitHub chama-se pull request. No GitLab tem outro nome.",
+          explain:"E a mesma coisa com nome diferente: no GitHub e pull request (PR), no GitLab e merge request (MR). Quem vem do GitHub troca isto a toda a hora.",
+          wrong:{ "abrir pull request":"Esse e o nome do GitHub. No GitLab a mesma coisa chama-se merge request." },
+          apply:function(s){ s.pr = "MR aberto"; return "Merge request !1 aberto"; }
+        }
+      ],
+      lesson:"Vocabulario: pull request no GitHub e merge request no GitLab. Organizacao no GitHub e group no GitLab. Actions no GitHub e CI/CD pipelines no GitLab. Os comandos git nao mudam nada."
+    },
+    {
+      id:"gl2", track:"gitlab", title:"O primeiro pipeline",
+      brief:"Um pipeline e uma receita que o GitLab corre sozinho sempre que envias codigo. Serve para testar antes de alguem aprovar. A receita vive num ficheiro chamado .gitlab-ci.yml na raiz do projeto.",
+      goal:"Criar o ficheiro do pipeline, envia-lo e ver o pipeline passar.",
+      initial: gitState({ repo:true, remote:"gitlab", commits:["primeira versao"], branch:"main" }),
+      tokens:[
+        { name:"criar ficheiro", items:[{t:".gitlab-ci.yml"},{t:"Jenkinsfile"},{t:".github/workflows/ci.yml"}] },
+        { name:"comando", items:[{t:"git",cls:"cmd"}] },
+        { name:"subcomando", items:[{t:"add"},{t:"commit"},{t:"push"}] },
+        { name:"argumentos", items:[{t:"."},{t:'-m "adiciona pipeline"',cls:"flag"}] }
+      ],
+      steps:[
+        {
+          ask:"Cria o ficheiro onde o GitLab vai buscar a receita.",
+          accept:[".gitlab-ci.yml"],
+          hint:"O nome comeca por ponto e acaba em .yml. E especifico do GitLab.",
+          explain:"O GitLab procura sempre um ficheiro com este nome exato na raiz. Se ele nao existir, nao ha pipeline nenhum.",
+          wrong:{ ".github/workflows/ci.yml":"Esse e o caminho do GitHub Actions. No GitLab o ficheiro e .gitlab-ci.yml na raiz.",
+                  "Jenkinsfile":"Esse e do Jenkins, outra ferramenta. Aqui e o GitLab." },
+          apply:function(s){ s.work = [".gitlab-ci.yml"]; return "criado .gitlab-ci.yml com dois stages: build e test"; }
+        },
+        {
+          ask:"Prepara o ficheiro.",
+          accept:["git add .","git add .gitlab-ci.yml"],
+          hint:"O de sempre.",
+          explain:"O ficheiro do pipeline versiona-se como qualquer outro. Fica no repositorio, ao lado do codigo.",
+          apply:function(s){ s.stage = s.work.slice(); s.work = []; return "1 ficheiro adicionado"; }
+        },
+        {
+          ask:"Guarda no historico.",
+          accept:['git commit -m "adiciona pipeline"'],
+          hint:"Commit com mensagem.",
+          explain:"Ate aqui, ainda so no teu computador.",
+          apply:function(s){ s.commits.push("adiciona pipeline"); s.stage = []; return "[main] adiciona pipeline"; }
+        },
+        {
+          ask:"Envia, para o GitLab correr o pipeline.",
+          accept:["git push"],
+          hint:"Enviar.",
+          explain:"Assim que o codigo chega, o GitLab le o .gitlab-ci.yml e corre os stages pela ordem escrita. Cada stage so comeca se o anterior passou.",
+          apply:function(s){ s.remoteCommits = s.commits.length; s.pipeline = "passou"; return "Pipeline #482 iniciado\n  build ... ok\n  test  ... ok\nPipeline passou"; },
+          outputType:"ok"
+        }
+      ],
+      lesson:"Pipeline e automatizacao: envias codigo e o servidor corre a receita do .gitlab-ci.yml. Stages correm por ordem e param a cadeia se algum falhar."
+    },
+    {
+      id:"gl3", track:"gitlab", title:"O pipeline falhou",
+      brief:"Enviaste codigo e o pipeline ficou vermelho. Isto acontece todos os dias. O importante e saber ler onde falhou em vez de adivinhar.",
+      goal:"Perceber a falha, corrigir e ver o pipeline verde antes do merge.",
+      initial: gitState({ repo:true, remote:"gitlab", branch:"feature/relatorio", branches:["main","feature/relatorio"], commits:["primeira versao","adiciona pipeline","relatorio novo"], remoteCommits:3, pipeline:"falhou", pr:"MR aberto" }),
+      tokens:[
+        { name:"no GitLab (nao e comando)", items:[{t:"abrir o log do job que falhou"},{t:"voltar a correr o pipeline"},{t:"fazer merge do MR"}] },
+        { name:"corrigir", items:[{t:"corrigir o teste que falhou"},{t:"apagar o teste"}] },
+        { name:"comando", items:[{t:"git",cls:"cmd"}] },
+        { name:"subcomando", items:[{t:"add"},{t:"commit"},{t:"push"}] },
+        { name:"argumentos", items:[{t:"."},{t:'-m "corrige calculo do total"',cls:"flag"}] }
+      ],
+      steps:[
+        {
+          ask:"Descobre o que falhou.",
+          accept:["abrir o log do job que falhou"],
+          hint:"Antes de mexer no codigo, le o que a maquina disse.",
+          explain:"O log diz sempre qual foi o job e a linha do erro. Aqui o job test falhou: um teste esperava 120 e recebeu 100.",
+          wrong:{ "voltar a correr o pipeline":"Correr outra vez sem mudar nada da o mesmo resultado. Le primeiro o log." },
+          apply:function(s){ return "job test:\n  FAIL calculo do total\n  esperado 120, recebido 100"; },
+          outputType:"err"
+        },
+        {
+          ask:"Trata da causa.",
+          accept:["corrigir o teste que falhou"],
+          hint:"Ha uma opcao correcta e uma tentacao.",
+          explain:"O teste estava a fazer o seu trabalho: apanhou uma conta errada. Apagar o teste faria o pipeline ficar verde e o erro seguir para producao.",
+          wrong:{ "apagar o teste":"Assim o pipeline fica verde e o erro fica no produto. O teste falhou porque encontrou um problema a serio." },
+          apply:function(s){ s.work = ["calculo.js"]; return "calculo.js corrigido"; }
+        },
+        {
+          ask:"Prepara a correcao.",
+          accept:["git add ."],
+          hint:"O de sempre.",
+          explain:"",
+          apply:function(s){ s.stage = s.work.slice(); s.work = []; return "1 ficheiro adicionado"; }
+        },
+        {
+          ask:"Guarda a correcao.",
+          accept:['git commit -m "corrige calculo do total"'],
+          hint:"Commit com mensagem que diga o que foi feito.",
+          explain:"Uma mensagem que explica o que mudou vale ouro daqui a seis meses.",
+          apply:function(s){ s.commits.push("corrige calculo do total"); s.stage = []; return "[feature/relatorio] corrige calculo do total"; }
+        },
+        {
+          ask:"Envia a correcao para o pipeline correr outra vez.",
+          accept:["git push"],
+          hint:"Cada push dispara um pipeline novo.",
+          explain:"O merge request actualiza-se sozinho e o pipeline volta a correr. Verde, o MR fica pronto a ser aprovado.",
+          apply:function(s){ s.remoteCommits = s.commits.length; s.pipeline = "passou"; return "Pipeline #489\n  build ... ok\n  test  ... ok"; },
+          outputType:"ok"
+        },
+        {
+          ask:"Com o pipeline verde e a revisao feita, junta o trabalho.",
+          accept:["fazer merge do mr"],
+          hint:"Accao no site do GitLab.",
+          explain:"Muitas equipas bloqueiam o merge enquanto o pipeline nao estiver verde. E essa a ideia toda: o robo verifica antes de a pessoa aprovar.",
+          apply:function(s){ s.pr = "MR fechado"; return "Merge request !2 merged"; }
+        }
+      ],
+      lesson:"Pipeline vermelho: ler o log, corrigir a causa, voltar a enviar. Nunca apagar o teste para o silenciar."
+    },
+
+    // ---------------- DOCKER ----------------
+    {
+      id:"dk1", track:"docker", title:"Imagem e contentor",
+      brief:"Docker tem duas ideias que se confundem no inicio. A imagem e a receita congelada; o contentor e o prato feito a partir dela. De uma imagem podes correr muitos contentores.",
+      goal:"Trazer uma imagem, correr um contentor e ve-lo a trabalhar.",
+      initial: dockerState({}),
+      tokens:[
+        { name:"comando", items:[{t:"docker",cls:"cmd docker"}] },
+        { name:"subcomando", items:[{t:"pull"},{t:"images"},{t:"run"},{t:"ps"},{t:"stop"}] },
+        { name:"argumentos", items:[{t:"nginx"},{t:"-d",cls:"flag"},{t:"-p 8080:80",cls:"flag"},{t:"-it",cls:"flag"}] }
+      ],
+      steps:[
+        {
+          ask:"Traz a imagem do nginx para o teu computador.",
+          accept:["docker pull nginx"],
+          hint:"Descarregar chama-se pull, tal como no git.",
+          explain:"A imagem vem de um registo publico (o Docker Hub). Fica guardada no teu computador e nao esta a correr: e so a receita.",
+          apply:function(s){ s.images.push("nginx"); return "Using default tag: latest\nStatus: Downloaded newer image for nginx:latest"; }
+        },
+        {
+          ask:"Confirma que a imagem ja ca esta.",
+          accept:["docker images"],
+          hint:"Listar imagens.",
+          explain:"docker images lista as receitas que tens. Repara que nada esta a correr ainda.",
+          wrong:{ "docker ps":"Esse lista contentores a correr, e ainda nao correste nenhum. Para ver imagens usa docker images." },
+          apply:function(s){ return "REPOSITORY   TAG      SIZE\nnginx        latest   187MB"; }
+        },
+        {
+          ask:"Corre um contentor em segundo plano, com o porto 8080 do teu computador ligado ao 80 do contentor.",
+          accept:["docker run -d -p 8080:80 nginx"],
+          hint:"-d corre em segundo plano, -p liga portos na forma teu:contentor.",
+          explain:"O -p 8080:80 e a ponte: o nginx dentro do contentor ouve no porto 80, e tu chegas la pelo 8080 do teu computador. Sem isto, o contentor corre mas nao consegues aceder.",
+          wrong:{ "docker run -d nginx":"Corre, mas fica inacessivel: sem -p nao ha ponte entre os portos do teu computador e os do contentor.",
+                  "docker run nginx":"Sem -d o terminal fica preso a mostrar os registos do nginx, e sem -p nao lhe consegues aceder." },
+          apply:function(s){ s.containers.push({ name:"nginx", id:"a1b2c3", state:"a correr", port:"8080:80" }); return "a1b2c3d4e5f6"; }
+        },
+        {
+          ask:"Ve o que esta a correr.",
+          accept:["docker ps"],
+          hint:"O ps de process status, como no Linux.",
+          explain:"Ja tens um contentor a servir paginas em localhost:8080. A imagem continua intacta, e podias correr mais contentores iguais a partir dela.",
+          apply:function(s){ return "CONTAINER ID  IMAGE   STATUS         PORTS\na1b2c3        nginx   Up 10 seconds  0.0.0.0:8080->80/tcp"; }
+        }
+      ],
+      lesson:"Imagem e o molde, contentor e a instancia a correr. -d corre em segundo plano, -p liga o porto de fora ao porto de dentro."
+    },
+    {
+      id:"dk2", track:"docker", title:"Parar e limpar",
+      brief:"Contentores parados e imagens antigas acumulam-se e enchem o disco. Vale a pena perceber a diferenca entre parar, remover o contentor e remover a imagem.",
+      goal:"Parar o contentor, remove-lo e remover a imagem.",
+      initial: dockerState({ images:["nginx"], containers:[{ name:"nginx", id:"a1b2c3", state:"a correr", port:"8080:80" }] }),
+      tokens:[
+        { name:"comando", items:[{t:"docker",cls:"cmd docker"}] },
+        { name:"subcomando", items:[{t:"stop"},{t:"ps"},{t:"rm"},{t:"rmi"},{t:"images"}] },
+        { name:"argumentos", items:[{t:"a1b2c3"},{t:"nginx"},{t:"-a",cls:"flag"}] }
+      ],
+      steps:[
+        {
+          ask:"Para o contentor que esta a correr.",
+          accept:["docker stop a1b2c3"],
+          hint:"Parar, indicando o id do contentor.",
+          explain:"O contentor parou mas continua a existir, com o seu estado guardado. E como desligar uma maquina em vez de a deitar fora.",
+          apply:function(s){ s.containers[0].state = "parado"; return "a1b2c3"; }
+        },
+        {
+          ask:"Mostra tambem os contentores parados, para veres que ele ainda la esta.",
+          accept:["docker ps -a"],
+          hint:"O ps normal so mostra os que estao a correr. Falta uma flag.",
+          explain:"Sem -a nao verias nada e ficarias a pensar que ja tinha desaparecido. Esta e a confusao numero um de quem comeca.",
+          wrong:{ "docker ps":"Esse so mostra os que estao a correr, e este ja esta parado. Acrescenta -a." },
+          apply:function(s){ return "CONTAINER ID  IMAGE   STATUS\na1b2c3        nginx   Exited (0) 5 seconds ago"; }
+        },
+        {
+          ask:"Remove o contentor.",
+          accept:["docker rm a1b2c3"],
+          hint:"rm de remover, com o id.",
+          explain:"Agora sim, o contentor desapareceu. A imagem continua no disco, pronta a criar outros.",
+          apply:function(s){ s.containers = []; return "a1b2c3"; }
+        },
+        {
+          ask:"Remove tambem a imagem, para libertar o espaco.",
+          accept:["docker rmi nginx"],
+          hint:"O comando das imagens leva um i no fim.",
+          explain:"rmi remove a imagem. So funciona se nenhum contentor a estiver a usar, e por isso a ordem e sempre esta: parar, remover contentor, remover imagem.",
+          wrong:{ "docker rm nginx":"rm e para contentores. Para imagens e rmi, com i de image." },
+          apply:function(s){ s.images = []; return "Untagged: nginx:latest\nDeleted: sha256:a1b2c3"; }
+        }
+      ],
+      lesson:"stop para, rm remove o contentor, rmi remove a imagem. E docker ps -a para ver tambem os parados."
+    },
+    {
+      id:"dk3", track:"docker", title:"A tua propria imagem",
+      brief:"Ate aqui usaste uma imagem feita por outros. Agora vais construir a tua a partir de um Dockerfile, que e a receita escrita linha a linha.",
+      goal:"Construir uma imagem tua e correr um contentor com ela.",
+      initial: dockerState({}),
+      tokens:[
+        { name:"criar receita", items:[{t:"Dockerfile"},{t:"docker-compose.yml"}] },
+        { name:"comando", items:[{t:"docker",cls:"cmd docker"}] },
+        { name:"subcomando", items:[{t:"build"},{t:"images"},{t:"run"},{t:"logs"}] },
+        { name:"argumentos", items:[{t:"-t minha-app",cls:"flag"},{t:"."},{t:"minha-app"},{t:"-d",cls:"flag"},{t:"-p 3000:3000",cls:"flag"},{t:"f6e5d4"}] }
+      ],
+      steps:[
+        {
+          ask:"Cria o ficheiro com a receita da imagem.",
+          accept:["dockerfile"],
+          hint:"Nome proprio, sem extensao, com D grande.",
+          explain:"O Dockerfile descreve os passos: de que imagem partes (FROM), o que copias (COPY), o que instalas (RUN) e o que corre no arranque (CMD).",
+          wrong:{ "docker-compose.yml":"Esse ficheiro serve para orquestrar varios contentores ao mesmo tempo. Para descrever uma imagem e o Dockerfile." },
+          apply:function(s){ s.dockerfile = true; return "Dockerfile criado:\n  FROM node:20-alpine\n  COPY . .\n  RUN npm install\n  CMD [\"npm\",\"start\"]"; }
+        },
+        {
+          ask:"Constroi a imagem e chama-lhe minha-app. Atencao ao ponto no fim.",
+          accept:["docker build -t minha-app ."],
+          hint:"-t da o nome (tag) e o ponto diz onde esta o Dockerfile: nesta pasta.",
+          explain:"O ponto final e o contexto: a pasta que o Docker envia para construir. E o esquecimento mais comum, e sem ele o comando falha.",
+          wrong:{ "docker build -t minha-app":"Falta o ponto no fim. Sem ele o Docker nao sabe de que pasta partir.",
+                  "docker build .":"Constroi mas fica sem nome, e depois so lhe consegues chamar por um id. Usa -t para lhe dares nome." },
+          apply:function(s){ s.images.push("minha-app"); return "=> [1/4] FROM node:20-alpine\n=> [2/4] COPY . .\n=> [3/4] RUN npm install\n=> naming to docker.io/library/minha-app"; }
+        },
+        {
+          ask:"Corre a tua imagem em segundo plano, com o porto 3000 ligado.",
+          accept:["docker run -d -p 3000:3000 minha-app"],
+          hint:"Igual ao nginx, mudando nome e portos.",
+          explain:"A partir daqui esta app corre igual em qualquer computador que tenha Docker. E esse o ponto todo: acaba o funciona na minha maquina.",
+          apply:function(s){ s.containers.push({ name:"minha-app", id:"f6e5d4", state:"a correr", port:"3000:3000" }); return "f6e5d4c3b2a1"; }
+        },
+        {
+          ask:"Ve o que a app escreveu no arranque.",
+          accept:["docker logs f6e5d4"],
+          hint:"Registos chamam-se logs, com o id do contentor.",
+          explain:"docker logs mostra o que a aplicacao escreveu. E o primeiro sitio a espreitar quando um contentor arranca e morre logo a seguir.",
+          apply:function(s){ return "> minha-app@1.0.0 start\n> node server.js\nServidor a ouvir na porta 3000"; },
+          outputType:"ok"
+        }
+      ],
+      lesson:"Dockerfile descreve, docker build -t nome . constroi, docker run corre. O ponto no fim do build e obrigatorio, e docker logs e o teu primeiro diagnostico."
+    },
+    {
+      id:"dk4", track:"docker", title:"Varios servicos ao mesmo tempo",
+      brief:"Uma app a serio raramente e um contentor so: e a aplicacao mais a base de dados, e talvez mais uma cache. Escrever tres docker run a mao de cada vez e mau. Para isso existe o compose.",
+      goal:"Levantar app e base de dados com um comando, e depois desligar tudo.",
+      initial: dockerState({ images:["minha-app"] }),
+      tokens:[
+        { name:"criar receita", items:[{t:"docker-compose.yml"},{t:"Dockerfile"}] },
+        { name:"comando", items:[{t:"docker",cls:"cmd docker"}] },
+        { name:"subcomando", items:[{t:"compose"},{t:"run"},{t:"ps"}] },
+        { name:"argumentos", items:[{t:"up"},{t:"down"},{t:"-d",cls:"flag"},{t:"logs -f",cls:"flag"}] }
+      ],
+      steps:[
+        {
+          ask:"Cria o ficheiro que descreve os servicos todos.",
+          accept:["docker-compose.yml"],
+          hint:"Um ficheiro yml com compose no nome.",
+          explain:"No compose escreves cada servico com a sua imagem, portos e variaveis. Fica tudo num sitio so, versionado com o codigo.",
+          apply:function(s){ s.compose = true; return "docker-compose.yml criado:\n  services:\n    app:  build: .  ports: 3000:3000\n    db:   image: postgres:16"; }
+        },
+        {
+          ask:"Levanta os servicos todos em segundo plano.",
+          accept:["docker compose up -d"],
+          hint:"Subir chama-se up, e o -d ja conheces.",
+          explain:"Um comando levanta tudo, cria a rede entre os contentores e liga os portos. Dentro da rede, a app chega a base de dados pelo nome do servico, db.",
+          wrong:{ "docker compose up":"Funciona, mas o terminal fica preso a mostrar os registos dos dois servicos. Acrescenta -d para os deixares a correr em segundo plano." },
+          apply:function(s){
+            s.containers.push({ name:"app", id:"11aa22", state:"a correr", port:"3000:3000" });
+            s.containers.push({ name:"db", id:"33bb44", state:"a correr", port:"5432" });
+            return "Creating network projeto_default\nCreating projeto-db-1  ... done\nCreating projeto-app-1 ... done";
+          }
+        },
+        {
+          ask:"Confirma que estao os dois de pe.",
+          accept:["docker compose ps","docker ps"],
+          hint:"Listar, com ou sem compose.",
+          explain:"O compose ps mostra so os servicos deste projeto, o que e mais util quando tens varios projetos abertos.",
+          apply:function(s){ return "NAME            STATUS    PORTS\nprojeto-app-1   Up        0.0.0.0:3000->3000/tcp\nprojeto-db-1    Up        5432/tcp"; }
+        },
+        {
+          ask:"Desliga tudo e limpa a rede criada.",
+          accept:["docker compose down"],
+          hint:"O contrario de up.",
+          explain:"O down para e remove os contentores e a rede. Os dados da base de dados so sobrevivem se tiveres definido um volume, e essa e a licao mais cara de aprender por experiencia propria.",
+          apply:function(s){ s.containers = []; return "Stopping projeto-app-1 ... done\nRemoving projeto-db-1  ... done\nRemoving network projeto_default"; }
+        }
+      ],
+      lesson:"docker compose up -d levanta tudo, docker compose down desliga. Sem volumes definidos, os dados desaparecem com os contentores."
+    }
+  ];
+
+  var GLOSSARY = [
+    { track:"git", cmd:"git init", desc:"Transforma a pasta actual num repositorio Git." },
+    { track:"git", cmd:"git status", desc:"Mostra o que mudou e em que zona esta. O comando que mais vais usar." },
+    { track:"git", cmd:"git add .", desc:"Poe as alteracoes em staging, prontas para o proximo commit." },
+    { track:"git", cmd:'git commit -m "mensagem"', desc:"Guarda o que esta em staging no historico local, com uma mensagem." },
+    { track:"git", cmd:"git remote add origin <url>", desc:"Liga o repositorio local a um servidor, dando-lhe o nome origin." },
+    { track:"git", cmd:"git push -u origin main", desc:"Envia o ramo para o servidor e guarda a associacao. Depois basta git push." },
+    { track:"git", cmd:"git pull", desc:"Traz o que ha de novo no servidor e junta ao teu ramo." },
+    { track:"git", cmd:"git checkout -b nome", desc:"Cria um ramo novo e muda logo para ele. Igual a git switch -c nome." },
+    { track:"git", cmd:"git checkout main", desc:"Muda para um ramo que ja existe." },
+    { track:"git", cmd:"git log --oneline", desc:"Mostra o historico de commits, um por linha." },
+    { track:"git", cmd:"git merge nome", desc:"Junta o ramo indicado ao ramo onde estas." },
+    { track:"git", cmd:"push --force", desc:"Escreve por cima do servidor. Perigoso: pode apagar trabalho dos outros. Evita." },
+    { track:"gitlab", cmd:"Merge request (MR)", desc:"O mesmo que pull request no GitHub: pedido para juntar um ramo a outro." },
+    { track:"gitlab", cmd:".gitlab-ci.yml", desc:"Ficheiro na raiz onde escreves o pipeline. No GitHub o equivalente e .github/workflows/." },
+    { track:"gitlab", cmd:"stages", desc:"Fases do pipeline (build, test, deploy). Correm por ordem e param se uma falhar." },
+    { track:"gitlab", cmd:"job", desc:"Cada tarefa dentro de um stage. E o job que falha e cujo log vais ler." },
+    { track:"gitlab", cmd:"runner", desc:"A maquina que executa os jobs. Pode ser do GitLab ou da tua empresa." },
+    { track:"gitlab", cmd:"group", desc:"Agrupa projetos e permissoes. No GitHub chama-se organization." },
+    { track:"docker", cmd:"docker pull nome", desc:"Descarrega uma imagem do registo para o teu computador." },
+    { track:"docker", cmd:"docker images", desc:"Lista as imagens que tens guardadas." },
+    { track:"docker", cmd:"docker run -d -p 8080:80 nome", desc:"Cria e arranca um contentor. -d em segundo plano, -p liga porto de fora a porto de dentro." },
+    { track:"docker", cmd:"docker ps / docker ps -a", desc:"Lista contentores a correr. Com -a mostra tambem os parados." },
+    { track:"docker", cmd:"docker stop <id>", desc:"Para um contentor sem o apagar." },
+    { track:"docker", cmd:"docker rm <id>", desc:"Remove um contentor parado." },
+    { track:"docker", cmd:"docker rmi nome", desc:"Remove uma imagem. So funciona se nenhum contentor a usar." },
+    { track:"docker", cmd:"docker build -t nome .", desc:"Constroi uma imagem a partir do Dockerfile. O ponto no fim e obrigatorio." },
+    { track:"docker", cmd:"docker logs <id>", desc:"Mostra o que a aplicacao escreveu. Primeiro sitio a ver quando algo falha." },
+    { track:"docker", cmd:"docker exec -it <id> sh", desc:"Abre uma linha de comandos dentro do contentor a correr." },
+    { track:"docker", cmd:"docker compose up -d", desc:"Levanta todos os servicos do docker-compose.yml em segundo plano." },
+    { track:"docker", cmd:"docker compose down", desc:"Para e remove os contentores e a rede do projeto." },
+    { track:"docker", cmd:"volume", desc:"Guarda dados fora do contentor, para nao se perderem quando ele e removido." }
+  ];
+
+  // ================= estado =================
+  var progress = {};              // { missaoId: { stars, done } }
+  var ui = { tab:"missoes", mission:null, glossTrack:"git", cloudMode:null };
+  var cloudDb = null, storeReady = false;
+  var STORAGE_KEY = "consoladebolso.v1";
+
+  // estado da missao em curso
+  var run = null; // { mission, state, stepIndex, tokens:[], log:[], errors, hintsUsed, feedback, done }
+
+  function persist(){
+    if (!storeReady || ui.cloudMode) return;
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ progress:progress })); } catch(e){}
+  }
+
+  function withTimeout(promise, ms){
+    return new Promise(function(resolve, reject){
+      var done = false;
+      var timer = setTimeout(function(){ if (done) return; done = true; reject({ code:"timeout" }); }, ms);
+      promise.then(function(v){ if (done) return; done = true; clearTimeout(timer); resolve(v); },
+                   function(e){ if (done) return; done = true; clearTimeout(timer); reject(e); });
+    });
+  }
+
+  function saveProgress(){
+    if (ui.cloudMode && cloudDb){
+      withTimeout(cloudDb.doc("progress/main").set({ progress:progress }), 8000).catch(function(){
+        ui.cloudMode = false; storeReady = true; persist();
+      });
+    } else {
+      persist();
+    }
+  }
+
+  function initApp(){
+    render();
+    if (!(window.claude && window.claude.use)){ setupLocal(); return; }
+    window.claude.use("db").then(function(db){
+      if (!db){ setupLocal(); return; }
+      var settled = false;
+      var timer = setTimeout(function(){ if (!settled){ settled = true; setupLocal(); } }, 6000);
+      db.doc("progress/main").get().then(function(snap){
+        if (settled) return;
+        settled = true; clearTimeout(timer);
+        cloudDb = db; ui.cloudMode = true;
+        var data = snap.exists ? snap.data() : null;
+        if (data && data.progress){
+          var p = {};
+          for (var k in data.progress) p[k] = data.progress[k]; // vem congelado
+          progress = p;
+        }
+        db.doc("progress/main").onSnapshot(function(s){
+          if (!ui.cloudMode || !s.exists) return;
+          var d = s.data();
+          if (!d || !d.progress) return;
+          var copy = {};
+          for (var key in d.progress) copy[key] = d.progress[key];
+          progress = copy;
+          if (!run) render();
+        }, function(){});
+        render();
+      }).catch(function(){
+        if (settled) return;
+        settled = true; clearTimeout(timer);
+        setupLocal();
+      });
+    }).catch(function(){ setupLocal(); });
+  }
+
+  function setupLocal(){
+    ui.cloudMode = false;
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (raw){
+        var parsed = JSON.parse(raw);
+        progress = parsed.progress || {};
+      }
+    } catch(e){}
+    storeReady = true;
+    render();
+  }
+
+  // ================= util =================
+  function escapeHtml(s){
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+      return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c];
+    });
+  }
+  function normalize(cmd){
+    return String(cmd || "").toLowerCase().replace(/\s+/g, " ").trim();
+  }
+  function starsFor(errors, hints){
+    if (errors === 0 && hints === 0) return 3;
+    if (errors + hints <= 2) return 2;
+    return 1;
+  }
+  function starsHtml(n, size){
+    var out = "";
+    for (var i=1;i<=3;i++) out += "<span class='" + (i <= n ? "" : "off") + "'>&#9733;</span>";
+    return out;
+  }
+  function missionsOfTrack(track){
+    return MISSIONS.filter(function(m){ return m.track === track; });
+  }
+  function totalStars(){
+    var t = 0;
+    for (var k in progress) t += (progress[k].stars || 0);
+    return t;
+  }
+  function isUnlocked(mission){
+    var list = missionsOfTrack(mission.track);
+    var idx = list.indexOf(mission);
+    if (idx <= 0) return true;
+    var prev = list[idx-1];
+    return !!(progress[prev.id] && progress[prev.id].done);
+  }
+
+  // ================= render =================
+  var app = document.getElementById("app");
+
+  function render(){
+    persist();
+    app.innerHTML = "";
+    app.appendChild(renderTopbar());
+    var content = document.createElement("div");
+    content.className = "content";
+    if (run) content.appendChild(renderMission());
+    else if (ui.tab === "missoes") content.appendChild(renderMissionList());
+    else content.appendChild(renderGlossary());
+    app.appendChild(content);
+  }
+
+  function renderTopbar(){
+    var bar = document.createElement("div");
+    bar.className = "topbar";
+
+    var row = document.createElement("div");
+    row.className = "topbar-row";
+
+    var left = document.createElement("div");
+    left.style.cssText = "display:flex;align-items:center;gap:8px;min-width:0;";
+    var h1 = document.createElement("h1");
+    h1.textContent = "Consola de Bolso";
+    left.appendChild(h1);
+    var dot = document.createElement("span");
+    dot.className = "sync-dot" + (ui.cloudMode === true ? " good" : ui.cloudMode === false ? " warn" : "");
+    dot.onclick = function(){
+      alertBox(ui.cloudMode === true
+        ? "O teu progresso fica guardado na conta Claude e acompanha-te em qualquer dispositivo."
+        : "O progresso esta guardado so neste telemovel.");
+    };
+    left.appendChild(dot);
+    row.appendChild(left);
+
+    var xp = document.createElement("div");
+    xp.className = "xp-pill";
+    xp.innerHTML = "<b>" + totalStars() + "</b><span>/ " + (MISSIONS.length * 3) + "</span>";
+    row.appendChild(xp);
+
+    bar.appendChild(row);
+
+    if (!run){
+      var tabs = document.createElement("div");
+      tabs.className = "tabbar";
+      var t1 = document.createElement("div");
+      t1.className = "tab" + (ui.tab === "missoes" ? " active" : "");
+      t1.textContent = "Missoes";
+      t1.onclick = function(){ ui.tab = "missoes"; render(); };
+      var t2 = document.createElement("div");
+      t2.className = "tab" + (ui.tab === "glossario" ? " active" : "");
+      t2.textContent = "Glossario";
+      t2.onclick = function(){ ui.tab = "glossario"; render(); };
+      tabs.appendChild(t1); tabs.appendChild(t2);
+      bar.appendChild(tabs);
+    }
+    return bar;
+  }
+
+  function renderMissionList(){
+    var wrap = document.createDocumentFragment();
+
+    ["git","gitlab","docker"].forEach(function(trackId){
+      var track = TRACKS[trackId];
+      var list = missionsOfTrack(trackId);
+      var doneCount = list.filter(function(m){ return progress[m.id] && progress[m.id].done; }).length;
+
+      var head = document.createElement("div");
+      head.className = "track-head";
+      head.innerHTML =
+        "<span class='track-badge " + track.cls + "'>" + track.label + "</span>" +
+        "<span class='track-title'>" + track.desc + "</span>" +
+        "<span class='track-progress'>" + doneCount + "/" + list.length + "</span>";
+      wrap.appendChild(head);
+
+      list.forEach(function(mission, i){
+        var prog = progress[mission.id];
+        var unlocked = isUnlocked(mission);
+        var card = document.createElement("div");
+        card.className = "mission-card" + (unlocked ? "" : " locked");
+        card.innerHTML =
+          "<div class='mission-num " + track.cls + "'>" + (i+1) + "</div>" +
+          "<div class='mission-main'>" +
+            "<div class='mission-title'>" + escapeHtml(mission.title) + "</div>" +
+            "<div class='mission-sub'>" + escapeHtml(unlocked ? mission.goal : "Termina a missao anterior para abrir") + "</div>" +
+          "</div>" +
+          (unlocked
+            ? "<div class='stars'>" + starsHtml(prog ? prog.stars : 0) + "</div>"
+            : "<div class='lock'>&#128274;</div>");
+        if (unlocked) card.onclick = function(){ startMission(mission); };
+        wrap.appendChild(card);
+      });
+    });
+
+    var note = document.createElement("div");
+    note.className = "hint";
+    note.style.marginTop = "16px";
+    note.textContent = "Os comandos sao reais. Constroi-os tocando nas pecas, nao ha nada para escrever.";
+    wrap.appendChild(note);
+    return wrap;
+  }
+
+  function startMission(mission){
+    var initial = JSON.parse(JSON.stringify(mission.initial));
+    run = {
+      mission: mission, state: initial, stepIndex: 0, tokens: [],
+      log: [], errors: 0, hintsUsed: 0, feedback: null, showHint: false, done: false
+    };
+    render();
+  }
+
+  function renderMission(){
+    var wrap = document.createDocumentFragment();
+    var m = run.mission;
+
+    var back = document.createElement("div");
+    back.className = "back-link";
+    back.innerHTML = "&#8592; <span>Missoes</span>";
+    back.onclick = function(){ run = null; render(); };
+    wrap.appendChild(back);
+
+    var brief = document.createElement("div");
+    brief.className = "brief";
+    brief.innerHTML =
+      "<h2>" + escapeHtml(m.title) + "</h2>" +
+      "<p>" + escapeHtml(m.brief) + "</p>" +
+      "<div class='goal'><b>Objetivo</b>" + escapeHtml(m.goal) + "</div>";
+    wrap.appendChild(brief);
+
+    wrap.appendChild(renderState());
+
+    if (run.log.length){
+      var consoleEl = document.createElement("div");
+      consoleEl.className = "console";
+      consoleEl.innerHTML = run.log.map(function(entry){
+        var cls = entry.type === "err" ? "err" : entry.type === "ok" ? "ok" : "out";
+        return "<div class='cmd'>" + escapeHtml(entry.cmd) + "</div>" +
+               (entry.out ? "<div class='" + cls + "'>" + escapeHtml(entry.out) + "</div>" : "");
+      }).join("");
+      wrap.appendChild(consoleEl);
+      setTimeout(function(){ consoleEl.scrollTop = consoleEl.scrollHeight; }, 0);
+    }
+
+    if (run.done){
+      var stars = starsFor(run.errors, run.hintsUsed);
+      var doneBox = document.createElement("div");
+      doneBox.className = "mission-done";
+      doneBox.innerHTML =
+        "<h3>Missao cumprida</h3>" +
+        "<div class='stars-big'>" + starsHtml(stars) + "</div>" +
+        "<p>" + escapeHtml(m.lesson) + "</p>";
+      wrap.appendChild(doneBox);
+
+      var next = nextMission(m);
+      var btn = document.createElement("button");
+      btn.className = "btn-primary";
+      btn.textContent = next ? "Missao seguinte" : "Voltar as missoes";
+      btn.onclick = function(){
+        if (next) startMission(next);
+        else { run = null; render(); }
+      };
+      wrap.appendChild(btn);
+
+      var again = document.createElement("button");
+      again.className = "btn-secondary";
+      again.textContent = "Repetir esta missao";
+      again.onclick = function(){ startMission(m); };
+      wrap.appendChild(again);
+      return wrap;
+    }
+
+    var step = m.steps[run.stepIndex];
+    var stepBox = document.createElement("div");
+    stepBox.className = "step-box";
+    var inner =
+      "<div class='step-count'>Passo " + (run.stepIndex+1) + " de " + m.steps.length + "</div>" +
+      "<div class='step-ask'>" + escapeHtml(step.ask) + "</div>";
+    if (run.showHint && step.hint) inner += "<div class='step-hint'>" + escapeHtml(step.hint) + "</div>";
+    if (run.feedback){
+      inner += "<div class='feedback " + (run.feedback.ok ? "ok" : "no") + "'>" + escapeHtml(run.feedback.text) + "</div>";
+    }
+    stepBox.innerHTML = inner;
+    wrap.appendChild(stepBox);
+
+    wrap.appendChild(renderBuilder());
+
+    if (!run.showHint && step.hint){
+      var hintBtn = document.createElement("button");
+      hintBtn.className = "btn-secondary";
+      hintBtn.textContent = "Nao sei, da-me uma pista";
+      hintBtn.onclick = function(){ run.showHint = true; run.hintsUsed++; render(); };
+      wrap.appendChild(hintBtn);
+    }
+    return wrap;
+  }
+
+  function nextMission(m){
+    var idx = MISSIONS.indexOf(m);
+    return idx >= 0 && idx < MISSIONS.length - 1 ? MISSIONS[idx+1] : null;
+  }
+
+  function renderState(){
+    var s = run.state;
+    var box = document.createDocumentFragment();
+    var zones = document.createElement("div");
+    zones.className = "zones";
+
+    function zone(name, items, cls){
+      var z = document.createElement("div");
+      z.className = "zone";
+      var html = "<div class='zone-name'>" + name + "</div>";
+      if (!items.length) html += "<div class='zone-empty'>vazio</div>";
+      else html += items.map(function(it){ return "<span class='chip " + cls + "'>" + escapeHtml(it) + "</span>"; }).join("");
+      z.innerHTML = html;
+      return z;
+    }
+
+    if (s.kind === "git"){
+      zones.appendChild(zone("Trabalho", s.work, "new"));
+      zones.appendChild(zone("Staging", s.stage, "staged"));
+      zones.appendChild(zone("Local", s.commits.map(function(c,i){ return (i+1) + ". " + c; }), "commit"));
+      zones.appendChild(zone(s.remote === "gitlab" ? "GitLab" : "GitHub",
+        s.remote ? [s.remoteCommits + " commits"] : [], "commit"));
+    } else {
+      zones.appendChild(zone("Imagens", s.images, "img"));
+      zones.appendChild(zone("Contentores", s.containers.map(function(c){
+        return c.name + " " + (c.state === "a correr" ? "on" : "off");
+      }), s.containers.some(function(c){ return c.state === "a correr"; }) ? "run" : "stopped"));
+    }
+    box.appendChild(zones);
+
+    var tags = [];
+    if (s.kind === "git"){
+      if (s.repo) tags.push({ t:"ramo: " + s.branch });
+      if (s.conflict) tags.push({ t:"conflito por resolver", cls:"fail" });
+      if (s.pr) tags.push({ t:s.pr === "aberto" ? "PR aberto" : s.pr, cls: s.pr === "fechado" ? "ok" : "" });
+      if (s.pipeline) tags.push({ t:"pipeline " + s.pipeline, cls: s.pipeline === "passou" ? "ok" : "fail" });
+    } else {
+      if (s.dockerfile) tags.push({ t:"Dockerfile" });
+      if (s.compose) tags.push({ t:"docker-compose.yml" });
+      s.containers.forEach(function(c){
+        if (c.port) tags.push({ t:c.name + " " + c.port, cls: c.state === "a correr" ? "ok" : "" });
+      });
+    }
+    if (tags.length){
+      var extra = document.createElement("div");
+      extra.className = "state-extra";
+      extra.innerHTML = tags.map(function(t){
+        return "<span class='state-tag " + (t.cls || "") + "'>" + escapeHtml(t.t) + "</span>";
+      }).join("");
+      box.appendChild(extra);
+    }
+    return box;
+  }
+
+  function renderBuilder(){
+    var wrap = document.createDocumentFragment();
+    var m = run.mission;
+
+    var line = document.createElement("div");
+    line.className = "cmdline";
+    line.innerHTML = "<span class='prompt'>$</span>" +
+      (run.tokens.length
+        ? "<span>" + escapeHtml(run.tokens.join(" ")) + "</span>"
+        : "<span class='empty'>toca nas pecas para montar o comando</span>") +
+      "<span class='caret'></span>";
+    wrap.appendChild(line);
+
+    var actions = document.createElement("div");
+    actions.className = "cmd-actions";
+    var clearBtn = document.createElement("button");
+    clearBtn.className = "btn-clear";
+    clearBtn.textContent = "Apagar";
+    clearBtn.onclick = function(){ run.tokens = []; run.feedback = null; render(); };
+    var runBtn = document.createElement("button");
+    runBtn.className = "btn-run";
+    runBtn.textContent = "Executar";
+    runBtn.disabled = run.tokens.length === 0;
+    runBtn.onclick = function(){ execute(); };
+    actions.appendChild(clearBtn);
+    actions.appendChild(runBtn);
+    wrap.appendChild(actions);
+
+    var groups = document.createElement("div");
+    groups.className = "token-groups";
+    m.tokens.forEach(function(group){
+      var g = document.createElement("div");
+      g.className = "token-group";
+      g.innerHTML = "<div class='token-group-name'>" + escapeHtml(group.name) + "</div>";
+      var row = document.createElement("div");
+      row.className = "tokens";
+      group.items.forEach(function(item){
+        var t = document.createElement("div");
+        t.className = "token" + (item.cls ? " " + item.cls : "");
+        t.textContent = item.t;
+        t.onclick = function(){
+          run.tokens.push(item.t);
+          run.feedback = null;
+          render();
+        };
+        row.appendChild(t);
+      });
+      g.appendChild(row);
+      groups.appendChild(row.children.length ? g : document.createElement("div"));
+    });
+    wrap.appendChild(groups);
+    return wrap;
+  }
+
+  function execute(){
+    var m = run.mission;
+    var step = m.steps[run.stepIndex];
+    var typed = run.tokens.join(" ");
+    var norm = normalize(typed);
+
+    var accepted = step.accept.some(function(a){ return normalize(a) === norm; });
+
+    if (accepted){
+      var out = step.apply(run.state);
+      run.log.push({ cmd: typed, out: out, type: step.outputType || "out" });
+      run.tokens = [];
+      run.showHint = false;
+      run.feedback = step.explain ? { ok:true, text: step.explain } : null;
+      run.stepIndex++;
+      if (run.stepIndex >= m.steps.length){
+        run.done = true;
+        var stars = starsFor(run.errors, run.hintsUsed);
+        var prev = progress[m.id];
+        if (!prev || (prev.stars || 0) < stars){
+          progress[m.id] = { stars: stars, done: true };
+        } else {
+          progress[m.id] = { stars: prev.stars, done: true };
+        }
+        saveProgress();
+      }
+      render();
+      return;
+    }
+
+    run.errors++;
+    var wrongMsg = null;
+    if (step.wrong){
+      for (var key in step.wrong){
+        if (normalize(key) === norm){ wrongMsg = step.wrong[key]; break; }
+      }
+    }
+    run.log.push({ cmd: typed, out: wrongMsg ? "" : "comando nao produz o efeito pretendido aqui", type:"err" });
+    run.feedback = { ok:false, text: wrongMsg || "Esse comando nao e o que precisas neste passo. Le outra vez o que se pede, e usa a pista se precisares." };
+    run.tokens = [];
+    render();
+  }
+
+  function renderGlossary(){
+    var wrap = document.createDocumentFragment();
+
+    var filter = document.createElement("div");
+    filter.className = "gloss-filter";
+    ["git","gitlab","docker"].forEach(function(t){
+      var d = document.createElement("div");
+      d.className = (ui.glossTrack === t ? "active " + t : "");
+      d.textContent = t === "git" ? "Git" : t === "gitlab" ? "GitLab" : "Docker";
+      d.onclick = function(){ ui.glossTrack = t; render(); };
+      filter.appendChild(d);
+    });
+    wrap.appendChild(filter);
+
+    GLOSSARY.filter(function(g){ return g.track === ui.glossTrack; }).forEach(function(g){
+      var item = document.createElement("div");
+      item.className = "gloss-item";
+      item.innerHTML =
+        "<div class='gloss-cmd'>" + escapeHtml(g.cmd) + "</div>" +
+        "<div class='gloss-desc'>" + escapeHtml(g.desc) + "</div>";
+      wrap.appendChild(item);
+    });
+    return wrap;
+  }
+
+  function alertBox(message){
+    var overlay = document.createElement("div");
+    overlay.style.cssText = "position:fixed;inset:0;z-index:9998;background:rgba(8,10,14,.55);display:flex;align-items:center;justify-content:center;padding:24px;";
+    var box = document.createElement("div");
+    box.style.cssText = "background:var(--surface);color:var(--ink);border-radius:14px;padding:18px;max-width:340px;width:100%;font-size:14px;line-height:1.55;font-family:inherit;";
+    box.textContent = message;
+    var btn = document.createElement("button");
+    btn.className = "btn-primary";
+    btn.style.marginTop = "14px";
+    btn.textContent = "OK";
+    btn.onclick = function(){ overlay.remove(); };
+    box.appendChild(btn);
+    overlay.appendChild(box);
+    overlay.onclick = function(e){ if (e.target === overlay) overlay.remove(); };
+    document.body.appendChild(overlay);
+  }
+
+  initApp();
+})();
+</script>
