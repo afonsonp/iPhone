@@ -1,0 +1,515 @@
+<title>Como Isto se Liga</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --paper:#F3F5F6;
+    --surface:#FFFFFF;
+    --surface-2:#E8ECEE;
+    --ink:#14181B;
+    --ink-soft:#4F5A61;
+    --ink-faint:#828E96;
+    --line:#D9DEE1;
+    --accent:#0F6E7A;
+    --accent-tint:#DCEDEF;
+    --hot:#B05C12;
+    --hot-tint:#F7E7D8;
+    --shadow:0 1px 2px rgba(12,18,22,.05), 0 10px 26px -16px rgba(12,18,22,.28);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0F1315;
+      --surface:#171C1F;
+      --surface-2:#202729;
+      --ink:#E9EDEF;
+      --ink-soft:#9BA6AC;
+      --ink-faint:#6C777D;
+      --line:#282F33;
+      --accent:#5DBAC4;
+      --accent-tint:#122A2D;
+      --hot:#E29455;
+      --hot-tint:#33220F;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 26px -16px rgba(0,0,0,.7);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0F1315;
+    --surface:#171C1F;
+    --surface-2:#202729;
+    --ink:#E9EDEF;
+    --ink-soft:#9BA6AC;
+    --ink-faint:#6C777D;
+    --line:#282F33;
+    --accent:#5DBAC4;
+    --accent-tint:#122A2D;
+    --hot:#E29455;
+    --hot-tint:#33220F;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 26px -16px rgba(0,0,0,.7);
+  }
+
+  *{ box-sizing:border-box; }
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:"Public Sans", -apple-system, system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{ font-family:"Outfit", system-ui, sans-serif; }
+
+  .app{
+    max-width:480px; margin:0 auto;
+    min-height:100vh; min-height:100svh;
+    background:var(--paper);
+    padding-left:env(safe-area-inset-left); padding-right:env(safe-area-inset-right);
+  }
+
+  .topbar{
+    position:sticky; top:0; z-index:20;
+    background:var(--paper); border-bottom:1px solid var(--line);
+    padding:11px 14px 10px; padding-top:calc(11px + env(safe-area-inset-top));
+  }
+  .topbar h1{ margin:0; font-size:19px; font-weight:700; letter-spacing:-.02em; }
+  .topbar p{ margin:3px 0 0; font-size:12.5px; color:var(--ink-soft); line-height:1.45; }
+
+  .content{ padding:14px; padding-bottom:40px; }
+
+  figure{ margin:0 0 12px; }
+  svg.mapa{ width:100%; height:auto; display:block; }
+  figcaption{
+    font-size:11.5px; color:var(--ink-faint); line-height:1.5; margin-top:6px; text-align:center;
+  }
+
+  /* pecas do mapa */
+  .peca rect{ fill:var(--surface); stroke:var(--line); stroke-width:1.5; }
+  .peca text{ fill:var(--ink); font-family:"Public Sans", sans-serif; font-weight:600; }
+  .peca .sub{ fill:var(--ink-faint); font-weight:400; }
+  .peca{ cursor:pointer; }
+  .peca.activa rect{ fill:var(--hot-tint); stroke:var(--hot); stroke-width:2.5; }
+  .peca.activa text{ fill:var(--hot); }
+  .peca.activa .sub{ fill:var(--hot); }
+  .peca.apagada rect{ opacity:.45; }
+  .peca.apagada text{ opacity:.45; }
+
+  .liga{ stroke:var(--ink-faint); stroke-width:1.5; fill:none; }
+  .liga.tracejada{ stroke-dasharray:4 3; }
+  .liga.activa{ stroke:var(--hot); stroke-width:2.5; }
+  .rotulo{ fill:var(--ink-faint); font-size:9.5px; font-family:"Public Sans", sans-serif; }
+  .rotulo.activo{ fill:var(--hot); font-weight:700; }
+
+  /* percurso */
+  .percurso{
+    background:var(--surface); border:1px solid var(--line); border-radius:13px;
+    padding:13px; margin-bottom:12px; box-shadow:var(--shadow);
+  }
+  .percurso-topo{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px; }
+  .percurso-titulo{ font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-faint); font-weight:700; }
+  .percurso-passo{ font-family:"Outfit"; font-size:12px; font-weight:600; color:var(--accent); }
+  .percurso-texto{ font-size:14px; line-height:1.55; }
+  .percurso-botoes{ display:flex; gap:7px; margin-top:12px; }
+  .percurso-botoes button{
+    flex:1; border-radius:9px; padding:10px; font-size:13px; font-weight:700;
+    font-family:inherit; cursor:pointer; border:1px solid var(--line);
+    background:var(--surface-2); color:var(--ink-soft);
+  }
+  .percurso-botoes button.principal{ background:var(--accent); color:var(--surface); border-color:var(--accent); }
+  .percurso-botoes button:disabled{ opacity:.45; }
+
+  /* painel da peca */
+  .painel{
+    background:var(--surface); border:1px solid var(--line); border-radius:13px;
+    padding:14px; box-shadow:var(--shadow); margin-bottom:12px;
+  }
+  .painel h2{ margin:0 0 2px; font-size:18px; font-weight:700; }
+  .painel .papel{ font-size:12px; color:var(--accent); font-weight:700; margin-bottom:9px; }
+  .painel .frase{ font-size:14.5px; line-height:1.6; margin-bottom:12px; }
+  .linha{ display:flex; gap:10px; padding:9px 0; border-top:1px solid var(--line); }
+  .linha .etiqueta{
+    flex:0 0 96px; font-size:11px; letter-spacing:.04em; text-transform:uppercase;
+    color:var(--ink-faint); font-weight:700; padding-top:2px;
+  }
+  .linha .valor{ flex:1; font-size:13.5px; line-height:1.55; }
+  .linha .valor b{ color:var(--ink); }
+  .ferramentas{ display:flex; flex-wrap:wrap; gap:5px; margin-top:4px; }
+  .ferramenta{
+    font-size:11.5px; background:var(--surface-2); border:1px solid var(--line);
+    border-radius:6px; padding:3px 7px; color:var(--ink-soft);
+  }
+  .falha{ background:var(--hot-tint); border-radius:8px; padding:9px 10px; margin-top:10px; font-size:13px; line-height:1.55; }
+  .falha b{ color:var(--hot); }
+
+  .dica{
+    font-size:12.5px; color:var(--ink-soft); line-height:1.55;
+    background:var(--surface-2); border-radius:10px; padding:11px 12px; margin-bottom:12px;
+  }
+
+  .sintomas{ margin-top:4px; }
+  .sintoma{
+    background:var(--surface); border:1px solid var(--line); border-radius:11px;
+    padding:11px 12px; margin-bottom:7px; box-shadow:var(--shadow); cursor:pointer;
+  }
+  .sintoma .q{ font-size:13.5px; font-weight:700; }
+  .sintoma .a{ font-size:13px; color:var(--ink-soft); line-height:1.55; margin-top:5px; display:none; }
+  .sintoma.aberto .a{ display:block; }
+
+  .seccao{
+    font-size:11px; letter-spacing:.07em; text-transform:uppercase;
+    color:var(--ink-faint); font-weight:700; margin:18px 2px 8px;
+  }
+</style>
+
+<div class="app">
+  <div class="topbar">
+    <h1>Como Isto se Liga</h1>
+    <p>As peças de uma aplicação no ar e o que cada uma faz. Toca numa peça para a perceberes, ou segue uma alteração do princípio ao fim.</p>
+  </div>
+  <div class="content" id="content"></div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ================= conteudo =================
+  var PECAS = {
+    portatil: {
+      nome:"O teu portátil",
+      papel:"Onde o trabalho é feito",
+      frase:"É aqui que o código é escrito e experimentado, seja por uma pessoa, seja por mim nesta conversa. Enquanto estiver só aqui, não existe para mais ninguém: se o disco morrer, morre com ele.",
+      fala:"Fala com o <b>repositório</b>, para onde envia o código.",
+      quem:"Quem programa. Tu, quando me pedes alterações.",
+      custo:"Nada, além do computador.",
+      ferramentas:["editor de código","git","terminal"],
+      falha:"Perde-se apenas o que ainda não foi enviado para o repositório. É por isso que se envia com frequência, e não no fim do dia."
+    },
+    repo: {
+      nome:"Repositório",
+      papel:"A fonte da verdade",
+      frase:"Guarda o código e o histórico completo de todas as alterações: quem mudou o quê, quando e porquê. Tudo o que vai para o ar sai daqui, e nunca do computador de alguém.",
+      fala:"Recebe do <b>portátil</b> e avisa o <b>pipeline</b> sempre que chega código novo.",
+      quem:"Quem programa, no dia a dia. Tu, para veres o que foi feito e aprovar alterações.",
+      custo:"Gratuito para projectos pequenos. Alguns euros por pessoa e por mês numa empresa.",
+      ferramentas:["GitHub","GitLab","Bitbucket","Azure DevOps"],
+      falha:"O trabalho continua nos portáteis, mas ninguém publica nada e a equipa deixa de conseguir juntar trabalho."
+    },
+    pipeline: {
+      nome:"Pipeline",
+      papel:"O robô que verifica e publica",
+      frase:"Assim que chega código novo, arranca sozinho: corre os testes e, se tudo passar, constrói a aplicação e publica-a. É o que substitui uma pessoa a fazer os mesmos passos à mão, sempre pela mesma ordem e sem se esquecer de nenhum.",
+      fala:"É disparado pelo <b>repositório</b> e, se correr bem, entrega a imagem ao <b>registo</b>.",
+      quem:"Automático. Alguém o configura uma vez, e depois só se mexe quando muda.",
+      custo:"Incluído no GitHub e no GitLab até um certo número de minutos por mês.",
+      ferramentas:["GitHub Actions","GitLab CI","Jenkins","Azure Pipelines"],
+      falha:"Nada de novo chega ao ar. O que já está a correr continua a correr: não há impacto para quem usa, só paragem na entrega."
+    },
+    registo: {
+      nome:"Registo de imagens",
+      papel:"A prateleira das versões",
+      frase:"Uma imagem é a aplicação empacotada com tudo o que precisa para correr, como uma caixa fechada. O registo é a prateleira onde essas caixas ficam guardadas, cada uma com a sua versão.",
+      fala:"Recebe do <b>pipeline</b> e entrega ao <b>servidor</b> quando se faz deploy.",
+      quem:"Automático.",
+      custo:"Gratuito para uso pequeno, alguns euros por mês conforme o espaço.",
+      ferramentas:["Docker Hub","GitHub Container Registry","Amazon ECR"],
+      falha:"Não se consegue publicar nem repor versões anteriores. Como as versões antigas ficam aqui, é daqui que sai um rollback."
+    },
+    servidor: {
+      nome:"Servidor ou cluster",
+      papel:"Onde a aplicação corre mesmo",
+      frase:"Uma máquina ligada permanentemente que pega na imagem e a põe a trabalhar. Com Docker é uma máquina; com Kubernetes são várias geridas em conjunto, que repõem sozinhas o que morre.",
+      fala:"Vai buscar a imagem ao <b>registo</b>, lê e escreve na <b>base de dados</b>, e responde à <b>porta de entrada</b>.",
+      quem:"Quem programa ou quem faz sistemas. Tu decides onde fica e quanto se gasta.",
+      custo:"É a maior fatia. De dez euros por mês numa app pequena a milhares numa grande.",
+      ferramentas:["AWS","Azure","Google Cloud","OVH","Kubernetes"],
+      falha:"A app deixa de responder e ninguém consegue usar. É aqui que dói mais depressa, e por isso é que se tem mais do que uma cópia a correr."
+    },
+    bd: {
+      nome:"Base de dados",
+      papel:"A memória de tudo",
+      frase:"Guarda o que a aplicação precisa de se lembrar: clientes, pedidos, mensagens. É a única peça que não se consegue voltar a fazer: o código reescreve-se, o servidor recria-se, os dados dos clientes não.",
+      fala:"Fala só com o <b>servidor</b>, e nunca deve estar aberta ao mundo. É copiada para as <b>cópias de segurança</b>.",
+      quem:"Quem programa. Tu tens de saber onde estão os dados e quem lhes acede.",
+      custo:"Dos vinte euros por mês para cima, conforme o tamanho e se é gerida por alguém.",
+      ferramentas:["PostgreSQL","MySQL","SQL Server","MongoDB"],
+      falha:"A app fica de pé mas não serve para nada, e sem cópias a perda é definitiva. É o único sítio onde a palavra irreversível se aplica a sério."
+    },
+    porta: {
+      nome:"Porta de entrada",
+      papel:"O caminho até à app",
+      frase:"Três coisas que andam juntas: o domínio (o nome que as pessoas escrevem), o certificado (o cadeado do https) e o balanceador, que reparte os visitantes pelas várias cópias da aplicação.",
+      fala:"Recebe pedidos de <b>quem usa</b> e encaminha-os para o <b>servidor</b>.",
+      quem:"Configurado uma vez, e depois automático. O certificado renova-se sozinho.",
+      custo:"Domínio dez a vinte euros por ano. Certificado gratuito. Balanceador conforme a cloud.",
+      ferramentas:["Cloudflare","Let's Encrypt","nginx","load balancer da cloud"],
+      falha:"Domínio expirado ou certificado caducado deixam o site inacessível ou com aviso vermelho, mesmo com tudo o resto a funcionar perfeitamente."
+    },
+    utilizador: {
+      nome:"Quem usa",
+      papel:"O único que interessa",
+      frase:"O telemóvel ou o computador de quem abre a aplicação. Tudo o que está acima existe para que este pedido seja respondido depressa e sem falhas.",
+      fala:"Fala com a <b>porta de entrada</b>, e nunca directamente com o servidor ou a base de dados.",
+      quem:"Os teus clientes, a tua equipa, tu.",
+      custo:"Nada para ti.",
+      ferramentas:["browser","app no telemóvel"],
+      falha:"Se não conseguir usar, nada do resto importa. É também quem te avisa primeiro, se não tiveres monitorização."
+    },
+    segredos: {
+      nome:"Cofre de segredos",
+      papel:"Onde ficam as chaves",
+      frase:"As palavras-passe e chaves de acesso de que a aplicação precisa não podem estar escritas no código, porque ficariam no repositório para sempre. Ficam num cofre e são entregues à app quando ela arranca.",
+      fala:"Entrega as chaves ao <b>servidor</b> no arranque.",
+      quem:"Quem faz sistemas. Deve haver uma lista de quem consegue ver o quê.",
+      custo:"Normalmente incluído na cloud.",
+      ferramentas:["AWS Secrets Manager","Azure Key Vault","HashiCorp Vault"],
+      falha:"A app não arranca, por não conseguir ligar-se ao que precisa. Chatice, mas não é perda de dados."
+    },
+    copias: {
+      nome:"Cópias de segurança",
+      papel:"O que salva o negócio",
+      frase:"Uma cópia da base de dados, feita todos os dias e guardada noutro sítio. Se ficar no mesmo servidor, desaparece com ele, seja por avaria seja por um ataque que cifre tudo.",
+      fala:"Copia da <b>base de dados</b> para um armazenamento separado.",
+      quem:"Automático. Alguém tem de testar a reposição de vez em quando.",
+      custo:"Poucos euros por mês.",
+      ferramentas:["cópias da cloud","armazenamento imutável"],
+      falha:"Só se descobre no pior dia. Uma cópia que nunca foi reposta não conta como cópia, conta como esperança."
+    },
+    monitor: {
+      nome:"Monitorização",
+      papel:"Saber antes dos clientes",
+      frase:"Verifica a aplicação de minuto a minuto e avisa quando ela pára ou fica lenta. Sem isto, o teu sistema de aviso são os utilizadores a reclamar, o que já é tarde.",
+      fala:"Bate à <b>porta de entrada</b> de minuto a minuto, como faria um cliente, e avisa pessoas quando não obtém resposta.",
+      quem:"Automático. Alguém tem de receber o alerta e saber o que fazer.",
+      custo:"Gratuito no básico, dezenas de euros por mês se for a sério.",
+      ferramentas:["UptimeRobot","Grafana","Datadog","alertas da cloud"],
+      falha:"Não parte nada, mas ficas às escuras. Quando algo correr mal, sabes tarde e por mão de quem está a usar."
+    }
+  };
+
+  var PERCURSO = [
+    {
+      texto:"Uma alteração nasce aqui: no portátil de quem programa, ou nesta conversa quando me pedes qualquer coisa. Enquanto estiver só aqui, não existe para mais ninguém.",
+      pecas:["portatil"], ligacoes:[]
+    },
+    {
+      texto:"O código sobe para o repositório. A partir deste momento fica guardado, com histórico, e a equipa toda o vê. Este passo chama-se push.",
+      pecas:["portatil","repo"], ligacoes:["l1"]
+    },
+    {
+      texto:"A chegada de código novo acorda o pipeline, que arranca sozinho e corre os testes. Se algum falhar, pára tudo aqui e nada segue em frente.",
+      pecas:["repo","pipeline"], ligacoes:["l2"]
+    },
+    {
+      texto:"Testes verdes. O pipeline constrói a aplicação numa imagem, a tal caixa fechada com tudo o que ela precisa, e guarda-a no registo com um número de versão.",
+      pecas:["pipeline","registo"], ligacoes:["l3"]
+    },
+    {
+      texto:"O deploy vai buscar essa imagem e põe-na a correr no servidor, normalmente ao lado da versão anterior. Só quando a nova está de pé é que o trânsito passa para ela.",
+      pecas:["registo","servidor"], ligacoes:["l4"]
+    },
+    {
+      texto:"Do outro lado, alguém abre a aplicação. O pedido entra pelo domínio, o certificado garante o cadeado, e o balanceador escolhe para qual das cópias o mandar.",
+      pecas:["utilizador","porta"], ligacoes:["l6"]
+    },
+    {
+      texto:"O pedido chega ao servidor, que lê ou escreve na base de dados e devolve a resposta. É este caminho, de ida e volta, que tem de ser rápido.",
+      pecas:["porta","servidor","bd"], ligacoes:["l5","l7"]
+    },
+    {
+      texto:"Em pano de fundo, sempre: o cofre entregou as chaves no arranque, as cópias guardam os dados todos os dias, e a monitorização vigia. Se esta versão correr mal, volta-se à anterior, que continua guardada no registo.",
+      pecas:["segredos","copias","monitor"], ligacoes:["l8","l9","l10"]
+    }
+  ];
+
+  var SINTOMAS = [
+    {
+      q:"O site não abre para ninguém",
+      a:"Segue de fora para dentro: o domínio ainda aponta para o sítio certo, o servidor responde, a aplicação responde. Na maioria das vezes é o certificado que expirou ou a aplicação que morreu, e não o servidor que ardeu."
+    },
+    {
+      q:"Publicámos uma versão e começaram os erros",
+      a:"Repõe primeiro a versão anterior, que está guardada no registo, e só depois investiga. Repor demora minutos, encontrar a causa pode demorar horas, e não há razão para ter gente parada durante essas horas."
+    },
+    {
+      q:"Está tudo lento",
+      a:"Normalmente é base de dados ou falta de cópias da aplicação a correr. Um pico de visitas resolve-se com mais cópias e um balanceador; consultas mal feitas à base de dados resolvem-se do lado de quem programa."
+    },
+    {
+      q:"Perdemos dados",
+      a:"A única resposta é a cópia de segurança, e ela só vale se já tiver sido reposta alguma vez para teste. É a pergunta que vale a pena fazer hoje, e não no dia em que acontecer."
+    },
+    {
+      q:"Saiu uma pessoa da equipa",
+      a:"Tirar os acessos ao repositório, à cloud, ao cofre de segredos e à base de dados, no próprio dia. Contas esquecidas de quem já saiu são das portas mais usadas em incidentes."
+    },
+    {
+      q:"Quanto custa isto por mês",
+      a:"Servidor, base de dados e domínio são os custos certos. Numa app pequena somam dezenas de euros; o que faz disparar a conta é escalar sem tecto definido, e por isso é que se define sempre um máximo."
+    }
+  ];
+
+  // ================= estado =================
+  var ui = { peca:"servidor", passo:-1, sintomaAberto:null, rolar:null };
+
+  var content = document.getElementById("content");
+
+  function escapeHtml(s){
+    return String(s == null ? "" : s).replace(/[&<>"]/g, function(c){
+      return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c];
+    });
+  }
+
+  // ================= mapa =================
+  // Caixa: x, y, largura, altura, titulo, subtitulo
+  var CAIXAS = {
+    portatil:  { x:90,  y:12,  w:200, h:42, t:"O teu portátil",     s:"onde se escreve" },
+    repo:      { x:90,  y:96,  w:200, h:42, t:"Repositório",        s:"GitHub, GitLab" },
+    pipeline:  { x:90,  y:180, w:200, h:42, t:"Pipeline",           s:"testa e constrói" },
+    registo:   { x:90,  y:264, w:200, h:42, t:"Registo de imagens", s:"guarda as versões" },
+    servidor:  { x:90,  y:348, w:200, h:42, t:"Servidor",           s:"a app a correr" },
+    bd:        { x:310, y:348, w:100, h:42, t:"Base de",            s:"dados" },
+    porta:     { x:90,  y:432, w:200, h:42, t:"Porta de entrada",   s:"domínio, cadeado" },
+    utilizador:{ x:90,  y:516, w:200, h:42, t:"Quem usa",           s:"o teu cliente" },
+    segredos:  { x:8,   y:620, w:120, h:44, t:"Cofre de",           s:"segredos" },
+    monitor:   { x:150, y:620, w:130, h:44, t:"Monitori-",          s:"zação" },
+    copias:    { x:300, y:620, w:120, h:44, t:"Cópias de",          s:"segurança" }
+  };
+
+  function desenharMapa(){
+    var pecasActivas = ui.passo >= 0 ? PERCURSO[ui.passo].pecas : [ui.peca];
+    var ligacoesActivas = ui.passo >= 0 ? PERCURSO[ui.passo].ligacoes : [];
+    var atenua = ui.passo >= 0;
+
+    function caixa(id){
+      var c = CAIXAS[id];
+      var activa = pecasActivas.indexOf(id) >= 0;
+      var cls = "peca" + (activa ? " activa" : (atenua ? " apagada" : ""));
+      return "<g class='" + cls + "' data-peca='" + id + "'>" +
+        "<rect x='" + c.x + "' y='" + c.y + "' width='" + c.w + "' height='" + c.h + "' rx='8'/>" +
+        "<text x='" + (c.x + c.w/2) + "' y='" + (c.y + 18) + "' text-anchor='middle' font-size='12.5'>" + c.t + "</text>" +
+        "<text class='sub' x='" + (c.x + c.w/2) + "' y='" + (c.y + 32) + "' text-anchor='middle' font-size='10'>" + c.s + "</text>" +
+      "</g>";
+    }
+
+    function seta(id, d, rotulo, rx, ry, tracejada, ancora){
+      var activa = ligacoesActivas.indexOf(id) >= 0;
+      return "<path class='liga" + (tracejada ? " tracejada" : "") + (activa ? " activa" : "") + "' d='" + d + "' marker-end='url(#ponta" + (activa ? "-on" : "") + ")'/>" +
+        (rotulo ? "<text class='rotulo" + (activa ? " activo" : "") + "' x='" + rx + "' y='" + ry + "' text-anchor='" + (ancora || "middle") + "'>" + rotulo + "</text>" : "");
+    }
+
+    var svg =
+      "<svg class='mapa' viewBox='0 0 430 690' role='img' aria-label='Mapa das peças de uma aplicação no ar: o código desce do portátil até ao servidor, e os pedidos de quem usa sobem até ele'>" +
+      "<defs>" +
+        "<marker id='ponta' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'>" +
+          "<path d='M 0 0 L 10 5 L 0 10 z' fill='currentColor' opacity='.55'/></marker>" +
+        "<marker id='ponta-on' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'>" +
+          "<path d='M 0 0 L 10 5 L 0 10 z' fill='#B05C12'/></marker>" +
+      "</defs>" +
+
+      // o código desce, do portátil até estar a correr
+      seta("l1", "M190 54 L190 92",   "git push",  228, 78) +
+      seta("l2", "M190 138 L190 176", "dispara",   226, 162) +
+      seta("l3", "M190 222 L190 260", "imagem",    225, 246) +
+      seta("l4", "M190 306 L190 344", "deploy",    224, 330) +
+      // o pedido de quem usa sobe até ao mesmo servidor
+      seta("l6", "M190 516 L190 478", "abre a app", 234, 500) +
+      seta("l5", "M190 432 L190 394", "encaminha",  234, 416) +
+      // ao lado: a base de dados
+      seta("l7", "M290 369 L306 369", "lê e escreve", 360, 336) +
+      // em pano de fundo, tracejado
+      seta("l8",  "M68 616 L68 369 L86 369",       "chaves", 74,  505, true, "start") +
+      seta("l10", "M280 620 L305 604 L305 453 L294 453", "vigia",  312, 520, true, "start") +
+      seta("l9",  "M360 394 L360 616",             "copia",  366,  505, true, "start") +
+
+      caixa("portatil") + caixa("repo") + caixa("pipeline") + caixa("registo") +
+      caixa("servidor") + caixa("bd") + caixa("porta") + caixa("utilizador") +
+      caixa("segredos") + caixa("copias") + caixa("monitor") +
+      "</svg>";
+
+    return "<figure>" + svg +
+      "<figcaption>O código desce, do portátil até ao servidor. Os pedidos de quem usa sobem, até ao mesmo servidor. As três peças de baixo trabalham sempre em pano de fundo.</figcaption></figure>";
+  }
+
+  // ================= render =================
+  function render(){
+    var html = "";
+
+    html += desenharMapa();
+
+    // percurso
+    html += "<div class='percurso'>";
+    if (ui.passo < 0){
+      html += "<div class='percurso-topo'><span class='percurso-titulo'>Seguir uma alteração</span></div>" +
+        "<div class='percurso-texto'>Vê o caminho que uma alteração faz, desde que é pedida até estar a servir alguém. São oito passos, e o mapa vai acendendo a peça de cada um.</div>" +
+        "<div class='percurso-botoes'><button class='principal' id='comecar'>Começar</button></div>";
+    } else {
+      var p = PERCURSO[ui.passo];
+      html += "<div class='percurso-topo'><span class='percurso-titulo'>Seguir uma alteração</span>" +
+        "<span class='percurso-passo'>" + (ui.passo+1) + " de " + PERCURSO.length + "</span></div>" +
+        "<div class='percurso-texto'>" + p.texto + "</div>" +
+        "<div class='percurso-botoes'>" +
+          "<button id='anterior'" + (ui.passo === 0 ? " disabled" : "") + ">Anterior</button>" +
+          (ui.passo === PERCURSO.length - 1
+            ? "<button class='principal' id='terminar'>Terminar</button>"
+            : "<button class='principal' id='seguinte'>Seguinte</button>") +
+        "</div>";
+    }
+    html += "</div>";
+
+    // painel da peca
+    if (ui.passo < 0){
+      var peca = PECAS[ui.peca];
+      html += "<div class='painel'>" +
+        "<h2>" + peca.nome + "</h2>" +
+        "<div class='papel'>" + peca.papel + "</div>" +
+        "<div class='frase'>" + peca.frase + "</div>" +
+        "<div class='linha'><div class='etiqueta'>Liga-se a</div><div class='valor'>" + peca.fala + "</div></div>" +
+        "<div class='linha'><div class='etiqueta'>Quem trata</div><div class='valor'>" + peca.quem + "</div></div>" +
+        "<div class='linha'><div class='etiqueta'>Custo</div><div class='valor'>" + peca.custo + "</div></div>" +
+        "<div class='linha'><div class='etiqueta'>Chama-se</div><div class='valor'><div class='ferramentas'>" +
+          peca.ferramentas.map(function(f){ return "<span class='ferramenta'>" + escapeHtml(f) + "</span>"; }).join("") +
+        "</div></div></div>" +
+        "<div class='falha'><b>Se esta peca falhar:</b> " + peca.falha + "</div>" +
+      "</div>";
+
+      html += "<div class='dica'>Toca em qualquer peça do mapa para a leres. As setas mostram quem fala com quem, e as tracejadas são o apoio que trabalha em pano de fundo.</div>";
+
+      html += "<div class='seccao'>Quando alguma coisa corre mal</div><div class='sintomas'>";
+      SINTOMAS.forEach(function(s, i){
+        html += "<div class='sintoma" + (ui.sintomaAberto === i ? " aberto" : "") + "' data-sintoma='" + i + "'>" +
+          "<div class='q'>" + s.q + "</div><div class='a'>" + s.a + "</div></div>";
+      });
+      html += "</div>";
+    }
+
+    content.innerHTML = html;
+
+    // ligacoes
+    content.querySelectorAll(".peca").forEach(function(el){
+      el.addEventListener("click", function(){
+        ui.peca = el.getAttribute("data-peca");
+        ui.passo = -1;
+        ui.rolar = "painel";  // o painel fica abaixo do mapa: sem isto o toque parece nao fazer nada
+        render();
+      });
+    });
+    var b;
+    if ((b = document.getElementById("comecar"))) b.onclick = function(){ ui.passo = 0; ui.rolar = "topo"; render(); };
+    if ((b = document.getElementById("seguinte"))) b.onclick = function(){ ui.passo++; render(); };
+    if ((b = document.getElementById("anterior"))) b.onclick = function(){ ui.passo--; render(); };
+    if ((b = document.getElementById("terminar"))) b.onclick = function(){ ui.passo = -1; render(); };
+    content.querySelectorAll(".sintoma").forEach(function(el){
+      el.addEventListener("click", function(){
+        var i = parseInt(el.getAttribute("data-sintoma"), 10);
+        ui.sintomaAberto = (ui.sintomaAberto === i) ? null : i;
+        render();
+      });
+    });
+
+    if (ui.rolar === "painel"){
+      var painel = content.querySelector(".painel");
+      if (painel) painel.scrollIntoView({ behavior:"smooth", block:"start" });
+    } else if (ui.rolar === "topo"){
+      window.scrollTo({ top:0, behavior:"smooth" });
+    }
+    ui.rolar = null;
+  }
+
+  render();
+})();
+</script>
