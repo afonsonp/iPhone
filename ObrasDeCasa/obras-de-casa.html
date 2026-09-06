@@ -564,7 +564,38 @@
     cursor:pointer; -webkit-tap-highlight-color:transparent;
   }
   .photo-preview{ position:relative; margin-bottom:14px; }
-  .photo-preview img{ width:100%; max-height:200px; object-fit:cover; border-radius:10px; display:block; }
+  .photo-preview img{ width:100%; max-height:200px; object-fit:cover; border-radius:10px; display:block; cursor:zoom-in; }
+  .photo-lupa{
+    position:absolute; left:8px; bottom:8px; background:rgba(20,20,20,.62); color:#fff;
+    font-size:11px; font-weight:600; padding:3px 8px; border-radius:6px; pointer-events:none;
+  }
+  .item-thumb.tocavel{ cursor:zoom-in; }
+
+  /* Ver a foto em ecra inteiro */
+  .viewer{
+    position:fixed; inset:0; z-index:9997; background:#0B0D0C;
+    display:flex; flex-direction:column;
+    padding-top:env(safe-area-inset-top); padding-bottom:env(safe-area-inset-bottom);
+  }
+  .viewer-bar{
+    flex:none; display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:12px 16px; color:#fff;
+  }
+  .viewer-legenda{ font-size:12.5px; color:#C9CFCC; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .viewer-close{ flex:none; font-size:14px; font-weight:600; color:#fff; cursor:pointer; padding:4px 2px; }
+  .viewer-palco{
+    flex:1; min-height:0; overflow:hidden; display:flex; align-items:center; justify-content:center;
+    touch-action:none; -webkit-tap-highlight-color:transparent;
+  }
+  .viewer-palco img{
+    max-width:100%; max-height:100%; display:block; transform-origin:center center;
+    cursor:zoom-in; user-select:none; -webkit-user-drag:none;
+  }
+  .viewer.ampliado .viewer-palco img{ cursor:grab; }
+  .viewer-dica{
+    flex:none; text-align:center; color:#7E8A85; font-size:11.5px; padding:10px 16px 14px;
+  }
+  .viewer.ampliado .viewer-dica{ visibility:hidden; }
   .photo-remove{
     position:absolute; top:8px; right:8px; background:rgba(20,20,20,.6); color:#fff;
     border-radius:50%; width:26px; height:26px; display:flex; align-items:center; justify-content:center;
@@ -1459,8 +1490,9 @@
     var thumb;
     if (item.photo){
       thumb = document.createElement("img");
-      thumb.className = "item-thumb";
+      thumb.className = "item-thumb tocavel";
       thumb.src = item.photo;
+      thumb.onclick = function(e){ e.stopPropagation(); openPhotoViewer(item.photo, legendaDoItem(item)); };
     } else {
       thumb = document.createElement("div");
       thumb.className = "item-thumb placeholder";
@@ -1742,7 +1774,7 @@
           var fig = document.createElement("div");
           fig.className = "photo-thumb";
           fig.innerHTML = "<img src='" + it.photo + "' alt=''><span>" + itemCode(it) + "</span>";
-          fig.onclick = function(){ openItemSheet(it.areaId, it.id); };
+          fig.onclick = function(){ openPhotoViewer(it.photo, legendaDoItem(it)); };
           strip.appendChild(fig);
         });
         body.appendChild(strip);
@@ -2883,8 +2915,10 @@
     if (draftPhoto){
       field.innerHTML =
         "<span class='lbl'>Foto</span>" +
-        "<div class='photo-preview'><img src='" + draftPhoto + "'><div class='photo-remove' id='removePhoto'>&#10005;</div></div>";
-      document.getElementById("removePhoto").onclick = function(){ draftPhoto = null; renderPhotoField(); };
+        "<div class='photo-preview'><img src='" + draftPhoto + "' id='verFoto'><div class='photo-remove' id='removePhoto'>&#10005;</div>" +
+        "<div class='photo-lupa'>Tocar para ver em grande</div></div>";
+      document.getElementById("removePhoto").onclick = function(e){ e.stopPropagation(); draftPhoto = null; renderPhotoField(); };
+      document.getElementById("verFoto").onclick = function(){ openPhotoViewer(draftPhoto, ""); };
     } else {
       field.innerHTML =
         "<span class='lbl'>Foto</span>" +
@@ -3064,6 +3098,149 @@
         render();
       }
     };
+  }
+
+
+  // ---------- ver a foto em grande ----------
+  // Uma foto de 36px na lista nao serve para ver uma fissura. Aqui abre-se em
+  // ecra inteiro, com dois dedos para ampliar, arrastar para andar, e dois
+  // toques para alternar entre caber no ecra e ampliada.
+  function openPhotoViewer(src, legenda){
+    var overlay = document.createElement("div");
+    overlay.className = "viewer";
+    overlay.innerHTML =
+      "<div class='viewer-bar'>" +
+        "<span class='viewer-legenda'>" + escapeHtml(legenda || "") + "</span>" +
+        "<span class='viewer-close'>Fechar</span>" +
+      "</div>" +
+      "<div class='viewer-palco'><img alt=''></div>" +
+      "<div class='viewer-dica'>Dois dedos para ampliar. Dois toques tambem.</div>";
+
+    var palco = overlay.querySelector(".viewer-palco");
+    var img = overlay.querySelector("img");
+    img.src = src;
+
+    var escala = 1, x = 0, y = 0;
+    var MAX = 6, MIN = 1;
+
+    function aplicar(){
+      img.style.transform = "translate(" + x + "px," + y + "px) scale(" + escala + ")";
+      overlay.classList.toggle("ampliado", escala > 1.01);
+    }
+
+    // Nao deixar arrastar a imagem para fora do palco.
+    function limitar(){
+      var r = img.getBoundingClientRect();
+      var p = palco.getBoundingClientRect();
+      var larguraBase = r.width / escala, alturaBase = r.height / escala;
+      var maxX = Math.max(0, (larguraBase * escala - p.width) / 2);
+      var maxY = Math.max(0, (alturaBase * escala - p.height) / 2);
+      x = Math.min(maxX, Math.max(-maxX, x));
+      y = Math.min(maxY, Math.max(-maxY, y));
+    }
+
+    var pontos = {};      // toques activos, por id
+    var partida = null;   // estado no inicio de um gesto de dois dedos
+
+    function centroEDistancia(){
+      var ids = Object.keys(pontos);
+      var a = pontos[ids[0]], b = pontos[ids[1]];
+      return {
+        cx: (a.x + b.x) / 2,
+        cy: (a.y + b.y) / 2,
+        d: Math.hypot(a.x - b.x, a.y - b.y)
+      };
+    }
+
+    palco.addEventListener("pointerdown", function(e){
+      palco.setPointerCapture(e.pointerId);
+      pontos[e.pointerId] = { x:e.clientX, y:e.clientY };
+      if (Object.keys(pontos).length === 2){
+        var c = centroEDistancia();
+        partida = { escala:escala, x:x, y:y, d:c.d, cx:c.cx, cy:c.cy };
+      }
+    });
+
+    palco.addEventListener("pointermove", function(e){
+      if (!pontos[e.pointerId]) return;
+      var anterior = pontos[e.pointerId];
+      var ids = Object.keys(pontos);
+
+      if (ids.length >= 2 && partida){
+        pontos[e.pointerId] = { x:e.clientX, y:e.clientY };
+        var c = centroEDistancia();
+        escala = Math.min(MAX, Math.max(MIN, partida.escala * (c.d / partida.d)));
+        x = partida.x + (c.cx - partida.cx);
+        y = partida.y + (c.cy - partida.cy);
+        limitar();
+        aplicar();
+        e.preventDefault();
+        return;
+      }
+
+      if (escala > 1.01){
+        x += e.clientX - anterior.x;
+        y += e.clientY - anterior.y;
+        limitar();
+        aplicar();
+        e.preventDefault();
+      }
+      pontos[e.pointerId] = { x:e.clientX, y:e.clientY };
+    });
+
+    function largar(e){
+      delete pontos[e.pointerId];
+      if (Object.keys(pontos).length < 2) partida = null;
+    }
+    palco.addEventListener("pointerup", largar);
+    palco.addEventListener("pointercancel", largar);
+
+    // Dois toques: alterna entre caber no ecra e ampliar no sitio tocado.
+    var ultimoToque = 0;
+    palco.addEventListener("click", function(e){
+      var agora = Date.now();
+      if (agora - ultimoToque < 320){
+        if (escala > 1.01){ escala = 1; x = 0; y = 0; }
+        else {
+          var p = palco.getBoundingClientRect();
+          escala = 2.6;
+          x = (p.left + p.width/2 - e.clientX) * (escala - 1);
+          y = (p.top + p.height/2 - e.clientY) * (escala - 1);
+          limitar();
+        }
+        aplicar();
+        ultimoToque = 0;
+        return;
+      }
+      ultimoToque = agora;
+    });
+
+    // Rato: roda para ampliar, para quem abrir no computador.
+    palco.addEventListener("wheel", function(e){
+      e.preventDefault();
+      escala = Math.min(MAX, Math.max(MIN, escala * (e.deltaY < 0 ? 1.12 : 0.89)));
+      if (escala <= 1.01){ x = 0; y = 0; }
+      limitar();
+      aplicar();
+    }, { passive:false });
+
+    function fechar(){
+      document.removeEventListener("keydown", aoTeclado);
+      overlay.remove();
+    }
+    function aoTeclado(e){ if (e.key === "Escape") fechar(); }
+    document.addEventListener("keydown", aoTeclado);
+    overlay.querySelector(".viewer-close").onclick = fechar;
+    overlay.addEventListener("click", function(e){ if (e.target === overlay) fechar(); });
+
+    document.body.appendChild(overlay);
+    aplicar();
+  }
+
+  function legendaDoItem(item){
+    var area = state.areas.find(function(a){ return a.id === item.areaId; });
+    var defect = defectById(item.trade, item.defect);
+    return itemCode(item) + " · " + (area ? area.name : "") + " · " + defect.label;
   }
 
   function escapeAttr(s){ return escapeHtml(s).replace(/\n/g, " "); }
