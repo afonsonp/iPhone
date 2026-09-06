@@ -28,13 +28,35 @@ com ferramentas, material e o que falta medir.
 A ordem tem razões técnicas, não estéticas: a eletricidade abre parede, a
 alvenaria fecha-a, a pintura estraga-se com tudo o que vier depois dela.
 
+## As divisões
+
+A planta do 1.º andar está em [`planta-1-andar.jpg`](planta-1-andar.jpg) e é de
+lá que saem as áreas.
+
+| Código na app | Na planta | Chão |
+|---|---|---|
+| A · Sala | Sala comum | 34,02 m² |
+| B · Cozinha | Cozinha | 16,15 m² |
+| C · Quarto AM | Quarto 2 | 12,07 m² |
+| D · Quarto D | Quarto 1 | 12,24 m² |
+| E · Escritório | Quarto 3 | 10,40 m² |
+| F · Casa de banho | I.S. | 5,75 m² |
+| G · Corredor | Corredor | 11,23 m² |
+
 ## Nota sobre os números
 
 Os totais vêm das notas dos itens, onde as quantidades foram escritas à mão
 ("16 buracos parede", "13", "4"). O total de ~59 buracos é a soma dessas notas,
-não uma contagem verificada no local. As quantidades de material são ordens de
-grandeza declaradas como tal, e o que depende de medição está marcado como
-"por medir" em vez de inventado.
+não uma contagem verificada no local.
+
+As áreas de pintura são calculadas, não medidas: a planta dá áreas de chão mas
+não perímetros, por isso o perímetro de cada divisão foi estimado pela sua
+forma, multiplicado por um pé-direito assumido de 2,60 m, somado ao tecto e
+descontado das portas e janelas. Dá 294 m² por demão, 589 m² nas duas, 60 L de
+tinta. O erro esperado fica abaixo dos 10%, que é menos do que a folga de um
+balde, mas o pé-direito continua por medir e é o que pode mexer no total.
+
+O que depende de medição está marcado como tal na página em vez de inventado.
 
 ## Página estática
 
