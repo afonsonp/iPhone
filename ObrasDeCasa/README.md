@@ -41,6 +41,16 @@ Tudo o que é referência (planta, tabelas, listas) vive em blocos que abrem e
 fecham. Num telemóvel, tudo aberto de uma vez seria um muro de texto entre o
 utilizador e o passo que ele procura.
 
+No fim há um botão que põe o material do plano (`PLANO_COMPRAS`, em ids do
+catálogo) na lista de compras. Acrescenta só o que ainda lá não está, por isso
+carregar duas vezes não duplica nada, e quando está tudo lá o botão diz isso e
+fica desactivado.
+
+Como a maior parte deste material não pertence a nenhum arranjo em concreto,
+`shoppingTradeOf()` passou a agrupar pela especialidade do próprio material
+quando não há item associado. Trinta linhas todas em "Geral" não se percorrem
+numa loja; agrupadas, a lista de compras lê-se por secção da loja.
+
 A planta vai embutida como data URI (cerca de 120 KB em base64, redimensionada
 para 1100px) e abre no mesmo visualizador de fotos do resto da app, com zoom.
 
