@@ -86,131 +86,238 @@
 
   .fecho{ margin-top:22px; background:var(--petrol-tint); border:1px solid var(--petrol); border-radius:12px; padding:13px 14px; font-size:13.5px; line-height:1.6; }
   .fecho b{ color:var(--petrol); }
+
+  .perigo{ background:var(--rust-tint); border:1px solid var(--rust); border-radius:12px; padding:12px 13px; font-size:13.5px; line-height:1.6; margin-top:9px; }
+  .perigo b{ color:var(--rust-ink); }
+
+  .tarefa{ background:var(--surface); border:1px solid var(--line); border-radius:14px; margin-bottom:9px; box-shadow:var(--shadow); overflow:hidden; }
+  .tarefa-topo{ display:flex; gap:11px; align-items:center; padding:12px 14px; }
+  .tarefa-topo h3{ flex:1; font-size:16px; font-weight:700; min-width:0; }
+  .tarefa-tempo{ flex:none; font-family:"IBM Plex Mono"; font-size:11.5px; color:var(--rust); font-weight:600; text-align:right; }
+  .tarefa-corpo{ border-top:1px solid var(--line); padding:11px 14px 13px; }
+  .tarefa-corpo ol{ margin:0 0 10px; padding-left:19px; }
+  .tarefa-corpo li{ font-size:13.5px; line-height:1.6; margin-bottom:6px; }
+  .tarefa-corpo li:last-child{ margin-bottom:0; }
+  .tarefa-corpo p{ margin:0 0 9px; font-size:13.5px; line-height:1.6; }
+  .erro{ background:var(--amber-tint); border-radius:9px; padding:9px 11px; font-size:12.5px; line-height:1.55; }
+  .erro b{ color:var(--amber); }
+  .codigos{ font-family:"IBM Plex Mono"; font-size:11px; color:var(--ink-faint); }
+
+  .sessao{ display:flex; gap:11px; padding:10px 0; border-bottom:1px solid var(--line); font-size:13.5px; line-height:1.55; }
+  .sessao:last-child{ border-bottom:none; }
+  .sessao .dia{ flex:none; width:74px; font-family:"IBM Plex Mono"; font-size:11.5px; font-weight:600; color:var(--rust); padding-top:2px; }
+  .sessao .oque b{ display:block; margin-bottom:1px; }
+  .sessao .oque span{ color:var(--ink-soft); font-size:12.5px; }
 </style>
+
 
 <div class="app">
   <div class="topbar">
     <div class="eyebrow">Obras de Casa</div>
-    <h1>Por onde começar</h1>
-    <p>Plano feito a partir dos 31 itens registados na app, em 7 divisões. A ordem não é uma sugestão de estilo: cada fase suja ou abre o que a anterior fechou, e trocá-las obriga a repetir trabalho.</p>
+    <h1>Faço eu</h1>
+    <p>Plano de execução para os 31 itens registados na app, em 7 divisões, feitos pelas tuas mãos. A ordem não é preferência: cada fase suja ou abre o que a anterior fechou. E quase tudo o que corre mal em obra feita pelo dono corre mal por pressa entre camadas, não por falta de jeito.</p>
   </div>
 
   <div class="content">
     <div class="stat-row">
       <div class="stat-tile"><div class="stat-num">31</div><div class="stat-lbl">Itens registados</div></div>
-      <div class="stat-tile"><div class="stat-num">7</div><div class="stat-lbl">Divisões</div></div>
       <div class="stat-tile"><div class="stat-num">~59</div><div class="stat-lbl">Buracos a tapar</div></div>
-      <div class="stat-tile"><div class="stat-num">5</div><div class="stat-lbl">Especialidades</div></div>
+      <div class="stat-tile"><div class="stat-num">5</div><div class="stat-lbl">Fissuras</div></div>
+      <div class="stat-tile"><div class="stat-num">6</div><div class="stat-lbl">Divisões a pintar</div></div>
     </div>
+
+    <div class="seccao">Duas coisas que não são para ti</div>
 
     <div class="aviso">
-      <b>Resolve isto antes de tudo o resto.</b> O item <span class="mono">B1</span> é uma fissura na chaminé da cozinha. Uma fissura numa chaminé pode ser assentamento normal ou pode ser estrutural, e são coisas diferentes: a primeira tapa-se, a segunda não. Manda a foto a um engenheiro civil ou pede uma visita antes de fechar o que quer que seja na cozinha. Tapar uma fissura estrutural só a esconde até voltar a abrir, já com a parede pintada.
+      <b>A fissura da chaminé, item B1.</b> Uma fissura numa chaminé ou é assentamento normal ou é estrutural, e são coisas diferentes: a primeira tapa-se, a segunda não. Antes de lhe pores massa, manda a foto a um engenheiro civil ou paga uma visita. Uma fissura estrutural tapada volta a abrir, e volta a abrir com a parede já pintada.
     </div>
 
-    <div class="seccao">A ordem das fases</div>
-
-    <div class="fase">
-      <div class="fase-topo">
-        <div class="fase-num">1</div>
-        <div class="fase-titulo"><h3>Eletricidade</h3><div class="fase-quem">Eletricista · 6 itens</div></div>
-      </div>
-      <div class="fase-corpo">
-        <div class="trabalho"><span class="qt">8</span><span class="oq">Pontos com fios à vista</span><span class="cods">A4, D7, E3, F3, G1</span></div>
-        <div class="trabalho"><span class="qt">1</span><span class="oq">Tomada</span><span class="cods">D6</span></div>
-        <p style="margin-top:10px;">Inclui os 2 pontos de luz da sala. Diz ao eletricista que a parede vai ser reparada a seguir: ele abre roços à vontade e deixa-os abertos, não perde tempo a fechar.</p>
-        <div class="porque"><b>Porquê primeiro:</b> é a única fase que volta a partir parede. Feita depois da alvenaria, obriga a tapar tudo outra vez.</div>
-      </div>
+    <div class="perigo">
+      <b>Eletricidade: sabe onde parar.</b> Mudar uma tomada ou um interruptor e meter fios soltos dentro de uma caixa de aparelhagem, com o disjuntor desligado e testado, é trabalho que se faz em casa. Mexer no quadro, puxar circuitos novos, aumentar potência ou seja o que for que precise de certificado, não. Se a casa for vendida ou arrendada, ou se precisares de certificação, tem de ser um técnico credenciado a assinar. Antes de tocar em qualquer ponto: desliga o disjuntor certo, confirma com detector de tensão, e só depois abre.
     </div>
 
-    <div class="fase">
-      <div class="fase-topo">
-        <div class="fase-num">2</div>
-        <div class="fase-titulo"><h3>Alvenaria e estuque</h3><div class="fase-quem">Pedreiro ou estucador · 15 itens, o maior bloco</div></div>
-      </div>
-      <div class="fase-corpo">
-        <div class="trabalho"><span class="qt">~59</span><span class="oq">Buracos de parede</span><span class="cods">A1, C2, C4, D1, E2, F2, G4</span></div>
-        <div class="trabalho"><span class="qt">5</span><span class="oq">Fissuras</span><span class="cods">A2, B1, C1, D2</span></div>
-        <div class="trabalho"><span class="qt">—</span><span class="oq">Fechar os roços da fase 1</span><span class="cods">A4, D6, D7, E3, F3, G1</span></div>
-        <p style="margin-top:10px;">As fissuras não se tapam só com massa: levam rede de fibra por cima antes do acabamento, senão voltam a abrir e vê-se a linha através da tinta.</p>
-        <div class="porque"><b>Porquê agora:</b> tudo o que vem a seguir assenta em parede lisa. E é a fase que faz mais pó, por isso corre antes de haver pavimento novo e rodapés montados.</div>
-      </div>
+    <div class="seccao">Como organizar, sozinho</div>
+
+    <div class="medir">
+      <div class="medir-linha"><b>Uma divisão de cada vez, não a casa toda</b><span>É tentador fazer todos os buracos da casa numa tarde. Depois vives três meses em obra, sem nenhuma divisão acabada, e desmotivas. Fecha uma divisão do princípio ao fim antes de abrir a seguinte.</span></div>
+      <div class="medir-linha"><b>Começa pelo Escritório (E), acaba na Sala (A)</b><span>O escritório tem 4 itens e é onde ganhas mão sem estragar nada à vista. A sala tem 4 itens mas 16 buracos e é a divisão onde se está sempre: deixa-a para quando já sabes o que estás a fazer.</span></div>
+      <div class="medir-linha"><b>Dentro de cada divisão, a ordem é sempre a mesma</b><span>Eletricidade, alvenaria, carpintaria e revestimentos, pintura. Sempre. Só o pavimento do corredor (G2) fica para o fim de tudo, porque o corredor é a passagem da obra.</span></div>
+      <div class="medir-linha"><b>O tempo é de secagem, não de trabalho</b><span>Tapar 16 buracos leva-te uma hora. Ficam prontos a lixar no dia seguinte. Não é a tua velocidade que manda no calendário, é a da massa: planeia sessões curtas em dias seguidos, não um dia inteiro de esforço.</span></div>
     </div>
 
-    <div class="fase">
-      <div class="fase-topo">
-        <div class="fase-num">3</div>
-        <div class="fase-titulo"><h3>Carpintaria e revestimentos</h3><div class="fase-quem">Carpinteiro e ladrilhador · 8 itens</div></div>
-      </div>
-      <div class="fase-corpo">
-        <div class="trabalho"><span class="qt">3</span><span class="oq">Rodapés soltos ou em falta</span><span class="cods">C3, D3, E1</span></div>
-        <div class="trabalho"><span class="qt">1</span><span class="oq">Porta riscada</span><span class="cods">D4</span></div>
-        <div class="trabalho"><span class="qt">2</span><span class="oq">Juntas por refazer</span><span class="cods">C6, D5</span></div>
-        <div class="trabalho"><span class="qt">1</span><span class="oq">Peça desalinhada</span><span class="cods">C5</span></div>
-        <p style="margin-top:10px;">Decide antes se os rodapés se reparam ou se trocam todos os da divisão. Reparar três bocados que ficam com outro tom sai barato e vê-se sempre.</p>
-        <div class="porque"><b>Porquê aqui:</b> rodapé montado antes de pintar deixa-se pintar de uma vez com a parede. Montado depois, obriga a fita e retoques.</div>
+    <div class="seccao">Uma divisão, fim de semana a fim de semana</div>
+    <div class="medir">
+      <div class="sessao"><div class="dia">Sexta</div><div class="oque"><b>Eletricidade e abrir</b><span>Disjuntor desligado. Fechar os pontos de fios à vista dentro de caixa. Abrir as fissuras em V. Tirar o rodapé solto. Aspirar tudo.</span></div></div>
+      <div class="sessao"><div class="dia">Sábado</div><div class="oque"><b>Primeira camada de massa</b><span>Todos os buracos e fissuras da divisão, camada fina. Nunca encher de uma vez: a massa encolhe ao secar e afunda.</span></div></div>
+      <div class="sessao"><div class="dia">Domingo</div><div class="oque"><b>Segunda camada</b><span>Por cima da primeira, já seca, a acertar o nível. Deixa secar a semana inteira, que é melhor do que ficar mesmo seca.</span></div></div>
+      <div class="sessao"><div class="dia">Sábado 2</div><div class="oque"><b>Lixar, rodapés, primário</b><span>Lixar com máscara. Montar rodapés e refazer juntas. Aspirar o pó todo, limpar com pano húmido, primário nas zonas reparadas.</span></div></div>
+      <div class="sessao"><div class="dia">Domingo 2</div><div class="oque"><b>Duas demãos</b><span>Primeira demão de manhã, quatro horas de espera, segunda à tarde. A divisão fica fechada e passas à seguinte.</span></div></div>
+    </div>
+    <p style="font-size:12.5px; color:var(--ink-soft); line-height:1.55; margin:9px 2px 0;">Dois fins de semana por divisão, sete divisões. Com a vida a acontecer pelo meio, conta três a quatro meses. Quem te disser que é um mês nunca tapou 59 buracos.</p>
+
+    <div class="seccao">Como se faz cada coisa</div>
+
+    <div class="tarefa">
+      <div class="tarefa-topo"><h3>Buracos de parede</h3><div class="tarefa-tempo">~59 · 5 min cada</div></div>
+      <div class="tarefa-corpo">
+        <div class="codigos" style="margin-bottom:9px;">A1 · C2 · C4 · D1 · E2 · F2 · G4</div>
+        <ol>
+          <li>Passa a espátula em volta do buraco a raspar o que está solto. Se a bucha ainda lá está e roda, tira-a: massa por cima de uma bucha solta volta a cair.</li>
+          <li>Aspira o pó de dentro do buraco. É o passo que toda a gente salta e é o que faz a massa não colar.</li>
+          <li>Primeira camada de massa com a espátula pequena, a encher pouco mais de metade, a alisar de cima para baixo.</li>
+          <li>No dia seguinte, segunda camada, agora ligeiramente acima do nível da parede. Fica com uma pequena lombada, é de propósito.</li>
+          <li>Seco, lixar com lixa 150 num taco (nunca com a lixa solta na mão, que faz covas), até deixar de se sentir com a palma da mão de olhos fechados.</li>
+        </ol>
+        <div class="erro"><b>O erro que se paga:</b> encher o buraco de uma vez. A massa encolhe ao secar e ficas com uma cova onde tinhas um buraco, que só se vê depois de pintar, com a luz da tarde.</div>
       </div>
     </div>
 
-    <div class="fase">
-      <div class="fase-topo">
-        <div class="fase-num">4</div>
-        <div class="fase-titulo"><h3>Pintura</h3><div class="fase-quem">Pintor · 6 divisões</div></div>
-      </div>
-      <div class="fase-corpo">
-        <div class="trabalho"><span class="qt">6</span><span class="oq">Zonas por pintar</span><span class="cods">A3, C7, D8, E4, F1, G3</span></div>
-        <p style="margin-top:10px;">Primário só nas zonas reparadas (a massa absorve e sem primário fica mancha), depois duas demãos em toda a superfície. Uma demão única sobre reparação vê-se sempre em contraluz.</p>
-        <div class="porque"><b>Porquê tão tarde:</b> é a fase que se estraga mais depressa. Qualquer trabalho feito depois dela obriga a retocar.</div>
+    <div class="tarefa">
+      <div class="tarefa-topo"><h3>Fissuras</h3><div class="tarefa-tempo">5 · 20 min cada</div></div>
+      <div class="tarefa-corpo">
+        <div class="codigos" style="margin-bottom:9px;">A2 · B1 (ver o aviso) · C1 · D2</div>
+        <ol>
+          <li>Abrir a fissura em V com a ponta do x-ato ou de um raspador, ao longo de todo o comprimento. Sim, ficas com um rasgo maior do que tinhas. É assim que se faz: massa só agarra se tiver onde entrar.</li>
+          <li>Aspirar, e passar primário de aderência dentro do rasgo.</li>
+          <li>Massa a encher o V, e imediatamente rede de fibra por cima, a cobrir cerca de 5 cm para cada lado, empurrada para dentro da massa fresca com a espátula.</li>
+          <li>Seco, segunda camada por cima da rede, agora larga: 15 a 20 cm de faixa, muito fina nas bordas. É a largura que esconde, não a espessura.</li>
+          <li>Lixar até a mão não sentir onde acaba a massa e começa a parede.</li>
+        </ol>
+        <div class="erro"><b>Para quando parar:</b> se a fissura tiver mais de 2 mm, se as duas metades da parede estiverem desencontradas em degrau, ou se voltar a abrir depois de reparada, não é um problema de acabamento. É movimento na estrutura e precisa de outra pessoa.</div>
       </div>
     </div>
 
-    <div class="fase">
-      <div class="fase-topo">
-        <div class="fase-num">5</div>
-        <div class="fase-titulo"><h3>Pavimento do corredor e limpeza</h3><div class="fase-quem">Último · 1 item</div></div>
+    <div class="tarefa">
+      <div class="tarefa-topo"><h3>Fios à vista e a tomada</h3><div class="tarefa-tempo">9 pontos · 20 min cada</div></div>
+      <div class="tarefa-corpo">
+        <div class="codigos" style="margin-bottom:9px;">A4 (2 pontos de luz) · D6 (tomada) · D7 · E3 · F3 · G1 (3)</div>
+        <ol>
+          <li>Desligar o disjuntor do circuito. Confirmar no próprio ponto com detector de tensão, sem exceção, mesmo que tenhas a certeza.</li>
+          <li>Cada ponto leva caixa de aparelhagem embutida na parede e tampa. Fio à vista que fica à vista dentro de uma caixa é seguro; fio à vista pendurado não é.</li>
+          <li>Ligações com bornes próprios, nunca fita isoladora a torcer dois fios.</li>
+          <li>Se tiveres de abrir roço para levar o fio até à caixa, abre-o agora e deixa-o aberto: fecha-se com a massa da fase seguinte, no mesmo dia em que tapas os buracos.</li>
+          <li>Ligar o disjuntor e testar antes de fechar seja o que for.</li>
+        </ol>
+        <div class="erro"><b>Se ao abrir encontrares</b> fios de tecido, alumínio, ou emendas com fita dentro da parede, para e chama um eletricista. Isso é instalação velha, e o problema deixou de ser aquele ponto.</div>
       </div>
-      <div class="fase-corpo">
-        <div class="trabalho"><span class="qt">1</span><span class="oq">Pavimento a decapar</span><span class="cods">G2</span></div>
-        <p style="margin-top:10px;">O corredor é passagem de toda a obra: material, escadotes, sacos de entulho. Fica para o fim, seja qual for a solução.</p>
-        <div class="porque"><b>Porquê no fim:</b> um pavimento tratado a meio da obra leva com tudo o que passa por cima dele durante as semanas seguintes.</div>
+    </div>
+
+    <div class="tarefa">
+      <div class="tarefa-topo"><h3>Rodapés</h3><div class="tarefa-tempo">3 · 1h por divisão</div></div>
+      <div class="tarefa-corpo">
+        <div class="codigos" style="margin-bottom:9px;">C3 · D3 · E1</div>
+        <ol>
+          <li>Decide primeiro: reparar os bocados soltos ou trocar todo o rodapé da divisão. Três bocados novos com outro tom no meio dos antigos vê-se sempre, e sai a mesma coisa.</li>
+          <li>Medir o comprimento. Cortar os topos a 45º com caixa de meia e serrote, para o canto fechar.</li>
+          <li>Cola de montagem em cordão em ziguezague nas costas, encostar, e dois pregos sem cabeça a segurar enquanto seca.</li>
+          <li>Betume nas juntas e no buraco dos pregos. Lixar leve.</li>
+          <li>Pintar já com a parede, na fase da pintura, não antes.</li>
+        </ol>
+        <div class="erro"><b>Antes de cortar:</b> mede duas vezes e corta uma. Rodapé cortado curto não se estica, e o pedaço a mais não se emenda sem se ver.</div>
       </div>
+    </div>
+
+    <div class="tarefa">
+      <div class="tarefa-topo"><h3>Juntas e peça desalinhada</h3><div class="tarefa-tempo">3 · 1h a 2h</div></div>
+      <div class="tarefa-corpo">
+        <div class="codigos" style="margin-bottom:9px;">C5 (desalinhada) · C6 · D5 (juntas)</div>
+        <ol>
+          <li>Juntas: raspar o betume velho com a serra de juntas até baixar bem, aspirar, e aplicar betume novo com espátula de borracha em diagonal à junta.</li>
+          <li>Vinte minutos depois, limpar o excesso com esponja húmida bem torcida, a passar uma vez só em cada sítio.</li>
+          <li>Peça desalinhada: tirar com cuidado a peça e o betume à volta, raspar a cola antiga do fundo até ficar plano, cimento-cola novo com espátula dentada, assentar com cruzetas e deixar 24 horas antes de betumar.</li>
+        </ol>
+        <div class="erro"><b>Esponja demasiado molhada</b> lava o betume de dentro da junta e ficas com a junta afundada e mais clara do que as outras. Torce bem a esponja, sempre.</div>
+      </div>
+    </div>
+
+    <div class="tarefa">
+      <div class="tarefa-topo"><h3>Porta riscada</h3><div class="tarefa-tempo">1 · meio dia</div></div>
+      <div class="tarefa-corpo">
+        <div class="codigos" style="margin-bottom:9px;">D4</div>
+        <ol>
+          <li>Ver primeiro se é lacada ou envernizada. Numa porta lacada lixa-se, mete-se massa para madeira no risco, lixa-se outra vez, primário e esmalte. Numa envernizada, um risco fundo não desaparece: fica retocado, não invisível.</li>
+          <li>Lixar sempre no sentido do veio, nunca contra.</li>
+          <li>Pintar a porta deitada em cavaletes se puder ser: em pé, o esmalte escorre e ficam lágrimas.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="tarefa">
+      <div class="tarefa-topo"><h3>Pintura</h3><div class="tarefa-tempo">6 divisões · 1 dia cada</div></div>
+      <div class="tarefa-corpo">
+        <div class="codigos" style="margin-bottom:9px;">A3 · C7 · D8 · E4 · F1 · G3</div>
+        <ol>
+          <li>Aspirar o pó de lixar, todo. Depois passar pano húmido nas paredes e deixar secar. Tinta sobre pó descasca.</li>
+          <li>Primário só nas zonas reparadas. A massa absorve muito mais do que a parede à volta, e sem primário ficam manchas foscas com a forma exacta de cada buraco.</li>
+          <li>Fita de pintor nos aros, rodapés e interruptores. Tirar a fita com a tinta ainda fresca, nunca depois de seca.</li>
+          <li>Cortar os cantos e as bordas a pincel, uma parede de cada vez, e logo a seguir o rolo, para as duas coisas fundirem molhado sobre molhado.</li>
+          <li>Rolo em W largo e depois a alisar de cima a baixo sem carregar. Segunda demão quatro horas depois.</li>
+        </ol>
+        <div class="erro"><b>O truque que vale a obra toda:</b> antes de pintar, põe uma lâmpada no chão a iluminar a parede quase de raspão. Vês todas as covas e lombadas que de frente não se vêem. Corrige-as então, porque depois de pintado é o que a luz da tarde te mostra todos os dias.</div>
+      </div>
+    </div>
+
+    <div class="tarefa">
+      <div class="tarefa-topo"><h3>Pavimento do corredor</h3><div class="tarefa-tempo">1 · no fim de tudo</div></div>
+      <div class="tarefa-corpo">
+        <div class="codigos" style="margin-bottom:9px;">G2</div>
+        <ol>
+          <li>Primeiro identifica o material, que a nota não diz: madeira, cimento e cerâmico decapam-se com produtos diferentes e o errado mancha para sempre.</li>
+          <li>Testa o decapante num canto escondido, atrás de uma porta, e espera o tempo todo antes de decidir.</li>
+          <li>Janela aberta e luvas. Decapante em espaço fechado dá dores de cabeça a sério.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="seccao">Ferramentas</div>
+    <div class="tabela-scroll">
+      <table>
+        <tr><th>Ferramenta</th><th>Para</th><th></th></tr>
+        <tr><td>Espátulas de 4, 10 e 25 cm</td><td class="nota">Buracos, fissuras, alisar</td><td class="qtd">essencial</td></tr>
+        <tr><td>Taco de lixar + lixas 120, 150, 240</td><td class="nota">Acabar sem fazer covas</td><td class="qtd">essencial</td></tr>
+        <tr><td>Máscara P2 e óculos</td><td class="nota">Lixar massa é pó fino a sério</td><td class="qtd">essencial</td></tr>
+        <tr><td>Detector de tensão</td><td class="nota">Confirmar que o circuito está morto</td><td class="qtd">essencial</td></tr>
+        <tr><td>Aspirador que aguente pó de obra</td><td class="nota">Antes de cada camada e antes de pintar</td><td class="qtd">essencial</td></tr>
+        <tr><td>Lâmpada de trabalho ou lanterna</td><td class="nota">Luz rasante para ver o que está torto</td><td class="qtd">essencial</td></tr>
+        <tr><td>Caixa de meia e serrote</td><td class="nota">Cantos de rodapé a 45º</td><td class="qtd">rodapés</td></tr>
+        <tr><td>Pistola de cola de montagem</td><td class="nota">Rodapés</td><td class="qtd">rodapés</td></tr>
+        <tr><td>Serra de juntas e espátula de borracha</td><td class="nota">Refazer juntas</td><td class="qtd">juntas</td></tr>
+        <tr><td>Berbequim com percussão</td><td class="nota">Caixas de aparelhagem, roços</td><td class="qtd">alugar chega</td></tr>
+        <tr><td>Escadote</td><td class="nota">Tectos, pontos de luz</td><td class="qtd">emprestado</td></tr>
+      </table>
     </div>
 
     <div class="seccao">Material a comprar</div>
     <div class="tabela-scroll">
       <table>
-        <tr><th>Material</th><th>Quanto</th><th>Para quê</th></tr>
-        <tr><td>Massa de reparação</td><td class="qtd">2 × 5 kg</td><td class="nota">~59 buracos. Um balde chega para a maioria; o segundo evita interromper</td></tr>
-        <tr><td>Rede de fibra</td><td class="qtd">rolo de 20 m</td><td class="nota">As 5 fissuras, com folga para cada lado</td></tr>
-        <tr><td>Primário de aderência</td><td class="qtd">2 L</td><td class="nota">Só nas zonas reparadas, antes de pintar</td></tr>
-        <tr><td>Tinta interior</td><td class="qtd">por medir</td><td class="nota">1 L dá cerca de 10 m² por demão, e são duas demãos. Ver secção seguinte</td></tr>
-        <tr><td>Lixa e espátulas</td><td class="qtd">1 conjunto</td><td class="nota">Acabar cada reparação antes do primário</td></tr>
-        <tr><td>Fita de pintor e plástico</td><td class="qtd">2 rolos + 1</td><td class="nota">Proteger rodapés, aros e chão</td></tr>
-        <tr><td>Rolo, pincel e tabuleiro</td><td class="qtd">1 conjunto</td><td class="nota">Se a pintura não for entregue a um pintor</td></tr>
-        <tr><td>Caixas de aparelhagem</td><td class="qtd">~9</td><td class="nota">Os 8 pontos de fios à vista e a tomada D6</td></tr>
-        <tr><td>Tomada e espelho</td><td class="qtd">1 + 1</td><td class="nota">D6</td></tr>
-        <tr><td>Rodapé</td><td class="qtd">por medir</td><td class="nota">C3, D3, E1. Medir os metros de cada divisão</td></tr>
-        <tr><td>Sacos de entulho</td><td class="qtd">10</td><td class="nota">Pó e restos das fases 2 e 3</td></tr>
+        <tr><th>Material</th><th>Quanto</th><th>Nota</th></tr>
+        <tr><td>Massa de reparação em pasta</td><td class="qtd">2 × 5 kg</td><td class="nota">Em pasta e não em pó: para 59 buracos em sessões separadas, o pó endurece no balde entre sessões</td></tr>
+        <tr><td>Rede de fibra</td><td class="qtd">rolo 20 m</td><td class="nota">As 5 fissuras, com folga</td></tr>
+        <tr><td>Primário de aderência</td><td class="qtd">2 L</td><td class="nota">Dentro das fissuras e sobre todas as zonas reparadas</td></tr>
+        <tr><td>Tinta interior</td><td class="qtd">por medir</td><td class="nota">1 L dá cerca de 10 m² por demão, e são duas. Compra tudo da mesma vez e do mesmo lote: lotes diferentes do mesmo branco não são o mesmo branco</td></tr>
+        <tr><td>Lixas 120, 150, 240</td><td class="qtd">10 folhas de cada</td><td class="nota">Gastam-se muito mais depressa do que se pensa</td></tr>
+        <tr><td>Fita de pintor</td><td class="qtd">3 rolos</td><td class="nota">Da boa. A barata deixa cola e deixa passar tinta</td></tr>
+        <tr><td>Plástico de protecção</td><td class="qtd">1 rolo</td><td class="nota">Chão e móveis</td></tr>
+        <tr><td>Rolo, pincel e tabuleiro</td><td class="qtd">1 conjunto</td><td class="nota">Rolo de pelo médio para parede lisa</td></tr>
+        <tr><td>Caixas de aparelhagem e tampas</td><td class="qtd">~9</td><td class="nota">Os 8 pontos de fios à vista e a tomada</td></tr>
+        <tr><td>Tomada, espelho e bornes</td><td class="qtd">1 + 1 + caixa</td><td class="nota">D6</td></tr>
+        <tr><td>Betume de juntas</td><td class="qtd">1 kg</td><td class="nota">C6, D5. Confirmar a cor das juntas existentes</td></tr>
+        <tr><td>Cimento-cola e cruzetas</td><td class="qtd">saco pequeno</td><td class="nota">Só para a peça C5</td></tr>
+        <tr><td>Rodapé, cola e pregos sem cabeça</td><td class="qtd">por medir</td><td class="nota">C3, D3, E1</td></tr>
+        <tr><td>Sacos de entulho e luvas</td><td class="qtd">10 + 2 pares</td><td class="nota">Pó e restos</td></tr>
       </table>
     </div>
 
-    <div class="seccao">O que falta medir antes de pedir orçamento</div>
+    <div class="seccao">O que falta medir</div>
     <div class="medir">
-      <div class="medir-linha"><b>Metros quadrados de parede e tecto, divisão a divisão</b><span>Perímetro do chão a multiplicar pelo pé-direito, mais a área do tecto se for pintado. Sem isto, ninguém orça pintura e a tinta comprada é sempre a mais ou a menos.</span></div>
-      <div class="medir-linha"><b>Metros de rodapé</b><span>Nos três sítios (C3, D3, E1), e a altura e perfil do rodapé existente, para se saber se ainda se compra igual.</span></div>
-      <div class="medir-linha"><b>Que pavimento é o do corredor</b><span>Decapar madeira, cimento ou cerâmico são três trabalhos diferentes, com preços diferentes. A nota em G2 diz decapante mas não diz o material.</span></div>
-      <div class="medir-linha"><b>Se a casa vai estar habitada durante a obra</b><span>Muda a ordem: com casa habitada faz-se por divisão, com casa vazia faz-se por especialidade, que é bastante mais barato.</span></div>
-    </div>
-
-    <div class="seccao">Ao pedir orçamentos</div>
-    <div class="medir">
-      <div class="medir-linha"><b>Um orçamento por especialidade, não um global</b><span>Na app, o separador Resumo tem o botão Copiar só [especialidade]. Envia a cada profissional apenas a lista dele, com os códigos. Orçamentos comparáveis entre si e ninguém orça às escuras.</span></div>
-      <div class="medir-linha"><b>Manda as fotos com os códigos</b><span>Catorze dos 31 itens têm foto. Um pedreiro que vê 59 buracos numa foto orça de outra maneira do que a partir da palavra buracos.</span></div>
-      <div class="medir-linha"><b>Pergunta sempre se o preço inclui material</b><span>É a diferença que faz dois orçamentos parecerem afastados quando não estão.</span></div>
-      <div class="medir-linha"><b>Fixa quem limpa e quem leva o entulho</b><span>Não está no preço quase nunca, e é a discussão do último dia.</span></div>
+      <div class="medir-linha"><b>Metros quadrados de parede e tecto, divisão a divisão</b><span>Perímetro do chão a multiplicar pelo pé-direito, mais o tecto se for pintado. É a única conta que falta para saberes quanta tinta comprar, e comprar tinta a menos a meio significa lote diferente.</span></div>
+      <div class="medir-linha"><b>Metros de rodapé, e o perfil do existente</b><span>C3, D3, E1. Leva um bocado do rodapé velho à loja: perfis parecidos não são iguais e nota-se na emenda.</span></div>
+      <div class="medir-linha"><b>Que material é o pavimento do corredor</b><span>A nota do G2 diz decapante mas não diz de quê. Madeira, cimento e cerâmico são três produtos diferentes.</span></div>
+      <div class="medir-linha"><b>A cor das juntas existentes</b><span>Antes de comprar betume para C6 e D5, para as juntas novas não ficarem a saltar à vista no meio das antigas.</span></div>
     </div>
 
     <div class="fecho">
-      <b>Em resumo:</b> confirma primeiro a fissura da chaminé. Depois eletricista, pedreiro, carpinteiro e ladrilhador, pintor, pavimento. Antes de pedir orçamentos, mede os metros quadrados de cada divisão, porque é isso que falta para qualquer pintor te dar um preço a sério.
+      <b>Se só levares três coisas daqui:</b> nunca enches um buraco de uma vez, são sempre duas camadas. Primário em cima de toda a reparação antes de pintar, senão vê-se cada buraco através da tinta. E a lâmpada no chão a iluminar a parede de raspão antes de pintar, que é o que separa um trabalho de amador de um trabalho bem feito.
     </div>
   </div>
 </div>
