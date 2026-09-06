@@ -9,9 +9,14 @@ principal do iPhone.
 - Cada divisão é uma **Área** com uma letra automática (Cozinha = A, Sala = B, ...).
 - Cada problema registado numa área recebe um código sequencial: A1, A2, B1, ...
 - Cada item tem **especialidade** (quem arranja) e **tipo de defeito** dentro
-  dela, mais foto, notas, prioridade e estado.
-- Os materiais indicados em cada item alimentam a **lista de compras**, que junta
-  automaticamente materiais repetidos ("Massa de vidraceiro · 1 tubo x3").
+  dela, mais foto, notas, prioridade e estado. Não há campo de descrição livre:
+  o defeito já diz o que é, e o que sobra escreve-se nas notas.
+- Os materiais escolhem-se de uma **lista fechada** (`MATERIAIS`, cerca de 100
+  materiais com a unidade de cada um), filtrada pela especialidade do item, com
+  procura para chegar aos restantes. Cada um leva uma quantidade em passos de 1.
+- Os materiais alimentam a **lista de compras**, onde o mesmo material apontado
+  em vários arranjos aparece numa linha só, com as quantidades somadas
+  ("Massa de reparação · 4 kg · A1, A3, A4").
 - O separador **Resumo** agrupa o trabalho pendente por especialidade, com barras,
   progresso por divisão e miniaturas das fotos.
 
@@ -50,6 +55,11 @@ Ficheiro único, sem dependências externas além dos tipos de letra IBM Plex.
   barra inferior, e o botão + está levantado do fundo.
 - As escritas na base de dados têm limite de tempo (`withTimeout`); ao falhar por
   ligação, a alteração é aplicada localmente para não se perder a ação.
+- Os materiais eram texto livre, e o resultado eram variantes do mesmo produto
+  ("silicone", "Silicone branco", "silicone wc") que a lista de compras não
+  conseguia juntar. Passaram a lista fechada: cada linha guarda `matId` e
+  `unit`, e a agregação é feita por `matId`, não por comparação de nomes. As
+  linhas antigas, escritas à mão, continuam a aparecer pelo nome.
 
 ## Publicar
 
