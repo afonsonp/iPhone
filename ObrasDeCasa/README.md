@@ -20,6 +20,20 @@ principal do iPhone.
 - O separador **Resumo** agrupa o trabalho pendente por especialidade, com barras,
   progresso por divisão e miniaturas das fotos.
 
+## Separador Plano
+
+A app tem um quarto separador com o plano de execução da obra: a semana em que
+a casa está disponível dia a dia, os fins de semana seguintes, e sete tarefas
+expansíveis com os passos de cada tipo de trabalho e o erro típico de cada um.
+
+Os dias marcam-se como feitos e o progresso fica guardado no documento
+`plano/estado` da base de dados, num mapa de identificadores. É a única
+colecção que não é uma lista: um documento só, com um campo `feitos`.
+
+O conteúdo vem do documento completo em [`../PlanoDeObras/`](../PlanoDeObras/),
+que tem as contas da tinta, a planta e o material. Aqui está a versão de
+bolso, a que se consulta em cima do escadote.
+
 ## Partilha
 
 Tanto o Resumo como a Lista de compras podem ser partilhados de duas formas:

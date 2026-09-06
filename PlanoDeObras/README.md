@@ -58,6 +58,13 @@ balde, mas o pé-direito continua por medir e é o que pode mexer no total.
 
 O que depende de medição está marcado como tal na página em vez de inventado.
 
+## Também dentro da app
+
+A app [`ObrasDeCasa/`](../ObrasDeCasa/) tem um separador Plano com a versão de
+bolso disto: a semana dia a dia com os dias a marcar como feitos, e as tarefas
+com os passos. Esta página fica com o que não cabe num telemóvel em cima de um
+escadote: as contas da tinta, a planta, o material e as decisões.
+
 ## Página estática
 
 Sem capacidades declaradas: o plano não guarda nada nem lê a base de dados em

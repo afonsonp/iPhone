@@ -478,6 +478,62 @@
     background:var(--rust); color:#fff; border-radius:9px; padding:1px 5px;
   }
 
+  /* Plano */
+  .plano-intro{
+    background:var(--surface-2); border-radius:11px; padding:11px 12px; margin-bottom:12px;
+    font-size:12.5px; line-height:1.55; color:var(--ink-soft);
+  }
+  .plano-intro b{ color:var(--ink); }
+  .plano-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:13px;
+    padding:2px 13px; box-shadow:var(--shadow); margin-bottom:4px;
+  }
+  .plano-linha{
+    display:flex; gap:11px; align-items:flex-start; padding:11px 0;
+    border-bottom:1px solid var(--line); cursor:pointer; -webkit-tap-highlight-color:transparent;
+  }
+  .plano-linha:last-child{ border-bottom:none; }
+  .plano-linha .check{ margin-top:1px; }
+  .plano-txt{ flex:1; min-width:0; }
+  .plano-dia{
+    font-family:"IBM Plex Mono"; font-size:10.5px; font-weight:600; color:var(--rust);
+    letter-spacing:.04em; text-transform:uppercase;
+  }
+  .plano-titulo{ font-size:14px; font-weight:600; margin-top:2px; }
+  .plano-detalhe{ font-size:12.5px; color:var(--ink-soft); line-height:1.55; margin-top:3px; }
+  .plano-linha.feito .plano-titulo{ text-decoration:line-through; color:var(--ink-faint); }
+  .plano-linha.feito .plano-detalhe{ color:var(--ink-faint); }
+
+  .tarefa-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:12px;
+    margin-bottom:7px; box-shadow:var(--shadow); overflow:hidden;
+  }
+  .tarefa-card .tarefa-topo{
+    display:flex; align-items:center; gap:9px; padding:11px 13px;
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+  }
+  .tarefa-nome{ flex:1; font-size:13.5px; font-weight:600; min-width:0; }
+  .tarefa-card .tarefa-tempo{ flex:none; font-family:"IBM Plex Mono"; font-size:10.5px; color:var(--ink-faint); }
+  .tarefa-seta{ flex:none; color:var(--ink-faint); font-size:12px; transition:transform .15s ease; }
+  .tarefa-card.aberta .tarefa-seta{ transform:rotate(90deg); }
+  .tarefa-card .tarefa-corpo{ border-top:1px solid var(--line); padding:10px 13px 12px; }
+  .tarefa-card ol{ margin:0 0 9px; padding-left:18px; }
+  .tarefa-card li{ font-size:12.5px; line-height:1.6; margin-bottom:5px; color:var(--ink-soft); }
+  .tarefa-erro{
+    background:var(--amber-tint); border-radius:8px; padding:9px 10px;
+    font-size:12px; line-height:1.55; color:var(--ink);
+  }
+  .plano-nota{ font-size:11.5px; color:var(--ink-faint); line-height:1.55; margin:14px 2px 0; }
+
+  /* Com quatro separadores o texto tem de encolher para caber num iPhone estreito */
+  .tabbar{ gap:2px; }
+  .tab{ font-size:11.5px; gap:4px; padding:8px 2px; }
+  .tab svg{ width:15px; height:15px; }
+  @media (max-width: 380px){
+    .tab{ font-size:10.5px; gap:3px; }
+    .tab svg{ width:14px; height:14px; }
+  }
+
   .fab{
     /* fixo ao ecra: numa lista longa tem de continuar ao alcance do polegar */
     position:fixed;
@@ -850,6 +906,102 @@
     ]}
   ];
 
+
+  // ---------- plano de obras ----------
+  // Escrito a partir do que esta registado nesta app: a semana em que a casa
+  // esta disponivel serve para o trabalho sujo todo de uma vez, e a pintura
+  // reparte-se pelos fins de semana seguintes.
+  var PLANO_SEMANA = [
+    { id:"d1", dia:"Dia 1", titulo:"Medir, proteger, testar",
+      texto:"Pe-direito, metros de rodape, ver a terra nos pontos de luz, fotografar os itens sem foto. Proteccoes e fita nas tomadas e nas calhas. Um metro quadrado de teste com a girafa, para saber se os picos precisam de espatula antes. Depois comeca a lixar o primeiro quarto." },
+    { id:"d2", dia:"Dia 2", titulo:"Lixar os tres quartos",
+      texto:"Girafa, lixa 120, passagem leve. Aspirar no fim. Passa a mao numa zona ja lixada e aspirada: se largar po branco, o primario e para toda a parede e nao so para as reparacoes." },
+    { id:"d3", dia:"Dia 3", titulo:"Lixar sala, casa de banho e corredor",
+      texto:"A sala e quase um terco de tudo: apanha-a com o corpo fresco. Aspirar a casa toda no fim, cantos e rodapes incluidos." },
+    { id:"d4", dia:"Dia 4", titulo:"Primeira camada de massa",
+      texto:"Os 59 buracos e as 5 fissuras, camada fina, com rede de fibra nas fissuras. Comeca pelo mais longe da porta e vai recuando." },
+    { id:"d5", dia:"Dia 5", titulo:"Segunda camada, e os rodapes",
+      texto:"Massa a acertar o nivel, ligeiramente acima da parede. Enquanto seca: cera nas folgas do rodape, caneta nas cabecas de prego, cola e escora nos trocos soltos." },
+    { id:"d6", dia:"Dia 6", titulo:"Lixar as reparacoes e primario",
+      texto:"Lixa de folha so onde ha massa, com a lampada rasante a mostrar o que falta. Aspirar, pano humido, primario." },
+    { id:"d7", dia:"Dia 7", titulo:"Acrilico, e a primeira divisao pintada",
+      texto:"Linha de acrilico no topo dos rodapes onde nao ha calha. E depois, se o corpo aguentar, pintar o escritorio de uma ponta a outra." }
+  ];
+
+  var PLANO_DEPOIS = [
+    { id:"f1", dia:"Divisao", titulo:"Uma por dia, e fica acabada",
+      texto:"Duas demaos com quatro horas de intervalo, fita fora com a tinta fresca, luminarias montadas ao fim da tarde. Quartos, escritorio e casa de banho sao um dia cada; a sala e um dia inteiro." },
+    { id:"f2", dia:"Corredor", titulo:"Um fim de semana so para ele",
+      texto:"Sabado a decapar o azulejo em faixas, domingo a pintar as paredes. Por esta ordem sempre: decapante come tinta fresca." }
+  ];
+
+  var PLANO_TAREFAS = [
+    { id:"picos", titulo:"Matar os picos das paredes", tempo:"294 m2",
+      passos:[
+        "Alugar girafa com aspiracao. A mao, 294 m2 sao semanas.",
+        "Lixa 120, passagem leve. Nao estas a planificar a parede, estas a tirar o que esta por cima dela.",
+        "Espatula de 25 so se o disco entupir ou ficarem riscos em circulo, e so nas zonas com salpicos.",
+        "Mascara P2, oculos, fita nas tomadas e nas calhas.",
+        "Passa a mao depois de aspirar: se largar po, o primario e para tudo."
+      ],
+      erro:"Lixar a parede toda vem antes de tapar os buracos, nao depois. Ao contrario, gastas as reparacoes que acabaste de acertar." },
+    { id:"buracos", titulo:"Buracos de parede", tempo:"~59 · 5 min cada",
+      passos:[
+        "Raspar o que esta solto em volta e tirar a bucha se rodar.",
+        "Aspirar o po de dentro do buraco. E o passo que toda a gente salta.",
+        "Primeira camada a encher pouco mais de metade.",
+        "No dia seguinte, segunda camada ligeiramente acima do nivel da parede.",
+        "Lixar com 150 num taco ate a palma da mao nao sentir a diferenca."
+      ],
+      erro:"Encher de uma vez. A massa encolhe ao secar e ficas com uma cova, que so se ve depois de pintar." },
+    { id:"fissuras", titulo:"Fissuras", tempo:"5 · 20 min cada",
+      passos:[
+        "Abrir a fissura em V com o x-ato, ao longo de todo o comprimento.",
+        "Aspirar e passar primario dentro do rasgo.",
+        "Massa a encher, e rede de fibra por cima a cobrir 5 cm para cada lado.",
+        "Seco, segunda camada larga: 15 a 20 cm de faixa, fina nas bordas.",
+        "Lixar ate a mao nao sentir onde acaba a massa."
+      ],
+      erro:"Mais de 2 mm, degrau entre as duas metades, ou voltar a abrir depois de reparada: e movimento na estrutura e precisa de outra pessoa." },
+    { id:"luzes", titulo:"Pontos de luz e a tomada", tempo:"8 luzes + 1 tomada",
+      passos:[
+        "Disjuntor desligado, confirmado com detector, pontas isoladas com bornes.",
+        "Nao ha terra: preto e azul. As oito luminarias tem de ser classe II.",
+        "Nao assumir que o preto e a fase: em instalacoes antigas o azul aparece como retorno.",
+        "Ligacoes dentro de caixa ou dentro da base da luminaria, nunca a vista.",
+        "Montar depois de pintar, no fim de cada divisao."
+      ],
+      erro:"Os tres pontos do corredor tem de ser luzes iguais, alinhadas e compradas juntas: a mesma referencia comprada meses depois ja nao e o mesmo branco de luz." },
+    { id:"rodapes", titulo:"Rodapes dos quartos", tempo:"5 itens",
+      passos:[
+        "Nada se arranca: tabua velha racha ao ser puxada.",
+        "Trocos soltos: cola injectada por tras com o bico fino, e escora 24 horas.",
+        "Nunca lixar. E revestido, e a lixa atravessa a folha e mostra o miolo.",
+        "Folgas entre pecas: cera de retoque a frio, raspada com um cartao.",
+        "Cabecas de prego e riscos: caneta de retoque de moveis.",
+        "Linha de cima: acrilico de pintar da cor da parede, e nada onde houver calha."
+      ],
+      erro:"Silicone nao aceita tinta e deixa uma linha brilhante permanente. O produto e acrilico de pintar." },
+    { id:"pintura", titulo:"Pintura", tempo:"6 divisoes · 60 L",
+      passos:[
+        "Aspirar o po todo e passar pano humido. Tinta sobre po descasca.",
+        "Primario nas zonas reparadas, senao ficam manchas foscas com a forma de cada buraco.",
+        "Fita nos aros, rodapes, calhas e interruptores, fora com a tinta ainda fresca.",
+        "Cortar cantos a pincel e logo o rolo, molhado sobre molhado.",
+        "Segunda demao quatro horas depois."
+      ],
+      erro:"Antes de pintar, lampada no chao a iluminar a parede de raspao. Mostra as covas que de frente nao se veem, e depois de pintado e o que a luz da tarde te mostra todos os dias." },
+    { id:"corredor", titulo:"Tirar a tinta do chao do corredor", tempo:"11 m2",
+      passos:[
+        "Em faixas de um metro, nunca o corredor todo: o decapante seca e volta a agarrar a tinta.",
+        "Raspador de plastico, nunca metal.",
+        "As juntas dao o dobro do trabalho: escova de nylon com o decapante ainda molhado.",
+        "Lavar a fundo no fim de cada faixa.",
+        "Janelas abertas, luvas de nitrilo, oculos."
+      ],
+      erro:"Faz-se antes de pintar as paredes do corredor, nao depois: um salpico de decapante come a tinta nova." }
+  ];
+
   function tradeById(id){
     for (var i=0;i<TRADES.length;i++) if (TRADES[i].id === id) return TRADES[i];
     return TRADES[TRADES.length-1];
@@ -1043,11 +1195,12 @@
   }
 
   // ---------- state ----------
-  var state = { areas: [], items: [], shopping: [] };
+  var state = { areas: [], items: [], shopping: [], plano: { feitos: {} } };
   var ui = {
     tab: "obras",
     openAreaId: null,
     filterTrade: null,
+    planoAberto: null,
     bannerDismissed: false,
     cloudMode: null, // null = a ligar, true = na conta, false = so neste telemovel
     sheet: null // {type:'area'|'item', areaId, itemId}
@@ -1149,6 +1302,15 @@
     db.collection("areas").onSnapshot(function(snap){ if (!ui.cloudMode) return; state.areas = snap.docs.map(docToObj); render(); }, dbListenerError);
     db.collection("items").onSnapshot(function(snap){ if (!ui.cloudMode) return; state.items = snap.docs.map(docToObj).map(normalizeItem); render(); }, dbListenerError);
     db.collection("shopping").onSnapshot(function(snap){ if (!ui.cloudMode) return; state.shopping = snap.docs.map(docToObj); render(); }, dbListenerError);
+    db.doc("plano/estado").onSnapshot(function(snap){
+      if (!ui.cloudMode) return;
+      var dados = snap.exists ? (snap.data() || {}) : {};
+      var feitos = {};
+      var origem = dados.feitos || {};
+      for (var k in origem) feitos[k] = origem[k]; // data() vem congelado
+      state.plano = { feitos: feitos };
+      render();
+    }, dbListenerError);
   }
 
   function dbListenerError(err){
@@ -1270,6 +1432,7 @@
         state.areas = parsed.areas || [];
         state.items = (parsed.items || []).map(normalizeItem);
         state.shopping = parsed.shopping || [];
+        state.plano = parsed.plano && parsed.plano.feitos ? parsed.plano : { feitos: {} };
         storeReady = true;
         render();
         return;
@@ -1311,6 +1474,7 @@
     content.className = "content" + (ui.tab === "obras" ? "" : " compras");
     if (ui.tab === "obras") content.appendChild(renderAreas());
     else if (ui.tab === "resumo") content.appendChild(renderSummary());
+    else if (ui.tab === "plano") content.appendChild(renderPlano());
     else content.appendChild(renderShopping());
     app.appendChild(content);
 
@@ -1346,7 +1510,10 @@
     var titleWrap = document.createElement("div");
     titleWrap.className = "title-wrap";
     var h1 = document.createElement("h1");
-    h1.textContent = ui.tab === "obras" ? "Obras de Casa" : (ui.tab === "resumo" ? "Resumo da obra" : "Lista de compras");
+    h1.textContent = ui.tab === "obras" ? "Obras de Casa"
+      : ui.tab === "resumo" ? "Resumo da obra"
+      : ui.tab === "plano" ? "Plano de execucao"
+      : "Lista de compras";
     titleWrap.appendChild(h1);
 
     var syncDot = document.createElement("span");
@@ -2579,6 +2746,126 @@
     return lines.join("\n");
   }
 
+
+  // ---------- separador do plano ----------
+  function planoFeito(id){ return !!(state.plano && state.plano.feitos && state.plano.feitos[id]); }
+
+  function marcarPlano(id, valor){
+    var feitos = {};
+    if (state.plano && state.plano.feitos){
+      for (var k in state.plano.feitos) feitos[k] = state.plano.feitos[k];
+    }
+    if (valor) feitos[id] = true; else delete feitos[id];
+    state.plano = { feitos: feitos };
+
+    if (ui.cloudMode && cloudDb){
+      withTimeout(cloudDb.doc("plano/estado").set({ feitos: feitos }), 6000).catch(function(err){
+        if (isConnectivityError(err)) fallbackToLocal(function(){});
+        else showDbError(err);
+      });
+      render();
+    } else {
+      render();
+    }
+  }
+
+  function planoStats(){
+    var total = PLANO_SEMANA.length;
+    var feitos = PLANO_SEMANA.filter(function(d){ return planoFeito(d.id); }).length;
+    return { total:total, feitos:feitos, pct: total === 0 ? 0 : Math.round((feitos/total)*100) };
+  }
+
+  function renderPlanoLinha(entrada){
+    var feito = planoFeito(entrada.id);
+    var el = document.createElement("div");
+    el.className = "plano-linha" + (feito ? " feito" : "");
+    el.innerHTML =
+      "<div class='check" + (feito ? " checked" : "") + "'>" + (feito ? "&#10003;" : "") + "</div>" +
+      "<div class='plano-txt'>" +
+        "<div class='plano-dia'>" + escapeHtml(entrada.dia) + "</div>" +
+        "<div class='plano-titulo'>" + escapeHtml(entrada.titulo) + "</div>" +
+        "<div class='plano-detalhe'>" + escapeHtml(entrada.texto) + "</div>" +
+      "</div>";
+    el.onclick = function(){ marcarPlano(entrada.id, !feito); };
+    return el;
+  }
+
+  function renderPlano(){
+    var wrap = document.createDocumentFragment();
+    var stats = planoStats();
+
+    var intro = document.createElement("div");
+    intro.className = "plano-intro";
+    intro.innerHTML =
+      "<b>A semana serve para o trabalho sujo todo de uma vez.</b> Lixar, tapar, lixar outra vez, primario. " +
+      "A pintura fica para os fins de semana seguintes, que e trabalho limpo e reparte-se bem: uma divisao por dia, acabada nesse dia.";
+    wrap.appendChild(intro);
+
+    var progresso = document.createElement("div");
+    progresso.className = "progress-block";
+    progresso.innerHTML =
+      "<div class='progress-track'><div class='progress-done' style='width:" + stats.pct + "%'></div></div>" +
+      "<div class='progress-legend'><span>" + stats.feitos + " de " + stats.total + " dias feitos</span></div>";
+    wrap.appendChild(progresso);
+
+    var l1 = document.createElement("div");
+    l1.className = "section-label";
+    l1.textContent = "A semana na casa";
+    wrap.appendChild(l1);
+
+    var cartao = document.createElement("div");
+    cartao.className = "plano-card";
+    PLANO_SEMANA.forEach(function(d){ cartao.appendChild(renderPlanoLinha(d)); });
+    wrap.appendChild(cartao);
+
+    var l2 = document.createElement("div");
+    l2.className = "section-label";
+    l2.textContent = "Depois, os fins de semana";
+    wrap.appendChild(l2);
+
+    var cartao2 = document.createElement("div");
+    cartao2.className = "plano-card";
+    PLANO_DEPOIS.forEach(function(d){ cartao2.appendChild(renderPlanoLinha(d)); });
+    wrap.appendChild(cartao2);
+
+    var l3 = document.createElement("div");
+    l3.className = "section-label";
+    l3.textContent = "Como se faz cada coisa";
+    wrap.appendChild(l3);
+
+    PLANO_TAREFAS.forEach(function(t){
+      var aberta = ui.planoAberto === t.id;
+      var card = document.createElement("div");
+      card.className = "tarefa-card" + (aberta ? " aberta" : "");
+
+      var topo = document.createElement("div");
+      topo.className = "tarefa-topo";
+      topo.innerHTML =
+        "<div class='tarefa-nome'>" + escapeHtml(t.titulo) + "</div>" +
+        "<div class='tarefa-tempo'>" + escapeHtml(t.tempo) + "</div>" +
+        "<div class='tarefa-seta'>&#9656;</div>";
+      topo.onclick = function(){ ui.planoAberto = aberta ? null : t.id; render(); };
+      card.appendChild(topo);
+
+      if (aberta){
+        var corpo = document.createElement("div");
+        corpo.className = "tarefa-corpo";
+        corpo.innerHTML =
+          "<ol>" + t.passos.map(function(x){ return "<li>" + escapeHtml(x) + "</li>"; }).join("") + "</ol>" +
+          "<div class='tarefa-erro'>" + escapeHtml(t.erro) + "</div>";
+        card.appendChild(corpo);
+      }
+      wrap.appendChild(card);
+    });
+
+    var nota = document.createElement("div");
+    nota.className = "plano-nota";
+    nota.textContent = "O material todo esta no separador Compras. O plano completo, com as contas da tinta e a planta, esta no documento a parte.";
+    wrap.appendChild(nota);
+
+    return wrap;
+  }
+
   function renderTabbar(){
     var bar = document.createElement("div");
     bar.className = "tabbar";
@@ -2601,9 +2888,15 @@
     tabCompras.innerHTML = cartIcon() + "<span>Compras</span>" + (pendingCount ? "<span class='tab-badge'>" + pendingCount + "</span>" : "");
     tabCompras.onclick = function(){ ui.tab = "compras"; render(); };
 
+    var tabPlano = document.createElement("div");
+    tabPlano.className = "tab" + (ui.tab === "plano" ? " active" : "");
+    tabPlano.innerHTML = planIcon() + "<span>Plano</span>";
+    tabPlano.onclick = function(){ ui.tab = "plano"; render(); };
+
     bar.appendChild(tabObras);
     bar.appendChild(tabResumo);
     bar.appendChild(tabCompras);
+    bar.appendChild(tabPlano);
     return bar;
   }
 
@@ -2612,6 +2905,9 @@
   }
   function listIcon(){
     return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></svg>';
+  }
+  function planIcon(){
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5h9a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h1"/><path d="M9 4.2A1.2 1.2 0 0 1 10.2 3h3.6A1.2 1.2 0 0 1 15 4.2V6H9z"/><path d="m8.5 12 1.6 1.6L14 10"/></svg>';
   }
   function cartIcon(){
     return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/><path d="M3 4h2l2.2 11.1a1.6 1.6 0 0 0 1.6 1.3h7.9a1.6 1.6 0 0 0 1.6-1.3L20 8H6"/></svg>';
