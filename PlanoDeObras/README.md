@@ -60,10 +60,14 @@ O que depende de medição está marcado como tal na página em vez de inventado
 
 ## Também dentro da app
 
-A app [`ObrasDeCasa/`](../ObrasDeCasa/) tem um separador Plano com a versão de
-bolso disto: a semana dia a dia com os dias a marcar como feitos, e as tarefas
-com os passos. Esta página fica com o que não cabe num telemóvel em cima de um
-escadote: as contas da tinta, a planta, o material e as decisões.
+O mesmo conteúdo existe no separador Plano da app
+[`ObrasDeCasa/`](../ObrasDeCasa/), incluindo a planta e as tabelas, em blocos
+que abrem e fecham, e com os dias da semana a marcar como feitos. Esta página
+é a versão de leitura corrida, para ver no computador ou imprimir.
+
+Quando um dos dois mudar, o outro tem de mudar também: o conteúdo está escrito
+duas vezes, em `plano-de-obras.html` como HTML e na app como estruturas de
+dados (`PLANO_SEMANA`, `PLANO_TAREFAS`, `PLANO_MATERIAL` e companhia).
 
 ## Página estática
 

@@ -22,17 +22,27 @@ principal do iPhone.
 
 ## Separador Plano
 
-A app tem um quarto separador com o plano de execução da obra: a semana em que
-a casa está disponível dia a dia, os fins de semana seguintes, e sete tarefas
-expansíveis com os passos de cada tipo de trabalho e o erro típico de cada um.
+A app tem um quarto separador com o plano de execução da obra completo, o mesmo
+que existe em [`../PlanoDeObras/`](../PlanoDeObras/), para não ser preciso sair
+da app em cima de um escadote.
 
-Os dias marcam-se como feitos e o progresso fica guardado no documento
-`plano/estado` da base de dados, num mapa de identificadores. É a única
-colecção que não é uma lista: um documento só, com um campo `feitos`.
+Contém, por esta ordem: os dois avisos que não são para fazer sozinho (a fissura
+da chaminé e o limite do trabalho eléctrico), a razão de a estratégia ser esta,
+a semana na casa dia a dia, os fins de semana seguintes, sete tarefas com os
+passos de cada trabalho, a planta do 1.º andar, a tabela das divisões, as contas
+da tinta, ferramentas, material e o que falta decidir.
 
-O conteúdo vem do documento completo em [`../PlanoDeObras/`](../PlanoDeObras/),
-que tem as contas da tinta, a planta e o material. Aqui está a versão de
-bolso, a que se consulta em cima do escadote.
+Os dias da semana marcam-se como feitos, com barra de progresso, e ficam
+guardados no documento `plano/estado` da base de dados, num mapa de
+identificadores. É a única colecção que não é uma lista: um documento só, com um
+campo `feitos`.
+
+Tudo o que é referência (planta, tabelas, listas) vive em blocos que abrem e
+fecham. Num telemóvel, tudo aberto de uma vez seria um muro de texto entre o
+utilizador e o passo que ele procura.
+
+A planta vai embutida como data URI (cerca de 120 KB em base64, redimensionada
+para 1100px) e abre no mesmo visualizador de fotos do resto da app, com zoom.
 
 ## Partilha
 
