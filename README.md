@@ -1,4 +1,4 @@
-# Ubuntu
+# iPhone
 
 Aplicações para iPhone construídas com o Claude Code, cada uma num ficheiro HTML
 único, publicada como Artifact e adicionada ao ecrã principal do telemóvel. Os
