@@ -7,7 +7,7 @@ de cada ferramenta.
 Material bruto (legenda integral, transcrição integral e uma imagem por segundo)
 em `TUDO.md` e nas pastas com o código de cada reel.
 
-Falharam 2 (15 e 20): são publicações de imagens, não vídeos.
+Os posts 15 e 20 são carrosséis de imagens; as legendas foram recuperadas com gallery-dl.
 
 ---
 
@@ -128,9 +128,19 @@ Falharam 2 (15 e 20): são publicações de imagens, não vídeos.
   3. Humanizer (escrita): remove os 33 sinais de escrita de IA e estuda o teu estilo. https://github.com/blader/humanizer
   4. Claude Code Setup (código): plugin oficial Anthropic; configura hooks, skills, MCPs e sub-agentes para o projecto. `/plugin install claude-code-setup`
 
-## 15. 9 projectos open-source
+## 15. 9 projectos open-source que substituem software pago
 - Link: https://www.instagram.com/p/DcRCbwwgBCJ/
-- Estado: download falhou (publicação de imagens). Da pesquisa anterior: o primeiro é Open Notebook, alternativa open-source ao NotebookLM. https://github.com/lfnovo/open-notebook. Os outros 8 não foram recuperados.
+- Autor: Evolving AI (carrossel de 11 imagens; legenda completa recuperada)
+- Conteúdo:
+  1. Open Notebook: alternativa ao NotebookLM; PDFs, vídeos, sites e notas, chat, resumos, podcasts. https://github.com/lfnovo/open-notebook
+  2. No AI Slop: skill que remove mais de 20 padrões de escrita de IA e mostra onde aparecem. https://github.com/petergyang/no-ai-slop
+  3. I Have ADHD: skill que faz os agentes responder directamente, estruturar trabalho em passos e cortar enchimento. https://github.com/ayghri/i-have-adhd
+  4. OpenSEO: alternativa MIT a Semrush e Ahrefs; keywords, rank tracking, backlinks, auditorias, suporte MCP. https://github.com/every-app/open-seo
+  5. Book to Skill: transforma livros em skills, carregando só o capítulo relevante. https://github.com/virgiliojr94/book-to-skill
+  6. OmniRoute: centenas de fornecedores de IA num endpoint, muda quando bates nos limites. https://github.com/diegosouzapw/OmniRoute
+  7. AI Job Search: Claude Code como assistente de procura de emprego; CVs, cartas, entrevistas. https://github.com/MadsLorentzen/ai-job-search
+  8. Strix: agentes que testam vulnerabilidades e devolvem provas de conceito e correcções. https://github.com/usestrix/strix
+  9. ComfyUI: imagem e vídeo local com grafo de nós (Stable Diffusion, Flux, Wan). https://github.com/Comfy-Org/ComfyUI
 
 ## 16. DeepSeek Harness e Martty
 - Link: https://www.instagram.com/reel/Dc7WMh0JwWl/
@@ -161,9 +171,20 @@ Falharam 2 (15 e 20): são publicações de imagens, não vídeos.
 - Conteúdo: mais de 2.000 sites de marcas (Tesla, Apple, Ferrari, Anthropic) convertidos em ficheiros que o Claude Code lê. Cada ficheiro tem cores, fontes, espaçamento, layouts e regras do que usar e evitar. Escolhes o que serve, colocas no agente, e ele constrói a UI nesse estilo.
 - Repositório: https://github.com/VoltAgent/awesome-design-md
 
-## 20. 10 repositórios com 1,9M estrelas
+## 20. 10 repositórios com 1,9M estrelas (PT-BR)
 - Link: https://www.instagram.com/p/Db9cMOwjkAL/
-- Estado: download falhou (publicação de imagens, PT-BR). Conteúdo não recuperado.
+- Autor: Erick Castilio (carrossel de 12 imagens; legenda completa recuperada)
+- Conteúdo:
+  1. awesome (495k): a lista de todas as listas. https://github.com/sindresorhus/awesome
+  2. public-apis (456k): mais de 1.400 APIs gratuitas em 50 categorias. https://github.com/public-apis/public-apis
+  3. Scrapling (73.6k): scraping indetectável com bypass de Cloudflare. https://github.com/D4Vinci/Scrapling
+  4. free-for-dev (132k): centenas de serviços com tier gratuito permanente. https://github.com/ripienaar/free-for-dev
+  5. Ollama (178k): corre Llama, Mistral e DeepSeek localmente com um comando. https://github.com/ollama/ollama
+  6. Langflow (153k): construtor visual de agentes e pipelines RAG, publica como API ou servidor MCP. https://github.com/langflow-ai/langflow
+  7. awesome-mcp-servers (92k): milhares de servidores MCP. https://github.com/punkpeye/awesome-mcp-servers
+  8. open-design (85k): alternativa open-source ao Claude Design. https://github.com/nexu-io/open-design
+  9. awesome-llm-apps (132k): mais de 100 agentes e apps RAG com código. https://github.com/Shubhamsaboo/awesome-llm-apps
+  10. OpenHands (84k): agente de código autónomo que escreve, testa e publica. https://github.com/All-Hands-AI/OpenHands
 
 ## 21. Agent Skills (24 skills)
 - Link: https://www.instagram.com/reel/Db_H8ScP5y-/
@@ -234,7 +255,7 @@ Falharam 2 (15 e 20): são publicações de imagens, não vídeos.
 | Task Observer | https://github.com/rebelytics/one-skill-to-rule-them-all | 23 |
 | DeepSeek Harness | https://github.com/deepseek-ai/deepseek-harness | 16 |
 | Martty | https://github.com/openma-ai/Martty | 16 |
-| OmniRoute | https://github.com/diegosouzapw/OmniRoute | 12 |
+| OmniRoute | https://github.com/diegosouzapw/OmniRoute | 12, 15 |
 | Claude Code Setup (oficial) | `/plugin install claude-code-setup` | 12, 14 |
 | Claude Security (oficial) | https://github.com/anthropics/claude-code-security-review | 12 |
 | Find Skills / skills.sh | https://skills.sh | 3, 4, 23 |
@@ -249,11 +270,17 @@ Falharam 2 (15 e 20): são publicações de imagens, não vídeos.
 | React Scan | https://github.com/aidenybai/react-scan | 10 |
 | Screenshot to Code | https://github.com/abi/screenshot-to-code | 1, 22 |
 | Open Notebook | https://github.com/lfnovo/open-notebook | 15 |
+| No AI Slop | https://github.com/petergyang/no-ai-slop | 15 |
+| I Have ADHD | https://github.com/ayghri/i-have-adhd | 15 |
+| Book to Skill | https://github.com/virgiliojr94/book-to-skill | 15 |
+| Strix | https://github.com/usestrix/strix | 15 |
+| awesome-mcp-servers | https://github.com/punkpeye/awesome-mcp-servers | 20 |
+| open-design | https://github.com/nexu-io/open-design | 20 |
+| Ollama, Langflow, OpenHands, Scrapling, outros | ver reel 20 | 20 |
 | Manim, Trivy, RustDesk, n8n, ComfyUI | ver reel 18 | 18 |
 | System prompts Anthropic | https://docs.anthropic.com/en/release-notes/system-prompts | 5 |
 
 ## Por identificar
 
 - Reel 8: os 16 conectores restantes (só por DM).
-- Reel 15 e 20: publicações de imagens, não descarregadas.
 - Reel 24: BKlayUI e CoconutUI (nomes por confirmar).
