@@ -1,0 +1,1363 @@
+<title>Fica para Depois</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Karla:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --paper:#F6F5F1;
+    --surface:#FFFFFF;
+    --surface-2:#EEEDE7;
+    --ink:#191B22;
+    --ink-soft:#565C69;
+    --ink-faint:#8A8F9C;
+    --line:#E2E1DA;
+    --accent:#345995;
+    --accent-ink:#22406E;
+    --accent-tint:#E3EAF5;
+    --good:#2C7A5B;
+    --good-tint:#DDEDE5;
+    --mid:#A9761B;
+    --mid-tint:#F3E9D6;
+    --bad:#A33B2E;
+    --bad-tint:#F5E1DD;
+    --shadow:0 1px 2px rgba(20,22,30,.05), 0 10px 26px -14px rgba(20,22,30,.22);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#14161C;
+      --surface:#1C1F27;
+      --surface-2:#252932;
+      --ink:#ECEDF2;
+      --ink-soft:#9AA1B1;
+      --ink-faint:#6E7686;
+      --line:#2D313C;
+      --accent:#89A9DE;
+      --accent-ink:#C9DBF5;
+      --accent-tint:#1E2839;
+      --good:#63C398;
+      --good-tint:#163025;
+      --mid:#D6A751;
+      --mid-tint:#332912;
+      --bad:#DE8878;
+      --bad-tint:#37201C;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 26px -14px rgba(0,0,0,.7);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#14161C;
+    --surface:#1C1F27;
+    --surface-2:#252932;
+    --ink:#ECEDF2;
+    --ink-soft:#9AA1B1;
+    --ink-faint:#6E7686;
+    --line:#2D313C;
+    --accent:#89A9DE;
+    --accent-ink:#C9DBF5;
+    --accent-tint:#1E2839;
+    --good:#63C398;
+    --good-tint:#163025;
+    --mid:#D6A751;
+    --mid-tint:#332912;
+    --bad:#DE8878;
+    --bad-tint:#37201C;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 26px -14px rgba(0,0,0,.7);
+  }
+
+  *{ box-sizing:border-box; }
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Karla", -apple-system, system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{ font-family:"Fraunces", Georgia, serif; text-wrap:balance; }
+  .mono{ font-family:"DM Mono", ui-monospace, monospace; }
+
+  .app{
+    max-width:480px; margin:0 auto;
+    min-height:100vh; min-height:100svh;
+    display:flex; flex-direction:column; position:relative;
+    background:var(--paper);
+    padding-left:env(safe-area-inset-left);
+    padding-right:env(safe-area-inset-right);
+  }
+
+  /* Cabecalho com a navegacao dentro: o fundo do ecra pode ficar fora da
+     area visivel quando a pagina corre dentro da app Claude. */
+  .topbar{
+    position:sticky; top:0; z-index:20;
+    background:var(--paper);
+    border-bottom:1px solid var(--line);
+    padding:10px 14px 9px;
+    padding-top:calc(10px + env(safe-area-inset-top));
+  }
+  .topbar-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .title-wrap{ display:flex; align-items:center; gap:8px; min-width:0; }
+  .topbar h1{
+    margin:0; font-size:20px; font-weight:600; letter-spacing:-.01em;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .sync-dot{ flex:none; width:8px; height:8px; border-radius:50%; background:var(--ink-faint); cursor:pointer; }
+  .sync-dot.good{ background:var(--good); }
+  .sync-dot.warn{ background:var(--mid); }
+  .icon-btn{
+    flex:none; width:32px; height:32px; border-radius:9px;
+    border:1px solid var(--line); background:var(--surface-2); color:var(--ink-soft);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+  }
+  .icon-btn svg{ width:17px; height:17px; }
+
+  .tabbar{
+    display:flex; gap:4px; background:var(--surface-2);
+    border:1px solid var(--line); border-radius:10px;
+    padding:3px; margin-top:9px;
+  }
+  .tab{
+    flex:1; display:flex; align-items:center; justify-content:center; gap:6px;
+    padding:8px 4px; border-radius:8px;
+    color:var(--ink-soft); font-size:12.5px; font-weight:600;
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+    white-space:nowrap;
+  }
+  .tab svg{ width:16px; height:16px; flex:none; }
+  .tab.active{ background:var(--surface); color:var(--accent); box-shadow:var(--shadow); }
+  .tab-badge{
+    font-family:"DM Mono"; font-size:10.5px; font-weight:500;
+    background:var(--accent); color:var(--surface); border-radius:9px; padding:1px 5px;
+  }
+
+  .kind-filter{ display:flex; gap:6px; overflow-x:auto; padding:9px 0 1px; scrollbar-width:none; }
+  .kind-filter::-webkit-scrollbar{ display:none; }
+  .kind-chip{
+    flex:none; display:flex; align-items:center; gap:5px;
+    background:var(--surface-2); border:1px solid var(--line); border-radius:8px;
+    padding:6px 10px; font-size:12.5px; white-space:nowrap;
+    cursor:pointer; -webkit-tap-highlight-color:transparent; color:var(--ink-soft);
+  }
+  .kind-chip b{ font-family:"DM Mono"; font-size:12px; font-weight:500; color:var(--accent); }
+  .kind-chip.active{ background:var(--accent-tint); border-color:var(--accent); color:var(--accent-ink); }
+  .kind-chip.active b{ color:var(--accent-ink); }
+  .kind-chip svg{ width:14px; height:14px; }
+
+  .content{ flex:1; padding:12px 14px 88px; }
+
+  .section-label{
+    font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--ink-faint); font-weight:700; margin:16px 2px 8px;
+  }
+  .section-label:first-child{ margin-top:2px; }
+
+  .empty-state{
+    border:1px dashed var(--line); border-radius:14px;
+    padding:26px 18px; text-align:center;
+    color:var(--ink-soft); font-size:13.5px; line-height:1.55;
+  }
+
+  /* Cartao de item */
+  .card{
+    background:var(--surface); border:1px solid var(--line); border-radius:13px;
+    margin-bottom:8px; box-shadow:var(--shadow);
+    display:flex; align-items:stretch; gap:0; overflow:hidden;
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+  }
+  .card-photo{ flex:none; width:74px; background:var(--surface-2); }
+  .card-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .card-photo.placeholder{
+    display:flex; align-items:center; justify-content:center; color:var(--accent);
+  }
+  .card-photo.placeholder svg{ width:22px; height:22px; }
+  .card-main{ flex:1; min-width:0; padding:11px 12px; }
+  .card-top{ display:flex; align-items:center; gap:6px; margin-bottom:3px; }
+  .kind-tag{
+    display:inline-flex; align-items:center; gap:4px;
+    font-size:10.5px; font-weight:700; letter-spacing:.03em; text-transform:uppercase;
+    background:var(--accent-tint); color:var(--accent-ink);
+    padding:2px 6px; border-radius:5px;
+  }
+  .kind-tag svg{ width:11px; height:11px; }
+  .card-title{ font-size:15px; font-weight:700; line-height:1.25; }
+  .card-sub{ font-size:12.5px; color:var(--ink-soft); margin-top:3px; line-height:1.4; }
+  .card-meta{ display:flex; flex-wrap:wrap; gap:8px; margin-top:6px; font-size:11.5px; color:var(--ink-faint); }
+  .card-meta span{ display:inline-flex; align-items:center; gap:4px; }
+  .verdict{
+    font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.03em;
+    padding:2px 6px; border-radius:5px;
+  }
+  .verdict.bom{ background:var(--good-tint); color:var(--good); }
+  .verdict.medio{ background:var(--mid-tint); color:var(--mid); }
+  .verdict.mau{ background:var(--bad-tint); color:var(--bad); }
+
+  /* Escolhe por mim */
+  .dice-btn{
+    width:100%; display:flex; align-items:center; justify-content:center; gap:8px;
+    background:var(--accent); color:#fff; border:none; border-radius:12px;
+    padding:13px; font-size:14.5px; font-weight:700; font-family:inherit;
+    cursor:pointer; margin-bottom:12px; box-shadow:var(--shadow);
+  }
+  .dice-btn svg{ width:18px; height:18px; }
+  .dice-btn:disabled{ opacity:.5; }
+
+  .pick-card{
+    background:var(--surface); border:2px solid var(--accent); border-radius:14px;
+    padding:16px; margin-bottom:12px; box-shadow:var(--shadow);
+  }
+  .pick-label{
+    font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--accent); font-weight:700; margin-bottom:6px;
+  }
+  .pick-title{ font-family:"Fraunces", Georgia, serif; font-size:22px; font-weight:600; line-height:1.2; }
+  .pick-sub{ font-size:13px; color:var(--ink-soft); margin-top:5px; }
+  .pick-actions{ display:flex; gap:8px; margin-top:14px; }
+  .pick-actions button{ flex:1; font-family:inherit; }
+
+  /* Pessoas */
+  .person-row{
+    display:flex; align-items:center; gap:12px;
+    background:var(--surface); border:1px solid var(--line); border-radius:12px;
+    padding:12px; margin-bottom:8px; box-shadow:var(--shadow);
+  }
+  .person-avatar{
+    flex:none; width:38px; height:38px; border-radius:50%;
+    background:var(--accent-tint); color:var(--accent-ink);
+    display:flex; align-items:center; justify-content:center;
+    font-family:"Fraunces", serif; font-weight:600; font-size:16px;
+  }
+  .person-main{ flex:1; min-width:0; }
+  .person-name{ font-size:14.5px; font-weight:700; }
+  .person-stats{ font-size:11.5px; color:var(--ink-soft); margin-top:2px; }
+  .person-score{
+    flex:none; text-align:right; font-family:"DM Mono"; font-weight:500;
+    font-size:17px; color:var(--good); font-variant-numeric:tabular-nums;
+  }
+  .person-score small{ display:block; font-family:"Karla"; font-size:10px; color:var(--ink-faint); font-weight:600; letter-spacing:.03em; }
+  .person-score.mid{ color:var(--mid); }
+  .person-score.low{ color:var(--bad); }
+  .person-score.none{ color:var(--ink-faint); }
+
+  /* Botao flutuante */
+  .fab{
+    position:fixed;
+    right:max(16px, calc(50% - 240px + 16px));
+    bottom:calc(76px + env(safe-area-inset-bottom));
+    z-index:15;
+    width:54px; height:54px; border-radius:17px;
+    background:var(--accent); color:#fff; border:none;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:var(--shadow); font-size:28px; line-height:1;
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+  }
+
+  /* Folha deslizante */
+  .scrim{ position:fixed; inset:0; background:rgba(10,12,16,.45); z-index:30; display:none; }
+  .scrim.show{ display:block; }
+  .sheet{
+    position:fixed; left:0; right:0; bottom:0; z-index:31;
+    max-width:480px; margin:0 auto;
+    background:var(--surface); border-radius:18px 18px 0 0;
+    box-shadow:0 -8px 30px rgba(0,0,0,.28);
+    max-height:88vh; max-height:88dvh; overflow-y:auto;
+    transform:translateY(100%); transition:transform .22s ease;
+    padding-bottom:calc(18px + env(safe-area-inset-bottom));
+  }
+  .sheet.show{ transform:translateY(0); }
+  .sheet-handle{ width:36px; height:4px; background:var(--line); border-radius:2px; margin:10px auto 4px; }
+  .sheet-head{ display:flex; align-items:center; justify-content:space-between; padding:8px 18px 4px; }
+  .sheet-head h2{ font-size:18px; font-weight:600; }
+  .sheet-close{ color:var(--ink-soft); font-size:14px; font-weight:700; cursor:pointer; padding:4px; }
+  .sheet-body{
+    padding:6px 18px 4px;
+    padding-left:calc(18px + env(safe-area-inset-left));
+    padding-right:calc(18px + env(safe-area-inset-right));
+  }
+
+  label.field, .field{ display:block; margin-bottom:13px; }
+  .field .lbl{
+    font-size:11.5px; font-weight:700; color:var(--ink-soft);
+    letter-spacing:.03em; text-transform:uppercase; display:block; margin-bottom:6px;
+  }
+  input[type=text], textarea{
+    width:100%; background:var(--surface-2); border:1px solid var(--line); border-radius:9px;
+    padding:10px 11px; font-size:16px; color:var(--ink); font-family:inherit;
+  }
+  textarea{ resize:vertical; min-height:56px; }
+  input[type=text]:focus, textarea:focus{ outline:2px solid var(--accent); outline-offset:1px; }
+
+  .kind-grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:6px; }
+  .kind-opt{
+    border:1px solid var(--line); border-radius:10px; padding:9px 3px;
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+    font-size:10.5px; font-weight:700; color:var(--ink-soft);
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+  }
+  .kind-opt svg{ width:18px; height:18px; }
+  .kind-opt.active{ border-color:var(--accent); background:var(--accent-tint); color:var(--accent-ink); }
+
+  .suggest-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:7px; }
+  .suggest{
+    background:var(--surface-2); border:1px solid var(--line); border-radius:7px;
+    padding:5px 9px; font-size:12px; color:var(--ink-soft);
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+  }
+  .suggest.active{ background:var(--accent-tint); border-color:var(--accent); color:var(--accent-ink); font-weight:600; }
+
+  .photo-row{ display:flex; gap:8px; }
+  .photo-btn{
+    flex:1; border:1px dashed var(--line); border-radius:10px; padding:11px 6px;
+    text-align:center; font-size:12.5px; font-weight:700; color:var(--ink-soft);
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+  }
+  .photo-preview{ position:relative; }
+  .photo-preview img{ width:100%; max-height:190px; object-fit:cover; border-radius:10px; display:block; }
+  .photo-remove{
+    position:absolute; top:8px; right:8px; background:rgba(15,15,20,.62); color:#fff;
+    border-radius:50%; width:26px; height:26px; display:flex; align-items:center; justify-content:center;
+    font-size:14px; cursor:pointer;
+  }
+
+  .ask-box{
+    border:1px solid var(--accent); background:var(--accent-tint);
+    border-radius:11px; padding:11px 12px; margin-bottom:13px;
+  }
+  .ask-btn{
+    width:100%; background:transparent; border:1px solid var(--accent); color:var(--accent-ink);
+    border-radius:9px; padding:10px; font-size:13px; font-weight:700; font-family:inherit;
+    cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px;
+  }
+  .ask-btn svg{ width:15px; height:15px; }
+  .ask-btn:disabled{ opacity:.55; }
+  .ask-result{ font-size:13px; line-height:1.5; color:var(--ink); margin-top:9px; }
+  .ask-hint{ font-size:11.5px; color:var(--ink-soft); margin-top:7px; line-height:1.45; }
+
+  .btn-primary{
+    width:100%; background:var(--accent); color:#fff; border:none; border-radius:11px;
+    padding:13px; font-size:15px; font-weight:700; margin-top:6px; cursor:pointer; font-family:inherit;
+  }
+  .btn-primary:disabled{ opacity:.45; }
+  .btn-secondary{
+    width:100%; background:var(--surface-2); color:var(--ink-soft);
+    border:1px solid var(--line); border-radius:11px;
+    padding:12px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; margin-top:8px;
+  }
+  .btn-danger{
+    width:100%; background:transparent; color:var(--bad); border:1px solid var(--bad);
+    border-radius:11px; padding:11px; font-size:13.5px; font-weight:700;
+    margin-top:9px; cursor:pointer; font-family:inherit;
+  }
+
+  .verdict-grid{ display:flex; gap:7px; }
+  .verdict-opt{
+    flex:1; border:1px solid var(--line); border-radius:10px; padding:11px 4px;
+    text-align:center; font-size:12.5px; font-weight:700; color:var(--ink-soft);
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+  }
+  .verdict-opt.active.bom{ border-color:var(--good); background:var(--good-tint); color:var(--good); }
+  .verdict-opt.active.medio{ border-color:var(--mid); background:var(--mid-tint); color:var(--mid); }
+  .verdict-opt.active.mau{ border-color:var(--bad); background:var(--bad-tint); color:var(--bad); }
+
+  .hint{ font-size:12px; color:var(--ink-faint); line-height:1.5; }
+
+  .banner{
+    display:flex; gap:9px; align-items:flex-start;
+    background:var(--mid-tint); border:1px solid var(--mid);
+    border-radius:10px; padding:10px 11px; margin-bottom:10px;
+    font-size:12px; line-height:1.5; color:var(--ink);
+  }
+  .banner b{ color:var(--mid); }
+  .banner .x{ margin-left:auto; flex:none; color:var(--ink-faint); cursor:pointer; padding:2px; }
+</style>
+
+<div class="app" id="app"></div>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-head">
+    <h2 id="sheetTitle">Novo</h2>
+    <span class="sheet-close" id="sheetClose">Fechar</span>
+  </div>
+  <div class="sheet-body" id="sheetBody"></div>
+</div>
+
+<input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none">
+<input type="file" id="libraryInput" accept="image/*" style="display:none">
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- avisos de erro visiveis ----------
+  function showDebugError(msg){
+    var el = document.getElementById("debugError");
+    if (!el){
+      el = document.createElement("div");
+      el.id = "debugError";
+      el.style.cssText = "position:fixed;left:8px;right:8px;top:8px;z-index:9999;background:#A33B2E;color:#fff;padding:10px 12px;border-radius:10px;font-size:11.5px;font-family:ui-monospace,monospace;white-space:pre-wrap;max-height:42vh;overflow:auto;";
+      var textEl = document.createElement("div");
+      textEl.id = "debugErrorText";
+      var closeBtn = document.createElement("div");
+      closeBtn.textContent = "Fechar aviso";
+      closeBtn.style.cssText = "margin-top:8px;text-decoration:underline;font-weight:700;";
+      closeBtn.onclick = function(){ el.remove(); };
+      el.appendChild(textEl);
+      el.appendChild(closeBtn);
+      document.body.appendChild(el);
+    }
+    var t = document.getElementById("debugErrorText");
+    t.textContent += (t.textContent ? "\n\n" : "") + msg;
+  }
+  window.addEventListener("error", function(e){
+    showDebugError("Erro: " + (e.message || e) + (e.filename ? (" (linha " + e.lineno + ")") : ""));
+  });
+
+  // ---------- caixas proprias (as nativas nao aparecem em apps do ecra principal) ----------
+  function showAlert(message){
+    var overlay = document.createElement("div");
+    overlay.style.cssText = "position:fixed;inset:0;z-index:9998;background:rgba(10,12,16,.5);display:flex;align-items:center;justify-content:center;padding:24px;";
+    var box = document.createElement("div");
+    box.style.cssText = "background:var(--surface);color:var(--ink);border-radius:14px;padding:18px;max-width:340px;width:100%;font-size:14px;line-height:1.55;box-shadow:0 8px 30px rgba(0,0,0,.3);font-family:inherit;";
+    var text = document.createElement("div");
+    text.textContent = message;
+    var btn = document.createElement("button");
+    btn.textContent = "OK";
+    btn.className = "btn-primary";
+    btn.style.marginTop = "14px";
+    btn.onclick = function(){ overlay.remove(); };
+    box.appendChild(text); box.appendChild(btn);
+    overlay.appendChild(box);
+    overlay.onclick = function(e){ if (e.target === overlay) overlay.remove(); };
+    document.body.appendChild(overlay);
+  }
+
+  function showConfirm(message, onConfirm, confirmLabel){
+    var overlay = document.createElement("div");
+    overlay.style.cssText = "position:fixed;inset:0;z-index:9998;background:rgba(10,12,16,.5);display:flex;align-items:center;justify-content:center;padding:24px;";
+    var box = document.createElement("div");
+    box.style.cssText = "background:var(--surface);color:var(--ink);border-radius:14px;padding:18px;max-width:340px;width:100%;font-size:14px;line-height:1.55;box-shadow:0 8px 30px rgba(0,0,0,.3);font-family:inherit;";
+    var text = document.createElement("div");
+    text.textContent = message;
+    var row = document.createElement("div");
+    row.style.cssText = "display:flex;gap:8px;margin-top:16px;";
+    var cancelBtn = document.createElement("button");
+    cancelBtn.textContent = "Cancelar";
+    cancelBtn.style.cssText = "flex:1;background:var(--surface-2);color:var(--ink-soft);border:1px solid var(--line);border-radius:10px;padding:11px;font-size:14px;font-weight:700;font-family:inherit;";
+    cancelBtn.onclick = function(){ overlay.remove(); };
+    var okBtn = document.createElement("button");
+    okBtn.textContent = confirmLabel || "Continuar";
+    okBtn.style.cssText = "flex:1;background:#A33B2E;color:#fff;border:none;border-radius:10px;padding:11px;font-size:14px;font-weight:700;font-family:inherit;";
+    okBtn.onclick = function(){ overlay.remove(); onConfirm(); };
+    row.appendChild(cancelBtn); row.appendChild(okBtn);
+    box.appendChild(text); box.appendChild(row);
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+  }
+
+  // ---------- dominio ----------
+  var STORAGE_KEY = "ficaparadepois.v1";
+
+  var KINDS = [
+    { id:"comer", label:"Comer",  short:"Comer",  placeholder:"Ex.: Taberna Sal Grosso" },
+    { id:"ir",    label:"Ir",     short:"Ir",     placeholder:"Ex.: Miradouro da Graca" },
+    { id:"ver",   label:"Ver",    short:"Ver",    placeholder:"Ex.: serie The Bear" },
+    { id:"ler",   label:"Ler",    short:"Ler",    placeholder:"Ex.: livro Sapiens" },
+    { id:"ouvir", label:"Ouvir",  short:"Ouvir",  placeholder:"Ex.: podcast Fumaca" }
+  ];
+  function kindById(id){
+    for (var i=0;i<KINDS.length;i++) if (KINDS[i].id === id) return KINDS[i];
+    return KINDS[0];
+  }
+  function kindIcon(id){
+    var paths = {
+      comer: '<path d="M6 3v8a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V3"/><path d="M8 13v8"/><path d="M17 3c-1.5 1.5-2 3-2 5s.5 3 2 3h1V3z"/><path d="M18 11v10"/>',
+      ir:    '<path d="M12 21s7-6.4 7-11a7 7 0 1 0-14 0c0 4.6 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+      ver:   '<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M10.5 9.5l4.5 2.5-4.5 2.5z"/>',
+      ler:   '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 5.5v15"/>',
+      ouvir: '<path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="2.5" y="13.5" width="4.5" height="7" rx="2"/><rect x="17" y="13.5" width="4.5" height="7" rx="2"/>'
+    };
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + (paths[id] || paths.comer) + '</svg>';
+  }
+  function diceIcon(){
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.2" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg>';
+  }
+  function sparkIcon(){
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.9L18.7 9.7 13.8 11.5 12 16.4 10.2 11.5 5.3 9.7 10.2 7.9z"/><path d="M18.5 16.5l.7 1.9 1.9.7-1.9.7-.7 1.9-.7-1.9-1.9-.7 1.9-.7z"/></svg>';
+  }
+  function listIcon(){
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></svg>';
+  }
+  function checkIcon(){
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>';
+  }
+  function peopleIcon(){
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><path d="M16 5.5a3 3 0 0 1 0 5.6"/><path d="M17.5 20c0-2.2-.8-3.9-2-5"/></svg>';
+  }
+
+  var VERDICTS = [
+    { id:"bom",   label:"Gostei",     cls:"bom" },
+    { id:"medio", label:"Assim-assim", cls:"medio" },
+    { id:"mau",   label:"Nao gostei",  cls:"mau" }
+  ];
+  function verdictById(id){
+    for (var i=0;i<VERDICTS.length;i++) if (VERDICTS[i].id === id) return VERDICTS[i];
+    return null;
+  }
+
+  function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+
+  function escapeHtml(s){
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+      return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c];
+    });
+  }
+  function escapeAttr(s){ return escapeHtml(s).replace(/\n/g, " "); }
+
+  // ---------- estado ----------
+  var state = { entries: [] };
+  var ui = { tab:"lista", filterKind:null, bannerDismissed:false, cloudMode:null, pick:null };
+  var cloudDb = null;
+  var sampleFn = null;
+  var sampleImages = false;
+  var storeReady = false;
+
+  function persist(){
+    if (!storeReady || ui.cloudMode) return;
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){}
+  }
+
+  function docToObj(d){
+    var data = d.data() || {};
+    var o = {}; // data() vem congelado: copiar antes de acrescentar o id
+    for (var k in data) o[k] = data[k];
+    o.id = d.id;
+    return o;
+  }
+
+  function withTimeout(promise, ms){
+    return new Promise(function(resolve, reject){
+      var done = false;
+      var timer = setTimeout(function(){
+        if (done) return;
+        done = true;
+        reject({ code:"timeout", message:"A conta nao respondeu a tempo." });
+      }, ms);
+      promise.then(function(v){ if (done) return; done = true; clearTimeout(timer); resolve(v); },
+                   function(e){ if (done) return; done = true; clearTimeout(timer); reject(e); });
+    });
+  }
+  function isConnectivityError(err){
+    return !!(err && (err.code === "timeout" || err.code === "unavailable" || err.code === "not_granted" ||
+      err.code === "revoked" || err.code === "capability_disabled" || err.code === "capability_removed"));
+  }
+  function fallbackToLocal(applyLocally){
+    ui.cloudMode = false;
+    ui.bannerDismissed = false;
+    storeReady = true;
+    applyLocally();
+    render();
+  }
+  function showDbError(err){
+    var msg = "Nao foi possivel guardar agora. Tenta outra vez.";
+    if (err && err.code === "quota_exceeded") msg = "Limite de armazenamento atingido. Apaga alguns registos antigos com foto.";
+    else if (err && err.code === "invalid_argument") msg = "Este registo ficou grande demais, provavelmente a foto.";
+    else if (err && err.code === "resource_exhausted") msg = "Demasiados pedidos de uma vez. Espera um pouco.";
+    showAlert(msg);
+  }
+
+  // ---------- arranque ----------
+  function initApp(){
+    render();
+    if (!(window.claude && window.claude.use)){ setupLocal(); return; }
+
+    window.claude.use("db").then(function(db){
+      if (!db){ setupLocal(); return; }
+      probeCloud(db);
+    }).catch(function(){ setupLocal(); });
+
+    window.claude.use("sample").then(function(fn){
+      if (!fn) return;
+      sampleFn = fn;
+      if (fn.limits){
+        fn.limits().then(function(caps){
+          sampleImages = !!(caps && caps.images);
+        }).catch(function(){});
+      }
+    }).catch(function(){});
+  }
+
+  function probeCloud(db){
+    var settled = false;
+    var timer = setTimeout(function(){
+      if (settled) return;
+      settled = true;
+      setupLocal();
+    }, 6000);
+
+    db.doc("meta/init").get().then(function(snap){
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      cloudDb = db;
+      ui.cloudMode = true;
+      render();
+      if (!snap.exists) db.doc("meta/init").set({ seeded:true }).catch(function(){});
+      subscribeCloud(db);
+    }).catch(function(){
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      setupLocal();
+    });
+  }
+
+  function subscribeCloud(db){
+    db.collection("entries").onSnapshot(function(snap){
+      if (!ui.cloudMode) return;
+      state.entries = snap.docs.map(docToObj);
+      render();
+    }, function(err){
+      if (isConnectivityError(err) && ui.cloudMode){
+        ui.cloudMode = false; ui.bannerDismissed = false; storeReady = true; render();
+      }
+    });
+  }
+
+  function setupLocal(){
+    ui.cloudMode = false;
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (raw){
+        var parsed = JSON.parse(raw);
+        state.entries = parsed.entries || [];
+      }
+    } catch(e){}
+    storeReady = true;
+    render();
+  }
+
+  // ---------- escritas ----------
+  function saveEntry(id, data, onDone){
+    if (ui.cloudMode && cloudDb){
+      withTimeout(cloudDb.collection("entries").doc(id).set(data), 8000).then(function(){
+        if (onDone) onDone();
+      }).catch(function(err){
+        if (isConnectivityError(err)){
+          fallbackToLocal(function(){ applyEntryLocally(id, data); });
+          if (onDone) onDone();
+        } else showDbError(err);
+      });
+    } else {
+      applyEntryLocally(id, data);
+      render();
+      if (onDone) onDone();
+    }
+  }
+  function applyEntryLocally(id, data){
+    var copy = {}; for (var k in data) copy[k] = data[k];
+    copy.id = id;
+    var found = false;
+    state.entries = state.entries.map(function(e){
+      if (e.id === id){ found = true; return copy; }
+      return e;
+    });
+    if (!found) state.entries.push(copy);
+  }
+  function deleteEntry(id, onDone){
+    if (ui.cloudMode && cloudDb){
+      withTimeout(cloudDb.collection("entries").doc(id).delete(), 8000).then(function(){
+        if (onDone) onDone();
+      }).catch(function(err){
+        if (isConnectivityError(err)){
+          fallbackToLocal(function(){ state.entries = state.entries.filter(function(e){ return e.id !== id; }); });
+          if (onDone) onDone();
+        } else showDbError(err);
+      });
+    } else {
+      state.entries = state.entries.filter(function(e){ return e.id !== id; });
+      render();
+      if (onDone) onDone();
+    }
+  }
+
+  // ---------- consultas ----------
+  function openEntries(){
+    return state.entries.filter(function(e){ return e.status !== "feito"; })
+      .sort(function(a,b){ return (b.createdAt || 0) - (a.createdAt || 0); });
+  }
+  function doneEntries(){
+    return state.entries.filter(function(e){ return e.status === "feito"; })
+      .sort(function(a,b){ return (b.doneAt || 0) - (a.doneAt || 0); });
+  }
+  function filteredOpen(){
+    return openEntries().filter(function(e){ return !ui.filterKind || e.kind === ui.filterKind; });
+  }
+  function peopleList(){
+    var map = {};
+    state.entries.forEach(function(e){
+      var name = (e.by || "").trim();
+      if (!name) return;
+      var key = name.toLowerCase();
+      if (!map[key]) map[key] = { name:name, total:0, feitos:0, bons:0, maus:0 };
+      map[key].total++;
+      if (e.status === "feito"){
+        map[key].feitos++;
+        if (e.verdict === "bom") map[key].bons++;
+        if (e.verdict === "mau") map[key].maus++;
+      }
+    });
+    var list = Object.keys(map).map(function(k){
+      var p = map[k];
+      p.avaliados = p.bons + p.maus;
+      p.acerto = p.avaliados === 0 ? null : Math.round((p.bons / p.avaliados) * 100);
+      return p;
+    });
+    list.sort(function(a,b){
+      if (a.acerto === null && b.acerto === null) return b.total - a.total;
+      if (a.acerto === null) return 1;
+      if (b.acerto === null) return -1;
+      return b.acerto - a.acerto;
+    });
+    return list;
+  }
+  function knownPeople(){
+    var names = [];
+    state.entries.forEach(function(e){
+      var n = (e.by || "").trim();
+      if (n && names.indexOf(n) === -1) names.push(n);
+    });
+    return names.slice(0, 12);
+  }
+  function knownPlaces(){
+    var places = [];
+    state.entries.forEach(function(e){
+      var p = (e.place || "").trim();
+      if (p && places.indexOf(p) === -1) places.push(p);
+    });
+    return places.slice(0, 8);
+  }
+
+  // ---------- render ----------
+  var app = document.getElementById("app");
+
+  function render(){
+    persist();
+    app.innerHTML = "";
+    app.appendChild(renderTopbar());
+    var content = document.createElement("div");
+    content.className = "content";
+    if (ui.tab === "lista") content.appendChild(renderLista());
+    else if (ui.tab === "feitos") content.appendChild(renderFeitos());
+    else content.appendChild(renderPessoas());
+    app.appendChild(content);
+
+    var fab = document.createElement("button");
+    fab.className = "fab";
+    fab.setAttribute("aria-label", "Novo registo");
+    fab.textContent = "+";
+    fab.onclick = function(){ openEntrySheet(null); };
+    app.appendChild(fab);
+  }
+
+  function renderTopbar(){
+    var bar = document.createElement("div");
+    bar.className = "topbar";
+
+    if (ui.cloudMode === false && !ui.bannerDismissed && state.entries.length > 0){
+      var banner = document.createElement("div");
+      banner.className = "banner";
+      banner.innerHTML = "<span><b>A guardar so neste telemovel.</b> Inicia sessao na tua conta Claude para sincronizar.</span>" +
+        "<span class='x' id='dismissBanner'>&#10005;</span>";
+      banner.querySelector("#dismissBanner").onclick = function(){ ui.bannerDismissed = true; render(); };
+      bar.appendChild(banner);
+    }
+
+    var row = document.createElement("div");
+    row.className = "topbar-row";
+    var titleWrap = document.createElement("div");
+    titleWrap.className = "title-wrap";
+    var h1 = document.createElement("h1");
+    h1.textContent = ui.tab === "lista" ? "Fica para Depois" : (ui.tab === "feitos" ? "Ja fiz" : "Quem recomenda");
+    titleWrap.appendChild(h1);
+    var dot = document.createElement("span");
+    dot.className = "sync-dot" + (ui.cloudMode === true ? " good" : ui.cloudMode === false ? " warn" : "");
+    dot.onclick = function(){
+      showAlert(ui.cloudMode === true
+        ? "Guardado na tua conta Claude. Aparece em qualquer dispositivo onde tenhas sessao iniciada."
+        : ui.cloudMode === false
+          ? "A guardar so neste telemovel. Inicia sessao na tua conta Claude para sincronizar."
+          : "A ligar a tua conta Claude...");
+    };
+    titleWrap.appendChild(dot);
+    row.appendChild(titleWrap);
+
+    var backupBtn = document.createElement("div");
+    backupBtn.className = "icon-btn";
+    backupBtn.setAttribute("aria-label", "Copia de seguranca");
+    backupBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4 8 8M12 4l4 4"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>';
+    backupBtn.onclick = function(){ openBackupSheet(); };
+    row.appendChild(backupBtn);
+
+    bar.appendChild(row);
+    bar.appendChild(renderTabs());
+
+    if (ui.tab === "lista"){
+      var counts = {};
+      openEntries().forEach(function(e){ counts[e.kind] = (counts[e.kind] || 0) + 1; });
+      var anyCount = Object.keys(counts).length > 0;
+      if (anyCount){
+        var filter = document.createElement("div");
+        filter.className = "kind-filter";
+        KINDS.forEach(function(k){
+          var n = counts[k.id];
+          if (!n) return;
+          var active = ui.filterKind === k.id;
+          var chip = document.createElement("div");
+          chip.className = "kind-chip" + (active ? " active" : "");
+          chip.innerHTML = kindIcon(k.id) + "<span>" + k.label + "</span><b>" + n + "</b>";
+          chip.onclick = function(){ ui.filterKind = active ? null : k.id; ui.pick = null; render(); };
+          filter.appendChild(chip);
+        });
+        bar.appendChild(filter);
+      }
+    }
+    return bar;
+  }
+
+  function renderTabs(){
+    var bar = document.createElement("div");
+    bar.className = "tabbar";
+
+    var abertos = openEntries().length;
+    var t1 = document.createElement("div");
+    t1.className = "tab" + (ui.tab === "lista" ? " active" : "");
+    t1.innerHTML = listIcon() + "<span>Lista</span>" + (abertos ? "<span class='tab-badge'>" + abertos + "</span>" : "");
+    t1.onclick = function(){ ui.tab = "lista"; render(); };
+
+    var t2 = document.createElement("div");
+    t2.className = "tab" + (ui.tab === "feitos" ? " active" : "");
+    t2.innerHTML = checkIcon() + "<span>Ja fiz</span>";
+    t2.onclick = function(){ ui.tab = "feitos"; render(); };
+
+    var t3 = document.createElement("div");
+    t3.className = "tab" + (ui.tab === "pessoas" ? " active" : "");
+    t3.innerHTML = peopleIcon() + "<span>Quem</span>";
+    t3.onclick = function(){ ui.tab = "pessoas"; render(); };
+
+    bar.appendChild(t1); bar.appendChild(t2); bar.appendChild(t3);
+    return bar;
+  }
+
+  function renderLista(){
+    var wrap = document.createDocumentFragment();
+    var list = filteredOpen();
+
+    if (state.entries.length === 0){
+      var empty = document.createElement("div");
+      empty.className = "empty-state";
+      empty.innerHTML = "Ainda sem nada apontado.<br><br>Da proxima vez que te recomendarem um restaurante, um sitio, uma serie ou um livro, toca no <b>+</b> e aponta em dez segundos. Quando chegar a altura de decidir, esta tudo aqui.";
+      wrap.appendChild(empty);
+      return wrap;
+    }
+
+    if (list.length === 0){
+      var none = document.createElement("div");
+      none.className = "empty-state";
+      none.textContent = ui.filterKind ? "Nada por fazer nesta categoria." : "Tudo feito. Nao tens nada em espera.";
+      wrap.appendChild(none);
+      return wrap;
+    }
+
+    if (ui.pick){
+      var picked = state.entries.find(function(e){ return e.id === ui.pick; });
+      if (picked){
+        var pickCard = document.createElement("div");
+        pickCard.className = "pick-card";
+        var kind = kindById(picked.kind);
+        pickCard.innerHTML =
+          "<div class='pick-label'>A escolha da casa</div>" +
+          "<div class='pick-title'>" + escapeHtml(picked.title) + "</div>" +
+          "<div class='pick-sub'>" + kind.label + (picked.place ? " · " + escapeHtml(picked.place) : "") +
+            (picked.by ? " · por " + escapeHtml(picked.by) : "") + "</div>";
+        var actions = document.createElement("div");
+        actions.className = "pick-actions";
+        var openBtn = document.createElement("button");
+        openBtn.className = "btn-primary";
+        openBtn.style.marginTop = "0";
+        openBtn.textContent = "Abrir";
+        openBtn.onclick = function(){ openEntrySheet(picked.id); };
+        var againBtn = document.createElement("button");
+        againBtn.className = "btn-secondary";
+        againBtn.style.marginTop = "0";
+        againBtn.textContent = "Outro";
+        againBtn.onclick = function(){ pickRandom(); };
+        actions.appendChild(openBtn);
+        actions.appendChild(againBtn);
+        pickCard.appendChild(actions);
+        wrap.appendChild(pickCard);
+      }
+    } else if (list.length > 1){
+      var dice = document.createElement("button");
+      dice.className = "dice-btn";
+      dice.innerHTML = diceIcon() + "<span>Escolhe por mim</span>";
+      dice.onclick = function(){ pickRandom(); };
+      wrap.appendChild(dice);
+    }
+
+    list.forEach(function(entry){ wrap.appendChild(renderCard(entry)); });
+    return wrap;
+  }
+
+  function pickRandom(){
+    var list = filteredOpen();
+    if (list.length === 0) return;
+    var candidates = list.filter(function(e){ return e.id !== ui.pick; });
+    if (candidates.length === 0) candidates = list;
+    ui.pick = candidates[Math.floor(Math.random() * candidates.length)].id;
+    render();
+  }
+
+  function renderCard(entry){
+    var kind = kindById(entry.kind);
+    var card = document.createElement("div");
+    card.className = "card";
+    card.onclick = function(){ openEntrySheet(entry.id); };
+
+    var photo = document.createElement("div");
+    if (entry.photo){
+      photo.className = "card-photo";
+      photo.innerHTML = "<img src='" + entry.photo + "' alt=''>";
+    } else {
+      photo.className = "card-photo placeholder";
+      photo.innerHTML = kindIcon(entry.kind);
+    }
+    card.appendChild(photo);
+
+    var main = document.createElement("div");
+    main.className = "card-main";
+    var verdict = verdictById(entry.verdict);
+    var meta = [];
+    if (entry.by) meta.push("<span>por " + escapeHtml(entry.by) + "</span>");
+    if (entry.place) meta.push("<span>" + escapeHtml(entry.place) + "</span>");
+
+    main.innerHTML =
+      "<div class='card-top'>" +
+        "<span class='kind-tag'>" + kindIcon(entry.kind) + kind.label + "</span>" +
+        (verdict ? "<span class='verdict " + verdict.cls + "'>" + verdict.label + "</span>" : "") +
+      "</div>" +
+      "<div class='card-title'>" + escapeHtml(entry.title) + "</div>" +
+      (entry.summary ? "<div class='card-sub'>" + escapeHtml(entry.summary) + "</div>" : "") +
+      (entry.verdictNote ? "<div class='card-sub'>" + escapeHtml(entry.verdictNote) + "</div>" : "") +
+      (meta.length ? "<div class='card-meta'>" + meta.join("") + "</div>" : "");
+    card.appendChild(main);
+    return card;
+  }
+
+  function renderFeitos(){
+    var wrap = document.createDocumentFragment();
+    var list = doneEntries();
+    if (list.length === 0){
+      var empty = document.createElement("div");
+      empty.className = "empty-state";
+      empty.textContent = "Ainda nao marcaste nada como feito. Quando fores a um sitio ou vires uma serie da lista, abre o registo e marca, com uma linha a dizer se valeu a pena.";
+      wrap.appendChild(empty);
+      return wrap;
+    }
+    list.forEach(function(entry){ wrap.appendChild(renderCard(entry)); });
+    return wrap;
+  }
+
+  function renderPessoas(){
+    var wrap = document.createDocumentFragment();
+    var list = peopleList();
+    if (list.length === 0){
+      var empty = document.createElement("div");
+      empty.className = "empty-state";
+      empty.textContent = "Quando apontares quem recomendou cada coisa, aparece aqui quem costuma acertar e quem nao.";
+      wrap.appendChild(empty);
+      return wrap;
+    }
+
+    list.forEach(function(p){
+      var row = document.createElement("div");
+      row.className = "person-row";
+      var scoreCls = p.acerto === null ? "none" : (p.acerto >= 70 ? "" : p.acerto >= 40 ? "mid" : "low");
+      row.innerHTML =
+        "<div class='person-avatar'>" + escapeHtml(p.name.charAt(0).toUpperCase()) + "</div>" +
+        "<div class='person-main'>" +
+          "<div class='person-name'>" + escapeHtml(p.name) + "</div>" +
+          "<div class='person-stats'>" + p.total + " recomenda" + (p.total === 1 ? "cao" : "coes") +
+            " · " + p.feitos + " feita" + (p.feitos === 1 ? "" : "s") + "</div>" +
+        "</div>" +
+        "<div class='person-score " + scoreCls + "'>" +
+          (p.acerto === null ? "&mdash;" : p.acerto + "%") +
+          "<small>ACERTO</small>" +
+        "</div>";
+      wrap.appendChild(row);
+    });
+
+    var note = document.createElement("div");
+    note.className = "hint";
+    note.style.marginTop = "12px";
+    note.textContent = "Acerto conta so o que ja fizeste e classificaste como gostei ou nao gostei.";
+    wrap.appendChild(note);
+    return wrap;
+  }
+
+  // ---------- folhas ----------
+  var scrim = document.getElementById("scrim");
+  var sheet = document.getElementById("sheet");
+  var sheetTitle = document.getElementById("sheetTitle");
+  var sheetBody = document.getElementById("sheetBody");
+  document.getElementById("sheetClose").onclick = closeSheet;
+  scrim.onclick = closeSheet;
+
+  function openSheet(title){
+    sheetTitle.textContent = title;
+    scrim.classList.add("show");
+    requestAnimationFrame(function(){ sheet.classList.add("show"); });
+  }
+  function closeSheet(){
+    sheet.classList.remove("show");
+    scrim.classList.remove("show");
+    setTimeout(function(){ sheetBody.innerHTML = ""; }, 200);
+  }
+
+  var draftPhoto = null;
+  var draftPhotoBlob = null;
+
+  function openEntrySheet(entryId){
+    var editing = entryId ? state.entries.find(function(e){ return e.id === entryId; }) : null;
+    draftPhoto = editing ? (editing.photo || null) : null;
+    draftPhotoBlob = null;
+
+    var selectedKind = editing ? editing.kind : (ui.filterKind || "comer");
+    var draftSummary = editing ? (editing.summary || "") : "";
+
+    openSheet(editing ? "Editar" : "Apontar");
+
+    var kindGrid = KINDS.map(function(k){
+      return "<div class='kind-opt" + (selectedKind === k.id ? " active" : "") + "' data-kind='" + k.id + "'>" +
+        kindIcon(k.id) + "<span>" + k.short + "</span></div>";
+    }).join("");
+
+    sheetBody.innerHTML =
+      "<label class='field'><span class='lbl'>O que e</span>" +
+      "<input type='text' id='entryTitle' placeholder='" + escapeAttr(kindById(selectedKind).placeholder) + "' value='" + (editing ? escapeAttr(editing.title) : "") + "'></label>" +
+      "<label class='field'><span class='lbl'>Categoria</span><div class='kind-grid' id='kindGrid'>" + kindGrid + "</div></label>" +
+      "<div id='askBox'></div>" +
+      "<label class='field'><span class='lbl'>Quem recomendou</span>" +
+      "<input type='text' id='entryBy' placeholder='Ex.: Joao' value='" + (editing ? escapeAttr(editing.by || "") : "") + "'>" +
+      "<div class='suggest-row' id='peopleSuggest'></div></label>" +
+      "<label class='field'><span class='lbl'>Onde</span>" +
+      "<input type='text' id='entryPlace' placeholder='Ex.: Lisboa, Campo de Ourique' value='" + (editing ? escapeAttr(editing.place || "") : "") + "'>" +
+      "<div class='suggest-row' id='placeSuggest'></div></label>" +
+      "<label class='field'><span class='lbl'>Nota</span>" +
+      "<textarea id='entryNote' placeholder='O que te disseram, o que queres provar, um link'>" + (editing ? escapeHtml(editing.note || "") : "") + "</textarea></label>" +
+      "<div class='field' id='photoField'></div>" +
+      (editing && editing.status === "feito" ? "<div id='verdictField'></div>" : "") +
+      "<button class='btn-primary' id='saveEntry'>Guardar</button>" +
+      (editing && editing.status !== "feito" ? "<button class='btn-secondary' id='markDone'>Ja fiz isto</button>" : "") +
+      (editing && editing.status === "feito" ? "<button class='btn-secondary' id='markOpen'>Voltar a por na lista</button>" : "") +
+      (editing ? "<button class='btn-danger' id='deleteEntry'>Eliminar</button>" : "");
+
+    var titleInput = document.getElementById("entryTitle");
+    var byInput = document.getElementById("entryBy");
+    var placeInput = document.getElementById("entryPlace");
+    var noteInput = document.getElementById("entryNote");
+
+    var kindGridEl = document.getElementById("kindGrid");
+    kindGridEl.querySelectorAll(".kind-opt").forEach(function(el){
+      el.onclick = function(){
+        selectedKind = el.getAttribute("data-kind");
+        kindGridEl.querySelectorAll(".kind-opt").forEach(function(o){ o.classList.remove("active"); });
+        el.classList.add("active");
+        titleInput.placeholder = kindById(selectedKind).placeholder;
+      };
+    });
+
+    renderSuggestions("peopleSuggest", knownPeople(), byInput);
+    renderSuggestions("placeSuggest", knownPlaces(), placeInput);
+    renderPhotoField();
+    renderAskBox();
+
+    var selectedVerdict = editing ? (editing.verdict || null) : null;
+    var verdictNoteValue = editing ? (editing.verdictNote || "") : "";
+    if (editing && editing.status === "feito") renderVerdictField();
+
+    function renderVerdictField(){
+      var field = document.getElementById("verdictField");
+      if (!field) return;
+      field.className = "field";
+      field.innerHTML =
+        "<span class='lbl'>Valeu a pena?</span>" +
+        "<div class='verdict-grid' id='verdictGrid'>" +
+          VERDICTS.map(function(v){
+            return "<div class='verdict-opt " + v.cls + (selectedVerdict === v.id ? " active" : "") + "' data-verdict='" + v.id + "'>" + v.label + "</div>";
+          }).join("") +
+        "</div>" +
+        "<input type='text' id='verdictNote' style='margin-top:8px;' placeholder='Uma linha sobre o que achaste' value='" + escapeAttr(verdictNoteValue) + "'>";
+      var grid = document.getElementById("verdictGrid");
+      grid.querySelectorAll(".verdict-opt").forEach(function(el){
+        el.onclick = function(){
+          selectedVerdict = el.getAttribute("data-verdict");
+          grid.querySelectorAll(".verdict-opt").forEach(function(o){ o.classList.remove("active"); });
+          el.classList.add("active");
+        };
+      });
+      document.getElementById("verdictNote").oninput = function(){ verdictNoteValue = this.value; };
+    }
+
+    function collect(status){
+      var vNoteEl = document.getElementById("verdictNote");
+      return {
+        title: titleInput.value.trim(),
+        kind: selectedKind,
+        by: byInput.value.trim(),
+        place: placeInput.value.trim(),
+        note: noteInput.value.trim(),
+        summary: draftSummary,
+        photo: draftPhoto,
+        status: status,
+        verdict: status === "feito" ? selectedVerdict : (editing ? editing.verdict || null : null),
+        verdictNote: vNoteEl ? vNoteEl.value.trim() : verdictNoteValue,
+        createdAt: editing ? (editing.createdAt || Date.now()) : Date.now(),
+        doneAt: status === "feito" ? (editing && editing.doneAt ? editing.doneAt : Date.now()) : null
+      };
+    }
+
+    document.getElementById("saveEntry").onclick = function(){
+      if (!titleInput.value.trim()){ showAlert("Escreve pelo menos o que e."); return; }
+      var btn = this;
+      btn.disabled = true; btn.textContent = "A guardar...";
+      var status = editing ? (editing.status || "aberto") : "aberto";
+      saveEntry(editing ? editing.id : uid(), collect(status), function(){ closeSheet(); });
+    };
+
+    if (editing && editing.status !== "feito"){
+      document.getElementById("markDone").onclick = function(){
+        if (!titleInput.value.trim()){ showAlert("Escreve pelo menos o que e."); return; }
+        saveEntry(editing.id, collect("feito"), function(){
+          closeSheet();
+          setTimeout(function(){ openEntrySheet(editing.id); }, 260);
+        });
+      };
+    }
+    if (editing && editing.status === "feito"){
+      document.getElementById("markOpen").onclick = function(){
+        saveEntry(editing.id, collect("aberto"), function(){ closeSheet(); });
+      };
+    }
+    if (editing){
+      document.getElementById("deleteEntry").onclick = function(){
+        showConfirm("Eliminar \"" + editing.title + "\"?", function(){
+          deleteEntry(editing.id, function(){ closeSheet(); });
+        }, "Eliminar");
+      };
+    }
+
+    if (!editing) setTimeout(function(){ titleInput.focus(); }, 250);
+
+    // ----- perguntar ao Claude -----
+    function renderAskBox(){
+      var box = document.getElementById("askBox");
+      if (!box) return;
+      if (!sampleFn){ box.innerHTML = ""; return; }
+      box.className = "ask-box";
+      box.innerHTML =
+        "<button class='ask-btn' id='askBtn'>" + sparkIcon() + "<span>Perguntar ao Claude o que e isto</span></button>" +
+        "<div class='ask-result' id='askResult'></div>" +
+        (draftSummary ? "" : "<div class='ask-hint'>Preenche o resumo e, se souber, a zona. Podes corrigir tudo a mao.</div>");
+      if (draftSummary) document.getElementById("askResult").textContent = draftSummary;
+
+      document.getElementById("askBtn").onclick = function(){
+        var name = titleInput.value.trim();
+        var hasPhoto = !!draftPhotoBlob;
+        if (!name && !hasPhoto){ showAlert("Escreve o nome ou tira uma foto primeiro."); return; }
+
+        var btn = this;
+        var resultEl = document.getElementById("askResult");
+        btn.disabled = true;
+        resultEl.textContent = "A pensar...";
+
+        var kindLabels = KINDS.map(function(k){ return k.id; }).join("|");
+        var prompt =
+          "Alguem recomendou isto a um utilizador em Portugal e ele apontou numa lista de coisas para experimentar.\n" +
+          (name ? ("Nome apontado: \"" + name + "\"\n") : "Nome nao indicado, identifica pela imagem.\n") +
+          "Categoria escolhida por ele: " + selectedKind + "\n" +
+          (placeInput.value.trim() ? ("Zona indicada: " + placeInput.value.trim() + "\n") : "") +
+          "\nResponde apenas com um objeto JSON com estes campos:\n" +
+          "{\"resumo\": \"uma frase curta em portugues de Portugal a dizer o que e\", " +
+          "\"onde\": \"cidade ou zona, ou string vazia se nao souberes\", " +
+          "\"categoria\": \"" + kindLabels + "\"}\n" +
+          "Se nao souberes o que e, devolve resumo vazio. Nao inventes factos.";
+
+        var opts = { modelTier: hasPhoto ? "default" : "quick" };
+        if (hasPhoto && sampleImages) opts.images = draftPhotoBlob;
+
+        sampleFn.json(prompt, opts).then(function(data){
+          btn.disabled = false;
+          var resumo = data && typeof data.resumo === "string" ? data.resumo.trim() : "";
+          var onde = data && typeof data.onde === "string" ? data.onde.trim() : "";
+          var categoria = data && typeof data.categoria === "string" ? data.categoria.trim() : "";
+
+          if (resumo){
+            draftSummary = resumo;
+            resultEl.textContent = resumo;
+          } else {
+            resultEl.textContent = "Nao consegui identificar. Escreve tu a nota.";
+          }
+          if (onde && !placeInput.value.trim()) placeInput.value = onde;
+          if (categoria && categoria !== selectedKind){
+            for (var i=0;i<KINDS.length;i++){
+              if (KINDS[i].id === categoria){
+                selectedKind = categoria;
+                kindGridEl.querySelectorAll(".kind-opt").forEach(function(o){
+                  o.classList.toggle("active", o.getAttribute("data-kind") === categoria);
+                });
+                break;
+              }
+            }
+          }
+        }).catch(function(err){
+          btn.disabled = false;
+          var code = err && err.code;
+          if (code === "not_granted" || code === "sampling_disabled" || code === "not_declared" || code === "capability_disabled"){
+            sampleFn = null;
+            box.innerHTML = "";
+            return;
+          }
+          if (code === "rate_limited") resultEl.textContent = "Demasiados pedidos agora. Tenta daqui a pouco.";
+          else if (code === "invalid_json") resultEl.textContent = "Nao percebi a resposta. Tenta outra vez.";
+          else resultEl.textContent = "Nao consegui perguntar agora.";
+        });
+      };
+    }
+  }
+
+  function renderSuggestions(containerId, values, input){
+    var el = document.getElementById(containerId);
+    if (!el) return;
+    el.innerHTML = "";
+    values.forEach(function(v){
+      var chip = document.createElement("div");
+      chip.className = "suggest" + (input.value.trim().toLowerCase() === v.toLowerCase() ? " active" : "");
+      chip.textContent = v;
+      chip.onclick = function(){
+        input.value = v;
+        el.querySelectorAll(".suggest").forEach(function(o){ o.classList.remove("active"); });
+        chip.classList.add("active");
+      };
+      el.appendChild(chip);
+    });
+  }
+
+  function renderPhotoField(){
+    var field = document.getElementById("photoField");
+    if (!field) return;
+    if (draftPhoto){
+      field.innerHTML =
+        "<span class='lbl'>Foto</span>" +
+        "<div class='photo-preview'><img src='" + draftPhoto + "'><div class='photo-remove' id='removePhoto'>&#10005;</div></div>";
+      document.getElementById("removePhoto").onclick = function(){
+        draftPhoto = null; draftPhotoBlob = null; renderPhotoField();
+      };
+    } else {
+      field.innerHTML =
+        "<span class='lbl'>Foto ou captura de ecra</span>" +
+        "<div class='photo-row'>" +
+          "<div class='photo-btn' id='btnCamera'>Tirar foto</div>" +
+          "<div class='photo-btn' id='btnLibrary'>Da galeria</div>" +
+        "</div>";
+      document.getElementById("btnCamera").onclick = function(){ document.getElementById("cameraInput").click(); };
+      document.getElementById("btnLibrary").onclick = function(){ document.getElementById("libraryInput").click(); };
+    }
+  }
+
+  // ---------- copia de seguranca ----------
+  function openBackupSheet(){
+    openSheet("Copia de seguranca");
+    var json = JSON.stringify(state, null, 2);
+    sheetBody.innerHTML =
+      "<div class='hint' style='margin-bottom:13px;'>" +
+        (ui.cloudMode ? "Os dados ja estao guardados na tua conta Claude. Esta copia e so um extra."
+                      : "Guarda este texto num sitio seguro. Se o Safari limpar os dados, podes restaurar aqui.") +
+      "</div>" +
+      "<label class='field'><span class='lbl'>Exportar</span>" +
+      "<textarea id='backupOut' readonly rows='6' style='font-family:\"DM Mono\";font-size:11px;'></textarea></label>" +
+      "<button class='btn-primary' id='copyBackup'>Copiar</button>" +
+      "<div class='section-label' style='margin-top:20px;'>Restaurar</div>" +
+      "<label class='field'><span class='lbl'>Cola aqui uma copia guardada</span>" +
+      "<textarea id='backupIn' rows='6' placeholder='Cola aqui o texto que copiaste antes' style='font-family:\"DM Mono\";font-size:11px;'></textarea></label>" +
+      "<button class='btn-secondary' id='restoreBackup'>Restaurar</button>";
+
+    document.getElementById("backupOut").value = json;
+    document.getElementById("copyBackup").onclick = function(){
+      var out = document.getElementById("backupOut");
+      var btn = this;
+      var done = function(){ btn.textContent = "Copiado"; setTimeout(function(){ btn.textContent = "Copiar"; }, 1600); };
+      if (navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(out.value).then(done).catch(function(){ out.select(); document.execCommand("copy"); done(); });
+      } else { out.select(); document.execCommand("copy"); done(); }
+    };
+
+    document.getElementById("restoreBackup").onclick = function(){
+      var text = document.getElementById("backupIn").value.trim();
+      if (!text) return;
+      var parsed;
+      try { parsed = JSON.parse(text); }
+      catch(e){ showAlert("Este texto nao parece uma copia de seguranca valida."); return; }
+      if (!parsed || !Array.isArray(parsed.entries)){ showAlert("Este texto nao parece uma copia de seguranca valida."); return; }
+
+      showConfirm(ui.cloudMode
+        ? "Isto acrescenta os registos desta copia aos que ja tens na conta. Continuar?"
+        : "Isto substitui o que esta na app agora. Continuar?", function(){
+        if (ui.cloudMode && cloudDb){
+          var writes = parsed.entries.map(function(e){
+            var body = {}; for (var k in e) if (k !== "id") body[k] = e[k];
+            return cloudDb.collection("entries").doc(e.id || uid()).set(body);
+          });
+          withTimeout(Promise.all(writes), 12000).then(function(){ closeSheet(); })
+            .catch(function(err){
+              if (isConnectivityError(err)) fallbackToLocal(function(){ state.entries = parsed.entries; });
+              else showDbError(err);
+              closeSheet();
+            });
+        } else {
+          state.entries = parsed.entries;
+          closeSheet();
+          render();
+        }
+      }, "Restaurar");
+    };
+  }
+
+  // ---------- fotos ----------
+  function handleFile(file){
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e){
+      var img = new Image();
+      img.onload = function(){
+        var maxDim = 760;
+        var scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+        var w = Math.round(img.width * scale), h = Math.round(img.height * scale);
+        var canvas = document.createElement("canvas");
+        canvas.width = w; canvas.height = h;
+        canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+        draftPhoto = canvas.toDataURL("image/jpeg", 0.55);
+        if (canvas.toBlob){
+          canvas.toBlob(function(blob){ draftPhotoBlob = blob; }, "image/jpeg", 0.7);
+        }
+        renderPhotoField();
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+  document.getElementById("cameraInput").addEventListener("change", function(e){
+    handleFile(e.target.files[0]); e.target.value = "";
+  });
+  document.getElementById("libraryInput").addEventListener("change", function(e){
+    handleFile(e.target.files[0]); e.target.value = "";
+  });
+
+  initApp();
+})();
+</script>

@@ -1,0 +1,433 @@
+<title>Plano de Obras</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --paper:#ECEEEC; --surface:#FFFFFF; --surface-2:#F5F6F4;
+    --ink:#1B2422; --ink-soft:#58635F; --ink-faint:#8B948F; --line:#D7DAD3;
+    --rust:#C1541F; --rust-ink:#7A3512; --rust-tint:#F4E3D8;
+    --petrol:#1F6F63; --petrol-tint:#DCEAE6;
+    --amber:#9A6B1E; --amber-tint:#F2E6CE;
+    --shadow:0 1px 2px rgba(20,24,22,.06), 0 8px 24px -12px rgba(20,24,22,.18);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#14181A; --surface:#1C2224; --surface-2:#20272A;
+      --ink:#EDEFEC; --ink-soft:#9AA6A1; --ink-faint:#6C7773; --line:#2C3436;
+      --rust:#E58452; --rust-ink:#F6D2BC; --rust-tint:#3A2318;
+      --petrol:#5FC3AE; --petrol-tint:#173330;
+      --amber:#E1B565; --amber-tint:#332A15;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#14181A; --surface:#1C2224; --surface-2:#20272A;
+    --ink:#EDEFEC; --ink-soft:#9AA6A1; --ink-faint:#6C7773; --line:#2C3436;
+    --rust:#E58452; --rust-ink:#F6D2BC; --rust-tint:#3A2318;
+    --petrol:#5FC3AE; --petrol-tint:#173330;
+    --amber:#E1B565; --amber-tint:#332A15;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+  }
+
+  *{ box-sizing:border-box; }
+  body{ background:var(--paper); color:var(--ink); font-family:"IBM Plex Sans", system-ui, sans-serif; -webkit-font-smoothing:antialiased; }
+  h1,h2,h3{ font-family:"IBM Plex Sans Condensed", system-ui, sans-serif; margin:0; }
+  .mono{ font-family:"IBM Plex Mono", ui-monospace, monospace; }
+
+  .app{ max-width:560px; margin:0 auto; padding:0 0 44px; }
+  .topbar{ padding:18px 16px 14px; border-bottom:1px solid var(--line); }
+  .eyebrow{ font-size:11px; letter-spacing:.09em; text-transform:uppercase; color:var(--rust); font-weight:600; }
+  .topbar h1{ font-size:27px; font-weight:700; letter-spacing:-.01em; margin:5px 0 6px; }
+  .topbar p{ margin:0; font-size:13.5px; line-height:1.55; color:var(--ink-soft); }
+  .content{ padding:14px 16px 0; }
+
+  .stat-row{ display:grid; grid-template-columns:repeat(4,1fr); gap:7px; margin-bottom:16px; }
+  .stat-tile{ background:var(--surface); border:1px solid var(--line); border-radius:11px; padding:10px 9px 8px; box-shadow:var(--shadow); }
+  .stat-num{ font-family:"IBM Plex Mono"; font-size:22px; font-weight:600; line-height:1.1; }
+  .stat-lbl{ font-size:10.5px; color:var(--ink-soft); margin-top:3px; line-height:1.3; }
+
+  .seccao{ font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; margin:24px 2px 9px; }
+
+  .aviso{ background:var(--amber-tint); border:1px solid var(--amber); border-radius:12px; padding:12px 13px; font-size:13.5px; line-height:1.6; }
+  .aviso b{ color:var(--amber); }
+
+  .fase{ background:var(--surface); border:1px solid var(--line); border-radius:14px; margin-bottom:9px; box-shadow:var(--shadow); overflow:hidden; }
+  .fase-topo{ display:flex; gap:11px; align-items:flex-start; padding:13px 14px; }
+  .fase-num{
+    flex:none; width:30px; height:30px; border-radius:9px; background:var(--rust-tint); color:var(--rust-ink);
+    display:flex; align-items:center; justify-content:center; font-family:"IBM Plex Mono"; font-weight:600; font-size:14px;
+  }
+  .fase-titulo{ flex:1; min-width:0; }
+  .fase-titulo h3{ font-size:16.5px; font-weight:700; }
+  .fase-quem{ font-size:11.5px; color:var(--ink-faint); margin-top:2px; }
+  .fase-corpo{ border-top:1px solid var(--line); padding:11px 14px 13px; }
+  .fase-corpo p{ margin:0 0 9px; font-size:13.5px; line-height:1.6; }
+  .fase-corpo p:last-child{ margin-bottom:0; }
+  .porque{ background:var(--surface-2); border-radius:9px; padding:9px 11px; font-size:12.5px; line-height:1.55; color:var(--ink-soft); }
+  .porque b{ color:var(--ink); }
+
+  .trabalho{ display:flex; gap:9px; align-items:baseline; padding:7px 0; border-bottom:1px solid var(--line); font-size:13px; }
+  .trabalho:last-of-type{ border-bottom:none; }
+  .trabalho .qt{ flex:none; font-family:"IBM Plex Mono"; font-weight:600; color:var(--rust); min-width:34px; }
+  .trabalho .oq{ flex:1; }
+  .trabalho .cods{ flex:none; font-family:"IBM Plex Mono"; font-size:11px; color:var(--ink-faint); max-width:42%; text-align:right; }
+
+  table{ width:100%; border-collapse:collapse; background:var(--surface); border:1px solid var(--line); border-radius:12px; overflow:hidden; box-shadow:var(--shadow); }
+  th{ background:var(--surface-2); font-size:10.5px; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-soft); text-align:left; padding:9px 11px; font-weight:600; }
+  td{ padding:9px 11px; font-size:13px; border-top:1px solid var(--line); vertical-align:top; line-height:1.45; }
+  td.qtd{ font-family:"IBM Plex Mono"; font-size:12.5px; white-space:nowrap; color:var(--rust); font-weight:600; }
+  td.nota{ color:var(--ink-faint); font-size:11.5px; }
+  .tabela-scroll{ overflow-x:auto; }
+
+  .medir{ background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:4px 14px; box-shadow:var(--shadow); }
+  .medir-linha{ padding:11px 0; border-bottom:1px solid var(--line); font-size:13.5px; line-height:1.55; }
+  .medir-linha:last-child{ border-bottom:none; }
+  .medir-linha b{ display:block; margin-bottom:2px; }
+  .medir-linha span{ color:var(--ink-soft); font-size:12.5px; }
+
+  .fecho{ margin-top:22px; background:var(--petrol-tint); border:1px solid var(--petrol); border-radius:12px; padding:13px 14px; font-size:13.5px; line-height:1.6; }
+  .fecho b{ color:var(--petrol); }
+
+  .perigo{ background:var(--rust-tint); border:1px solid var(--rust); border-radius:12px; padding:12px 13px; font-size:13.5px; line-height:1.6; margin-top:9px; }
+  .perigo b{ color:var(--rust-ink); }
+
+  .tarefa{ background:var(--surface); border:1px solid var(--line); border-radius:14px; margin-bottom:9px; box-shadow:var(--shadow); overflow:hidden; }
+  .tarefa-topo{ display:flex; gap:11px; align-items:center; padding:12px 14px; }
+  .tarefa-topo h3{ flex:1; font-size:16px; font-weight:700; min-width:0; }
+  .tarefa-tempo{ flex:none; font-family:"IBM Plex Mono"; font-size:11.5px; color:var(--rust); font-weight:600; text-align:right; }
+  .tarefa-corpo{ border-top:1px solid var(--line); padding:11px 14px 13px; }
+  .tarefa-corpo ol{ margin:0 0 10px; padding-left:19px; }
+  .tarefa-corpo li{ font-size:13.5px; line-height:1.6; margin-bottom:6px; }
+  .tarefa-corpo li:last-child{ margin-bottom:0; }
+  .tarefa-corpo p{ margin:0 0 9px; font-size:13.5px; line-height:1.6; }
+  .erro{ background:var(--amber-tint); border-radius:9px; padding:9px 11px; font-size:12.5px; line-height:1.55; }
+  .erro b{ color:var(--amber); }
+  .codigos{ font-family:"IBM Plex Mono"; font-size:11px; color:var(--ink-faint); }
+
+  .sessao{ display:flex; gap:11px; padding:10px 0; border-bottom:1px solid var(--line); font-size:13.5px; line-height:1.55; }
+  .sessao:last-child{ border-bottom:none; }
+  .sessao .dia{ flex:none; width:74px; font-family:"IBM Plex Mono"; font-size:11.5px; font-weight:600; color:var(--rust); padding-top:2px; }
+  .sessao .oque b{ display:block; margin-bottom:1px; }
+  .sessao .oque span{ color:var(--ink-soft); font-size:12.5px; }
+</style>
+
+
+<div class="app">
+  <div class="topbar">
+    <div class="eyebrow">Obras de Casa</div>
+    <h1>Faço eu</h1>
+    <p>Plano de execução para os 31 itens registados na app, em seis divisões, feitos pelas tuas mãos. A cozinha fica de fora: vai ser remodelada de raiz. A ordem não é preferência: cada fase suja ou abre o que a anterior fechou. E quase tudo o que corre mal em obra feita pelo dono corre mal por pressa entre camadas, não por falta de jeito.</p>
+  </div>
+
+  <div class="content">
+    <div class="stat-row">
+      <div class="stat-tile"><div class="stat-num">31</div><div class="stat-lbl">Itens registados</div></div>
+      <div class="stat-tile"><div class="stat-num">~59</div><div class="stat-lbl">Buracos a tapar</div></div>
+      <div class="stat-tile"><div class="stat-num">7</div><div class="stat-lbl">Dias na casa</div></div>
+      <div class="stat-tile"><div class="stat-num">294</div><div class="stat-lbl">m² a lixar e a pintar</div></div>
+    </div>
+
+    <div class="seccao">Duas coisas que não são para ti</div>
+
+    <div class="aviso">
+      <b>A fissura da chaminé, item B1.</b> A cozinha fica de fora desta obra, para ser remodelada de raiz mais tarde, e isso resolve a pintura mas não resolve a fissura. Uma fissura numa chaminé ou é assentamento normal ou é estrutural, e a diferença decide o que se pode fazer na remodelação. Manda a foto a um engenheiro civil agora, e não daqui a um ano com o projecto da cozinha já desenhado: é a única coisa desta lista cuja resposta pode mudar um projecto inteiro.
+    </div>
+
+    <div class="perigo">
+      <b>Eletricidade: sabe onde parar.</b> Mudar uma tomada ou um interruptor e meter fios soltos dentro de uma caixa de aparelhagem, com o disjuntor desligado e testado, é trabalho que se faz em casa. Mexer no quadro, puxar circuitos novos, aumentar potência ou seja o que for que precise de certificado, não. Se a casa for vendida ou arrendada, ou se precisares de certificação, tem de ser um técnico credenciado a assinar. Antes de tocar em qualquer ponto: desliga o disjuntor certo, confirma com detector de tensão, e só depois abre.
+    </div>
+
+    <div class="seccao">A estratégia mudou</div>
+    <div class="medir">
+      <div class="medir-linha"><b>Uma semana inteira lá vale mais do que dez fins de semana</b><span>Com fins de semana, farias divisão a divisão e repetirias o ciclo sujo seis vezes: montar protecções, fazer pó, aspirar, arrumar. Com uma semana seguida faz-se o contrário: <b>todo o trabalho sujo da casa inteira de uma só vez</b>, e a casa fica pronta a pintar. O pó acontece uma vez, não seis.</span></div>
+      <div class="medir-linha"><b>A semana é para preparar, não para pintar</b><span>Raspar, lixar, tapar, lixar outra vez, primário. É a parte que não se pode partir em bocados sem perder tempo, e é a que exige a girafa alugada, que se aluga uma vez por três dias em vez de seis vezes por um.</span></div>
+      <div class="medir-linha"><b>Pintar fica para os fins de semana seguintes</b><span>Pintura não faz pó, não precisa de ferramenta alugada e reparte-se bem: uma divisão por dia, e cada uma fica acabada nesse dia, com as luzes montadas. É trabalho limpo numa casa já preparada.</span></div>
+      <div class="medir-linha"><b>Não durmas na casa nos dias de lixar</b><span>Duzentos e noventa metros quadrados lixados largam pó fino que fica no ar durante horas e assenta em tudo durante dias. Se tiveres mesmo de ficar, escolhe um quarto, fecha-o com plástico na porta, e deixa-o para lixar no último dia.</span></div>
+    </div>
+
+    <div class="seccao">Antes de ires, compra tudo</div>
+    <div class="aviso">
+      <b>Um dia perdido numa loja é um sétimo da semana.</b> Leva tudo da lista de material contigo, mais lixas a dobrar do que julgas precisar, e reserva a girafa com antecedência para os dias certos. As únicas duas coisas que podes comprar durante a semana são o primário, porque a quantidade depende de um teste que só fazes lá, e as luminárias, que só se montam no fim.
+    </div>
+
+    <div class="seccao">A semana, dia a dia</div>
+    <div class="medir">
+      <div class="sessao"><div class="dia">Dia 1</div><div class="oque"><b>Medir, proteger, testar</b><span>A hora das medições: pé-direito, metros de rodapé, ver a terra nos pontos de luz, fotografar os itens sem foto. Protecções, fita nas tomadas e nas calhas. Depois um metro quadrado de teste com a girafa, para saber se os picos precisam de espátula antes ou se saem só com a lixa. Sabendo isso, começa a lixar o primeiro quarto.</span></div></div>
+      <div class="sessao"><div class="dia">Dia 2</div><div class="oque"><b>Lixar os três quartos</b><span>Girafa, lixa 120, passagem leve. Aspirar no fim do dia. Faz o teste do pó numa zona já lixada e aspirada: é hoje que decides se compras 2 litros de primário ou trinta.</span></div></div>
+      <div class="sessao"><div class="dia">Dia 3</div><div class="oque"><b>Lixar sala, casa de banho e corredor</b><span>A sala é quase um terço de tudo, por isso apanha-a com o corpo ainda fresco. Aspirar a casa toda no fim, incluindo cantos e rodapés, que é onde o pó se esconde.</span></div></div>
+      <div class="sessao"><div class="dia">Dia 4</div><div class="oque"><b>Primeira camada de massa, casa toda</b><span>59 buracos e 5 fissuras, camada fina, rede de fibra nas fissuras. Um dia inteiro, e é o dia mais monótono da semana. Começa pelo mais longe da porta e vai recuando.</span></div></div>
+      <div class="sessao"><div class="dia">Dia 5</div><div class="oque"><b>Segunda camada, e os rodapés</b><span>Massa a acertar o nível, ligeiramente acima da parede. Enquanto seca, os rodapés: cera nas folgas, caneta nas cabeças de prego, cola e escora nos troços soltos.</span></div></div>
+      <div class="sessao"><div class="dia">Dia 6</div><div class="oque"><b>Lixar as reparações e primário</b><span>Lixa de folha só onde há massa, com a lâmpada rasante a mostrar o que falta. Aspirar, pano húmido, e primário: só nas reparações, ou em tudo se o teste do dia 2 tiver dado pó.</span></div></div>
+      <div class="sessao"><div class="dia">Dia 7</div><div class="oque"><b>Acrílico, e a primeira divisão pintada</b><span>Linha de acrílico no topo dos rodapés onde não há calha. E depois, se o corpo aguentar, pinta o escritório de uma ponta à outra: sais dali com uma divisão acabada e a casa toda pronta a pintar.</span></div></div>
+    </div>
+    <p style="font-size:12.5px; color:var(--ink-soft); line-height:1.55; margin:9px 2px 0;">Sete dias cheios, de pessoa sozinha e sem interrupções. Se forem dias curtos ou houver visitas, o que cai primeiro é o dia 7 e depois o rodapé do dia 5, que são as duas coisas que se recuperam bem num fim de semana.</p>
+
+    <div class="seccao">Depois, os fins de semana</div>
+    <div class="medir">
+      <div class="medir-linha"><b>Uma divisão por dia, e fica acabada</b><span>Duas demãos com quatro horas de intervalo, fita fora com a tinta fresca, e as luminárias montadas ao fim da tarde. Quartos, escritório e casa de banho são um dia cada. A sala é um dia inteiro dos bons.</span></div>
+      <div class="medir-linha"><b>O corredor leva um fim de semana só para ele</b><span>Sábado a decapar o azulejo em faixas, domingo a pintar as paredes. Por esta ordem, sempre: decapante come tinta fresca.</span></div>
+      <div class="medir-linha"><b>Total: a semana mais cinco fins de semana</b><span>Seis a sete semanas do princípio ao fim, em vez dos cinco a seis meses que isto era a fazer tudo aos sábados. A semana seguida é o que faz essa diferença.</span></div>
+    </div>
+
+    <div class="seccao">Como se faz cada coisa</div>
+
+    <div class="tarefa">
+      <div class="tarefa-topo"><h3>Buracos de parede</h3><div class="tarefa-tempo">~59 · 5 min cada</div></div>
+      <div class="tarefa-corpo">
+        <div class="codigos" style="margin-bottom:9px;">A1 · C2 · C4 · D1 · E2 · F2 · G4</div>
+        <ol>
+          <li>Passa a espátula em volta do buraco a raspar o que está solto. Se a bucha ainda lá está e roda, tira-a: massa por cima de uma bucha solta volta a cair.</li>
+          <li>Aspira o pó de dentro do buraco. É o passo que toda a gente salta e é o que faz a massa não colar.</li>
+          <li>Primeira camada de massa com a espátula pequena, a encher pouco mais de metade, a alisar de cima para baixo.</li>
+          <li>No dia seguinte, segunda camada, agora ligeiramente acima do nível da parede. Fica com uma pequena lombada, é de propósito.</li>
+          <li>Seco, lixar com lixa 150 num taco (nunca com a lixa solta na mão, que faz covas), até deixar de se sentir com a palma da mão de olhos fechados.</li>
+        </ol>
+        <div class="erro"><b>O erro que se paga:</b> encher o buraco de uma vez. A massa encolhe ao secar e ficas com uma cova onde tinhas um buraco, que só se vê depois de pintar, com a luz da tarde.</div>
+      </div>
+    </div>
+
+    <div class="tarefa">
+      <div class="tarefa-topo"><h3>Matar os picos das paredes</h3><div class="tarefa-tempo">294 m² · 1 dia por divisão</div></div>
+      <div class="tarefa-corpo">
+        <p>Aqueles piquinhos são grãos de areia da massa ou salpicos secos de uma pintura anterior, agarrados por cima da tinta. Não é rugosidade da parede, é sujidade endurecida, e por isso sai. Fazer isto muda mais o resultado final do que qualquer outra coisa nesta lista: a mão a passar numa parede lisa é a diferença que se sente todos os dias.</p>
+        <ol>
+          <li><b>Aluga uma girafa.</b> Lixadeira de parede com aspiração acoplada, de cabo comprido. À mão, com taco, 294 m² são semanas e um ombro destruído; com girafa são umas horas por divisão e quase sem pó no ar. Custa uns trinta euros por dia e é o melhor dinheiro que gastas nesta obra.</li>
+          <li><b>A espátula só se os picos forem duros.</b> Faz um metro quadrado de teste com a girafa, sem raspar nada antes. Se o disco passar e a parede ficar lisa, esquece a espátula e não percas mais tempo com ela. Se o disco entupir logo, ou ficarem riscos em círculo, ou sentires o pico a engatar e a arrancar tinta à volta, então raspa primeiro: espátula de 25 quase deitada, movimentos rasantes e longos, e só nas zonas com salpicos, não na casa toda.</li>
+          <li><b>Lixa 120, e passagem leve.</b> Não estás a planificar a parede, estás a tirar o que está por cima dela. Insistir no mesmo sítio abre uma cova que depois tens de tapar com massa.</li>
+          <li><b>Máscara P2, óculos, e a divisão vazia.</b> Fita a tapar tomadas, interruptores e as calhas, que o pó entra por dentro delas e depois cai sozinho durante meses.</li>
+          <li><b>Passa a mão depois de aspirar.</b> Se a parede largar pó branco na palma, está a pulverizar e precisa de fixador ou primário em <b>toda</b> a superfície, não só nas reparações. Se não largar, o primário fica só nas zonas de massa, como estava previsto.</li>
+        </ol>
+        <div class="erro"><b>A ordem importa e é contra-intuitiva:</b> lixar toda a parede vem <b>antes</b> de tapar os buracos, não depois. Se lixares a parede toda depois das reparações, gastas as reparações que acabaste de acertar e ficas a repetir trabalho. Primeiro deixas a parede limpa e uniforme, depois reparas o que ficou a faltar.</div>
+      </div>
+    </div>
+
+    <div class="tarefa">
+      <div class="tarefa-topo"><h3>Fissuras</h3><div class="tarefa-tempo">5 · 20 min cada</div></div>
+      <div class="tarefa-corpo">
+        <div class="codigos" style="margin-bottom:9px;">A2 · B1 (ver o aviso) · C1 · D2</div>
+        <ol>
+          <li>Abrir a fissura em V com a ponta do x-ato ou de um raspador, ao longo de todo o comprimento. Sim, ficas com um rasgo maior do que tinhas. É assim que se faz: massa só agarra se tiver onde entrar.</li>
+          <li>Aspirar, e passar primário de aderência dentro do rasgo.</li>
+          <li>Massa a encher o V, e imediatamente rede de fibra por cima, a cobrir cerca de 5 cm para cada lado, empurrada para dentro da massa fresca com a espátula.</li>
+          <li>Seco, segunda camada por cima da rede, agora larga: 15 a 20 cm de faixa, muito fina nas bordas. É a largura que esconde, não a espessura.</li>
+          <li>Lixar até a mão não sentir onde acaba a massa e começa a parede.</li>
+        </ol>
+        <div class="erro"><b>Para quando parar:</b> se a fissura tiver mais de 2 mm, se as duas metades da parede estiverem desencontradas em degrau, ou se voltar a abrir depois de reparada, não é um problema de acabamento. É movimento na estrutura e precisa de outra pessoa.</div>
+      </div>
+    </div>
+
+    <div class="tarefa">
+      <div class="tarefa-topo"><h3>Pontos de luz e a tomada</h3><div class="tarefa-tempo">8 luzes + 1 tomada · 30 min cada</div></div>
+      <div class="tarefa-corpo">
+        <div class="codigos" style="margin-bottom:9px;">A4 (2) · D7 (1) · E3 (1) · F3 (1) · G1 (3) · D6 (tomada)</div>
+        <p>Não são fios por esconder: são oito pontos de luz à espera de casquilho ou de armadura. Isso muda o lugar deles no calendário. A ligação final faz-se <b>depois</b> de pintar, não antes: montar luminárias e depois pintar o tecto à volta delas é trabalho a dobrar, e é a maneira certa de sujar de tinta uma peça acabada de comprar.</p>
+        <ol>
+          <li><b>Agora, antes de tudo:</b> desliga o disjuntor do circuito, confirma no próprio ponto com detector, e deixa cada ponta isolada com borne ou tampa. Fio de luz sem lâmpada continua a ter corrente quando alguém carrega no interruptor.</li>
+          <li><b>Não há terra.</b> Preto e azul, e mais nada: o circuito de iluminação não tem condutor de protecção. Isso fecha a escolha das oito luminárias: <b>todas têm de ser classe II</b>, as que trazem o símbolo de um quadrado dentro de outro quadrado. Nada de armadura metálica com borne de terra por ligar, em ponto nenhum da casa.</li>
+          <li><b>Não assumas que o preto é a fase.</b> Em muitas instalações antigas o azul foi usado como retorno do interruptor. Com o disjuntor ligado e o interruptor a acender, testa qual dos dois tem tensão, e volta a desligar antes de ligar seja o que for.</li>
+          <li><b>Confirma que há caixa</b> por trás de cada ponto. As ligações têm de ficar dentro de uma caixa ou dentro da base da luminária, nunca à vista nem enterradas na massa.</li>
+          <li><b>Se o fio estiver curto</b>, alonga com bornes dentro da caixa, e nunca com fita a torcer dois fios.</li>
+          <li><b>Pinta com os fios pendurados</b>, isolados e sem corrente. Fica feio durante umas semanas e poupa-te o trabalho de contornar oito armaduras a pincel.</li>
+          <li><b>No fim de cada divisão pintada, monta.</b> Bucha e parafuso no tecto, ligação com bornes, base ou rosácea a tapar. Liga o disjuntor e testa antes de arrumar o escadote.</li>
+        </ol>
+        <div class="erro"><b>Os três pontos do corredor (G1) merecem uma decisão antes de comprar.</b> Três luzes alinhadas num corredor de onze metros quadrados só ficam bem se forem iguais e estiverem à mesma distância umas das outras. Mede os espaçamentos antes, e compra as três juntas: a mesma referência comprada com meses de intervalo já não é o mesmo branco de luz.</div>
+      </div>
+    </div>
+
+    <div class="tarefa">
+      <div class="tarefa-topo"><h3>As calhas ficam</h3><div class="tarefa-tempo">decidido</div></div>
+      <div class="tarefa-corpo">
+        <p>Embutir os cabos na parede era a altura ideal e fica para outra ocasião. A decisão está tomada e tira do plano a única tarefa que enchia a casa de pó. As calhas que existem ficam onde estão, e é só preciso saber conviver com elas durante a obra.</p>
+        <ol>
+          <li><b>Nunca seles a calha à parede</b> com acrílico ou silicone. A tampa tem de continuar a abrir, e é essa a única vantagem de ter os cabos ali.</li>
+          <li><b>Se as pintares, pinta com a tampa fora</b>, base e tampa separadas, e só depois de secas é que voltas a fechar. Pintadas fechadas, colam uma à outra e a tinta racha na primeira abertura.</li>
+          <li><b>Fita de pintor na calha</b> quando pintares a parede. Onde há calha, é ela que faz o remate em baixo, o que te poupa a linha mais difícil de cortar a pincel.</li>
+          <li><b>Não fures a parede logo acima nem logo abaixo de uma calha</b> sem detector. O cabo entra e sai dela por onde calhou a quem a montou, e esse percurso não está desenhado em lado nenhum.</li>
+          <li><b>Troca as tampas amarelecidas</b> e alinha as que estiverem tortas. Custa pouco e é metade do que faz uma calha parecer bem ou mal montada.</li>
+        </ol>
+        <div class="erro"><b>Se acrescentares calha nova, tem de ser igual à que já existe.</b> Mesma marca, mesma largura, mesmo branco. Dois tons de branco e duas larguras na mesma parede lêem-se pior do que a calha original sozinha, e é o género de pormenor que não se desfaz sem voltar a tirar tudo.</div>
+      </div>
+    </div>
+
+    <div class="tarefa">
+      <div class="tarefa-topo"><h3>Rodapés dos quartos, no sítio</h3><div class="tarefa-tempo">5 itens · meio dia por quarto</div></div>
+      <div class="tarefa-corpo">
+        <div class="codigos" style="margin-bottom:9px;">C3 · C6 · D3 · D5 · E1 — só os quartos têm rodapé</div>
+        <p>Nada se arranca. Tábua velha e pregada racha ao ser puxada, e o troço que se estraga a tirar passa a ser um troço que tem de ser substituído: o risco não compensa o pouco que se ganhava. Tudo o que está aqui se faz com o rodapé montado.</p>
+        <p><b>Não é madeira maciça.</b> É MDF ou aglomerado revestido a folha decorativa, com o veio impresso. Vê-se no veio, que se repete sem um nó, e na linha escura das juntas, onde a folha não dobra na aresta. Isso decide tudo o que vem a seguir: a folha tem décimos de milímetro e o miolo por baixo é claro.</p>
+        <ol>
+          <li><b>Troços a descolar, sem os tirar.</b> Injecta cola de montagem na folga por trás, com o bico cortado bem fino, e empurra. Escora contra a parede com um pau apoiado no chão, ou encosta-lhe um saco de cimento, e deixa secar 24 horas. Se não segurar, parafuso fino escareado, sempre com o furo feito primeiro, senão a madeira velha racha.</li>
+          <li><b>Nunca lixes.</b> Duas passagens de lixa atravessam a folha decorativa e aparece o miolo claro por baixo, numa mancha que não tem retoque possível. Em revestido não se lixa, corrige-se por cima.</li>
+          <li><b>Folgas entre peças: cera de retoque em bastão</b>, no tom mais próximo. Esfrega-se na folga a frio, raspa-se o excesso com o canto de um cartão de plástico, e fica ao nível sem lixar nada. É exactamente o produto para isto, e é o que se usa em móveis de cozinha, que são o mesmo material.</li>
+          <li><b>Cabeças de prego e riscos: caneta de retoque</b> para móveis, do mesmo tom. Duas passagens e deixam de saltar à vista. Nas fotos são elas, mais do que as folgas, que dão o ar de trabalho apressado.</li>
+          <li><b>Linha de cima do rodapé: acrílico de pintar</b> em cordão fino, alisado com o dedo húmido, da cor da parede. É o caso na maior parte da extensão. <b>Onde houver calha por cima, salta essa parte</b>: selar aí prendia a tampa da calha e tirava-lhe a razão de existir.</li>
+          <li><b>Fita de pintor no topo do rodapé e na calha</b> quando pintares a parede. É como os dois beneficiam da pintura sem levarem tinta.</li>
+        </ol>
+        <div class="erro"><b>Se um dia decidires pintá-los</b>, sabe o que estás a comprar: folha decorativa não aceita tinta directamente, escorrega. Leva desengordurante, uma passagem muito leve de esponja abrasiva fina só para tirar o brilho (leve mesmo, é folha), primário de aderência específico para melamina e laminados, e só então esmalte. Funciona, mas é um acabamento pintado sobre imitação de madeira, e nota-se de perto. Para o objectivo que tens, que é deixarem de estar feios, a cera e a caneta de retoque fazem noventa por cento do trabalho por uma fracção do esforço.</div>
+      </div>
+    </div>
+
+    <div class="tarefa">
+      <div class="tarefa-topo"><h3>Peça desalinhada</h3><div class="tarefa-tempo">1 · 1h + 24h a secar</div></div>
+      <div class="tarefa-corpo">
+        <div class="codigos" style="margin-bottom:9px;">C5</div>
+        <ol>
+          <li>Tirar a peça e o betume à volta com cuidado, a começar pela junta e não pelo meio.</li>
+          <li>Raspar a cola antiga do fundo até ficar mesmo plano. É a razão de a peça ter ficado desalinhada da primeira vez.</li>
+          <li>Cimento-cola novo com espátula dentada, assentar, cruzetas para acertar o nível pelas peças vizinhas, e 24 horas antes de betumar.</li>
+          <li>Betume novo com espátula de borracha em diagonal e, vinte minutos depois, limpar com esponja húmida bem torcida.</li>
+        </ol>
+        <div class="erro"><b>Esponja demasiado molhada</b> lava o betume de dentro da junta e ficas com uma junta afundada e mais clara do que as outras. Torce bem a esponja, sempre.</div>
+      </div>
+    </div>
+
+    <div class="tarefa">
+      <div class="tarefa-topo"><h3>Porta riscada</h3><div class="tarefa-tempo">1 · meio dia</div></div>
+      <div class="tarefa-corpo">
+        <div class="codigos" style="margin-bottom:9px;">D4</div>
+        <ol>
+          <li>Ver primeiro se é lacada ou envernizada. Numa porta lacada lixa-se, mete-se massa para madeira no risco, lixa-se outra vez, primário e esmalte. Numa envernizada, um risco fundo não desaparece: fica retocado, não invisível.</li>
+          <li>Lixar sempre no sentido do veio, nunca contra.</li>
+          <li>Pintar a porta deitada em cavaletes se puder ser: em pé, o esmalte escorre e ficam lágrimas.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="tarefa">
+      <div class="tarefa-topo"><h3>Pintura</h3><div class="tarefa-tempo">6 divisões · 1 dia cada</div></div>
+      <div class="tarefa-corpo">
+        <div class="codigos" style="margin-bottom:9px;">A3 · C7 · D8 · E4 · F1 · G3</div>
+        <ol>
+          <li>Aspirar o pó de lixar, todo. Depois passar pano húmido nas paredes e deixar secar. Tinta sobre pó descasca.</li>
+          <li>Primário só nas zonas reparadas. A massa absorve muito mais do que a parede à volta, e sem primário ficam manchas foscas com a forma exacta de cada buraco.</li>
+          <li>Fita de pintor nos aros, rodapés e interruptores. Tirar a fita com a tinta ainda fresca, nunca depois de seca.</li>
+          <li>Cortar os cantos e as bordas a pincel, uma parede de cada vez, e logo a seguir o rolo, para as duas coisas fundirem molhado sobre molhado.</li>
+          <li>Rolo em W largo e depois a alisar de cima a baixo sem carregar. Segunda demão quatro horas depois.</li>
+        </ol>
+        <div class="erro"><b>O truque que vale a obra toda:</b> antes de pintar, põe uma lâmpada no chão a iluminar a parede quase de raspão. Vês todas as covas e lombadas que de frente não se vêem. Corrige-as então, porque depois de pintado é o que a luz da tarde te mostra todos os dias.</div>
+      </div>
+    </div>
+
+    <div class="tarefa">
+      <div class="tarefa-topo"><h3>Tirar a tinta do chão do corredor</h3><div class="tarefa-tempo">11 m² · 2 dias</div></div>
+      <div class="tarefa-corpo">
+        <div class="codigos" style="margin-bottom:9px;">G2 · azulejo pintado de azul com tinta de parede</div>
+        <p>Já testaste numa peça e o decapante tirou a tinta sem estragar o azulejo, o que resolve a única dúvida séria. O resto é método e paciência: 11 m² de azulejo pintado não se fazem numa tarde.</p>
+        <ol>
+          <li><b>Em faixas de um metro, nunca o corredor todo.</b> O decapante tem uma janela de tempo: age, e depois começa a secar e volta a agarrar a tinta ao azulejo. Aplica numa faixa, espera o tempo do rótulo, raspa, e só então passas à faixa seguinte.</li>
+          <li><b>Raspador de plástico, não de metal.</b> O azulejo aguentou o produto químico, mas não aguenta uma lâmina de aço a raspar vidrado.</li>
+          <li><b>As juntas vão dar o dobro do trabalho.</b> O betume é poroso e bebeu a tinta; não sai com o raspador. Escova de nylon dura ou uma escova de dentes velha, junta a junta, com o decapante ainda molhado. É a parte que demora.</li>
+          <li><b>Lavar a fundo no fim de cada faixa</b>, com água abundante, para neutralizar o produto. Resto de decapante por lavar ataca o que vier depois, e se ficar nas juntas continua a comer o betume.</li>
+          <li><b>Janelas abertas, luvas de nitrilo, óculos.</b> Decapante num corredor fechado dá dores de cabeça a sério, e o corredor é a divisão da casa com menos ar.</li>
+          <li>Se depois de tudo lavado as juntas ficarem manchadas ou comidas, raspa-as com a serra de juntas e refaz com betume novo. Fica melhor do que estava antes de alguém a ter pintado de azul.</li>
+        </ol>
+        <div class="erro"><b>Isto muda a ordem do corredor.</b> Decapante é tinta a ser dissolvida: um salpico na parede acabada de pintar come a tinta nova, e nos rodapés de madeira pintados faz o mesmo. Por isso o chão do corredor faz-se <b>antes</b> de pintar as paredes do corredor, não depois. Azulejo nu apanha pó e pinga de massa sem problema nenhum, lava-se; tinta nova não se lava.</div>
+      </div>
+    </div>
+
+    <div class="seccao">As divisões, com a planta</div>
+    <div class="tabela-scroll">
+      <table>
+        <tr><th>Código</th><th>Na planta</th><th>Chão</th><th>Itens</th></tr>
+        <tr><td class="qtd">A</td><td>Sala comum</td><td class="qtd">34,02 m²</td><td class="nota">4 · 16 buracos, sem rodapé</td></tr>
+        <tr><td class="qtd">B</td><td>Cozinha</td><td class="qtd">16,15 m²</td><td class="nota">1 · a fissura da chaminé</td></tr>
+        <tr><td class="qtd">C</td><td>Quarto 2</td><td class="qtd">12,07 m²</td><td class="nota">7 · a divisão com mais itens</td></tr>
+        <tr><td class="qtd">D</td><td>Quarto 1</td><td class="qtd">12,24 m²</td><td class="nota">8 · e 16 buracos</td></tr>
+        <tr><td class="qtd">E</td><td>Quarto 3</td><td class="qtd">10,40 m²</td><td class="nota">4 · começa aqui</td></tr>
+        <tr><td class="qtd">F</td><td>I.S.</td><td class="qtd">5,75 m²</td><td class="nota">3 · ver o azulejo antes de contar tinta</td></tr>
+        <tr><td class="qtd">G</td><td>Corredor</td><td class="qtd">11,23 m²</td><td class="nota">4 · seis portas, sem rodapé</td></tr>
+      </table>
+    </div>
+    <p style="font-size:12.5px; color:var(--ink-soft); line-height:1.55; margin:9px 2px 0;">O terraço (14,46 m²) não tem nada registado. A cozinha também não tem item de pintura: se afinal for para pintar, são mais 52 m² por demão.</p>
+
+    <div class="seccao">Quanta tinta comprar</div>
+    <div class="tabela-scroll">
+      <table>
+        <tr><th>Divisão</th><th>Paredes</th><th>Tecto</th><th>Por demão</th></tr>
+        <tr><td>A · Sala</td><td class="nota">62 m²</td><td class="nota">34 m²</td><td class="qtd">88 m²</td></tr>
+        <tr><td>C · Quarto AM</td><td class="nota">36 m²</td><td class="nota">12 m²</td><td class="qtd">44 m²</td></tr>
+        <tr><td>D · Quarto D</td><td class="nota">37 m²</td><td class="nota">12 m²</td><td class="qtd">45 m²</td></tr>
+        <tr><td>E · Escritório</td><td class="nota">33 m²</td><td class="nota">10 m²</td><td class="qtd">40 m²</td></tr>
+        <tr><td>F · Casa de banho</td><td class="nota">25 m²</td><td class="nota">6 m²</td><td class="qtd">29 m²</td></tr>
+        <tr><td>G · Corredor</td><td class="nota">47 m²</td><td class="nota">11 m²</td><td class="qtd">48 m²</td></tr>
+        <tr><td><b>Total</b></td><td class="nota">duas demãos</td><td class="nota">589 m²</td><td class="qtd">294 m²</td></tr>
+      </table>
+    </div>
+
+    <div class="aviso" style="margin-top:10px;">
+      <b>60 litros de tinta, ou seja 4 baldes de 15 L.</b> São 294 m² por demão, duas demãos, com um rendimento de 11 m² por litro. Compra os quatro de uma vez e do mesmo lote: o resto serve para retoques durante anos, e um balde comprado a meio da obra não é exactamente o mesmo branco.
+    </div>
+
+    <div class="medir" style="margin-top:10px;">
+      <div class="medir-linha"><b>Estas contas assumem pé-direito de 2,60 m</b><span>É o valor típico, mas mede: uma fita do chão ao tecto num quarto resolve. Se for 2,40, tira 8% ao total; se for 2,80, acrescenta 8%.</span></div>
+      <div class="medir-linha"><b>Os perímetros são estimados da planta</b><span>A planta dá áreas, não perímetros. Estimei-os pela forma de cada divisão e já descontei portas e janelas. Erro esperado abaixo de 10%, que é menos do que a folga de um balde.</span></div>
+      <div class="medir-linha"><b>A casa de banho pode contar bem menos</b><span>Os 29 m² assumem paredes todas pintadas. Se houver azulejo até meia altura, como é normal, tira o que for azulejo. E na I.S. usa tinta própria para zonas húmidas, não a mesma dos quartos.</span></div>
+      <div class="medir-linha"><b>O corredor engana</b><span>Só 11 m² de chão, mas 48 m² a pintar e seis portas a contornar. É a divisão onde vais gastar mais fita e mais paciência, apesar de parecer a mais pequena.</span></div>
+    </div>
+
+    <div class="seccao">Ferramentas</div>
+    <div class="tabela-scroll">
+      <table>
+        <tr><th>Ferramenta</th><th>Para</th><th></th></tr>
+        <tr><td>Espátulas de 4, 10 e 25 cm</td><td class="nota">Buracos e fissuras, e a de 25 a raspar os picos</td><td class="qtd">essencial</td></tr>
+        <tr><td>Lixadeira de parede (girafa) com aspiração</td><td class="nota">As paredes todas. À mão são semanas</td><td class="qtd">alugar</td></tr>
+        <tr><td>Taco de lixar + lixas de folha</td><td class="nota">Acabar as reparações sem fazer covas</td><td class="qtd">essencial</td></tr>
+        <tr><td>Máscara P2 e óculos</td><td class="nota">Lixar 294 m² é pó fino a sério</td><td class="qtd">essencial</td></tr>
+        <tr><td>Detector de tensão</td><td class="nota">Confirmar que o circuito está morto</td><td class="qtd">essencial</td></tr>
+        <tr><td>Aspirador que aguente pó de obra</td><td class="nota">Antes de cada camada e antes de pintar</td><td class="qtd">essencial</td></tr>
+        <tr><td>Lâmpada de trabalho ou lanterna</td><td class="nota">Luz rasante para ver o que está torto</td><td class="qtd">essencial</td></tr>
+        <tr><td>Esponja abrasiva</td><td class="nota">Lixar o pouco que há a lixar no rodapé</td><td class="qtd">rodapés</td></tr>
+        <tr><td>Pistola de cola de montagem</td><td class="nota">Rodapés</td><td class="qtd">rodapés</td></tr>
+        <tr><td>Serra de juntas e espátula de borracha</td><td class="nota">A peça C5 e as juntas do corredor</td><td class="qtd">azulejo</td></tr>
+        <tr><td>Raspador de plástico</td><td class="nota">Tirar a tinta do azulejo sem riscar</td><td class="qtd">corredor</td></tr>
+        <tr><td>Berbequim</td><td class="nota">Fixar calhas e caixas. Sem roços, não precisa de percussão a sério</td><td class="qtd">emprestado</td></tr>
+        <tr><td>Escadote</td><td class="nota">Tectos, pontos de luz</td><td class="qtd">emprestado</td></tr>
+      </table>
+    </div>
+
+    <div class="seccao">Material a comprar</div>
+    <div class="tabela-scroll">
+      <table>
+        <tr><th>Material</th><th>Quanto</th><th>Nota</th></tr>
+        <tr><td>Massa de reparação em pasta</td><td class="qtd">2 × 5 kg</td><td class="nota">Em pasta e não em pó: para 59 buracos em sessões separadas, o pó endurece no balde entre sessões</td></tr>
+        <tr><td>Rede de fibra</td><td class="qtd">rolo 20 m</td><td class="nota">As 5 fissuras, com folga</td></tr>
+        <tr><td>Primário de aderência</td><td class="qtd">2 L, ou 30 L</td><td class="nota">2 L se for só nas reparações. Se a parede largar pó depois de lixada, é toda a superfície, e aí são cerca de 30 L</td></tr>
+        <tr><td>Tinta interior</td><td class="qtd">4 × 15 L</td><td class="nota">294 m² por demão, duas demãos. Tudo do mesmo lote, comprado de uma vez</td></tr>
+        <tr><td>Discos de lixa 120 para a girafa</td><td class="qtd">2 caixas</td><td class="nota">294 m² gastam muito mais do que se pensa</td></tr>
+        <tr><td>Lixas 150 e 240 de folha</td><td class="qtd">10 de cada</td><td class="nota">Só para acabar as reparações</td></tr>
+        <tr><td>Fita de pintor</td><td class="qtd">3 rolos</td><td class="nota">Da boa. A barata deixa cola e deixa passar tinta</td></tr>
+        <tr><td>Plástico de protecção</td><td class="qtd">1 rolo</td><td class="nota">Chão e móveis</td></tr>
+        <tr><td>Rolo, pincel e tabuleiro</td><td class="qtd">1 conjunto</td><td class="nota">Rolo de pelo médio para parede lisa</td></tr>
+        <tr><td>Luminárias ou casquilhos</td><td class="qtd">8</td><td class="nota">As três do corredor iguais e compradas juntas. Classe II se não houver terra</td></tr>
+        <tr><td>Bornes, buchas e parafusos</td><td class="qtd">1 caixa de cada</td><td class="nota">Ligações e fixação ao tecto</td></tr>
+        <tr><td>Tampas de calha de substituição</td><td class="qtd">as amarelecidas</td><td class="nota">Metade do que faz uma calha parecer bem montada</td></tr>
+        <tr><td>Tomada e espelho</td><td class="qtd">1 + 1</td><td class="nota">D6</td></tr>
+        <tr><td>Acrílico de pintar</td><td class="qtd">3 cartuchos</td><td class="nota">A linha de cima do rodapé onde não há calha, que é a maior parte. Não silicone, e nunca a selar a calha</td></tr>
+        <tr><td>Massa para madeira</td><td class="qtd">1 embalagem</td><td class="nota">O risco da porta D4</td></tr>
+        <tr><td>Esmalte aquoso e primário aderente</td><td class="qtd">1 L + 0,5 L</td><td class="nota">Só para a porta D4, a não ser que decidas pintar os rodapés</td></tr>
+        <tr><td>Betume de juntas</td><td class="qtd">1 kg</td><td class="nota">A peça C5, e as juntas do corredor se ficarem comidas pelo decapante</td></tr>
+        <tr><td>Decapante</td><td class="qtd">conforme a área</td><td class="nota">11 m² de azulejo pintado. O rendimento vem no rótulo do que já testaste</td></tr>
+        <tr><td>Luvas de nitrilo e escova de nylon</td><td class="qtd">2 pares + 2</td><td class="nota">Decapagem e as juntas do corredor</td></tr>
+        <tr><td>Cimento-cola e cruzetas</td><td class="qtd">saco pequeno</td><td class="nota">Só para a peça C5</td></tr>
+        <tr><td>Cola de montagem</td><td class="qtd">1 cartucho</td><td class="nota">Colar os troços soltos por trás, sem os tirar</td></tr>
+        <tr><td>Cera de retoque</td><td class="qtd">conjunto de tons</td><td class="nota">Folgas entre peças. Cera mole, aplicada a frio</td></tr>
+        <tr><td>Caneta de retoque para móveis</td><td class="qtd">1 ou 2</td><td class="nota">Cabeças de prego e riscos no revestido</td></tr>
+        <tr><td>Sacos de entulho e luvas</td><td class="qtd">10 + 2 pares</td><td class="nota">Pó e restos</td></tr>
+      </table>
+    </div>
+
+    <div class="seccao">O que falta medir</div>
+    <div class="medir">
+      <div class="medir-linha"><b>O pé-direito, na primeira hora do dia 1</b><span>Uma fita do chão ao tecto. Se der 2,60, os 60 L estão certos. Compra-os na mesma antes de ires, que a margem cobre de 2,40 a 2,80, e assim não perdes meio dia numa loja.</span></div>
+      <div class="medir-linha"><b>O tom da cera e da caneta de retoque</b><span>Leva uma foto do rodapé à loja, ou compra um conjunto de três ou quatro tons de castanho e mistura. Em revestido o tom errado nota-se mais do que a folga que estavas a tapar.</span></div>
+      <div class="medir-linha"><b>Se a parede larga pó depois de lixada</b><span>Passa a mão numa zona já lixada e aspirada. É esse teste que decide se compras 2 litros de primário ou trinta, e é a maior diferença de custo que ainda está em aberto.</span></div>
+      <div class="medir-linha"><b>Que luzes queres, e onde</b><span>Sobretudo os três pontos do corredor, que têm de ser iguais e alinhados. É a compra desta obra que se faz com mais antecedência, porque uma referência esgotada a meio deixa-te com duas luzes iguais e uma diferente.</span></div>
+      <div class="medir-linha"><b>O acabamento da tinta de parede</b><span>Escolhe mate. Numa parede com 59 reparações, o acetinado apanha a luz de lado e mostra cada uma delas; o mate esconde. Perde-se em lavabilidade, ganha-se em não se ver o trabalho todo.</span></div>
+      <div class="medir-linha"><b>A porta D4 é lacada ou envernizada</b><span>Lacada repara-se e fica invisível. Envernizada, um risco fundo fica retocado e nota-se sempre. Muda a expectativa, não o método.</span></div>
+      <div class="medir-linha"><b>Fotografa o que ainda não tem foto</b><span>Dezassete dos 31 itens não têm foto. Agora não faz falta, mas daqui a três meses, com tudo pintado, é a única maneira de te lembrares de como aquilo estava.</span></div>
+    </div>
+
+    <div class="fecho">
+      <b>Se só levares cinco coisas daqui:</b> as luminárias montam-se depois de pintar, e não antes. Nunca enches um buraco de uma vez, são sempre duas camadas. Primário em cima de toda a reparação antes de pintar, senão vê-se cada buraco através da tinta. Na linha do rodapé com a parede, acrílico de pintar e nunca silicone. E a lâmpada no chão a iluminar a parede de raspão antes de pintar, que é o que separa um trabalho de amador de um trabalho bem feito.
+    </div>
+  </div>
+</div>
