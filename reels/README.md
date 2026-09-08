@@ -136,7 +136,7 @@ Falharam 2 (15 e 20): são publicações de imagens, não vídeos.
 - Link: https://www.instagram.com/reel/Dc7WMh0JwWl/
 - Autor: racoonman84
 - Conteúdo: para inferência local de LLMs. "DeepSeek Harness" é uma interface open-source concorrente da que Cursor e Codex partilham, corre localmente num site. "Martty" é um TUI para terminal feito para ele. O autor fez fork dos dois e removeu a telemetria. Menciona também opencode, pi e crush.
-- Repositórios: não indicados no vídeo.
+- Repositórios (encontrados por pesquisa): DeepSeek Harness https://github.com/deepseek-ai/deepseek-harness (MIT, 92.000 estrelas nas primeiras 24 horas); Martty https://github.com/openma-ai/Martty (TUI em Rust, cliente ACP). Lista do ecossistema: https://github.com/0xsline/awesome-deepseek-harness
 
 ## 17. Sistemas para agências (marketing)
 - Link: https://www.instagram.com/reel/Dcy173UgAVR/
@@ -189,7 +189,7 @@ Falharam 2 (15 e 20): são publicações de imagens, não vídeos.
   2. Superpowers: obriga o Claude a planear e conferir o próprio trabalho antes de mexer. https://github.com/obra/superpowers
   3. claude-mem: memória entre sessões; ecrã mostra thedotmack/claude-mem. https://github.com/thedotmack/claude-mem
   4. Impeccable: gosto de design no front-end; ecrã mostra `npx impeccable install` e `/impeccable`. https://github.com/pbakaus/impeccable
-  5. Task Observer: observa como trabalhas e melhora as outras skills em background. Repositório não indicado.
+  5. Task Observer: observa como trabalhas e melhora as outras skills em background. https://github.com/rebelytics/one-skill-to-rule-them-all
 
 ## 24. Ferramentas de vibe coding
 - Link: https://www.instagram.com/reel/DcfUKjFhCMM/
@@ -231,6 +231,9 @@ Falharam 2 (15 e 20): são publicações de imagens, não vídeos.
 | Awesome DESIGN.md | https://github.com/VoltAgent/awesome-design-md | 19, 22 |
 | Web Design Guidelines (Vercel) | https://github.com/vercel-labs/agent-skills | 22 |
 | claude-mem | https://github.com/thedotmack/claude-mem | 23 |
+| Task Observer | https://github.com/rebelytics/one-skill-to-rule-them-all | 23 |
+| DeepSeek Harness | https://github.com/deepseek-ai/deepseek-harness | 16 |
+| Martty | https://github.com/openma-ai/Martty | 16 |
 | OmniRoute | https://github.com/diegosouzapw/OmniRoute | 12 |
 | Claude Code Setup (oficial) | `/plugin install claude-code-setup` | 12, 14 |
 | Claude Security (oficial) | https://github.com/anthropics/claude-code-security-review | 12 |
@@ -253,6 +256,4 @@ Falharam 2 (15 e 20): são publicações de imagens, não vídeos.
 
 - Reel 8: os 16 conectores restantes (só por DM).
 - Reel 15 e 20: publicações de imagens, não descarregadas.
-- Reel 16: repositórios de DeepSeek Harness e Martty.
-- Reel 23: Task Observer.
 - Reel 24: BKlayUI e CoconutUI (nomes por confirmar).
