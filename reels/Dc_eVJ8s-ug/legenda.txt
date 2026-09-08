@@ -1,0 +1,15 @@
+Autor: Nathan Hodgson
+
+Comment “PROMPT” to get the system prompt.
+
+Claude’s instructions are a lot bigger than a few lines telling it to be helpful.
+
+The file shared as Claude Fable 5.1’s system prompt runs to more than 270,000 characters. It offers a look at the instructions behind how the model handles work, from planning a task to deciding when to check back with you.
+
+You can read how it is told to use tools, approach tasks that take hours, and keep track of what needs doing next. Those are the details that make this interesting if you use AI for more than quick questions.
+
+Open the document and start with the sections about planning and tool use. They show the kinds of decisions a system prompt is designed to guide.
+
+The linked file is a community upload, so its contents should not be treated as an official Anthropic release.
+
+#ai #aitools #claude #anthropic #systemprompt

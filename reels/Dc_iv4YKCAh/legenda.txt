@@ -1,0 +1,27 @@
+Autor: Kayvon Jafarzadeh
+
+Follow me then comment “ECC” and I’ll DM you the free GitHub repo with 63 AI agents 🤖⚙️
+
+Video inspired by @[creator handle]
+
+One developer just handed the entire planet the power to replace every engineer alive: 63 AI agents, 249 skills, and an AI that red teams its own code before hackers can. One guy built it alone in ten months and it just crossed 240,000 stars.
+
+Here’s how it works 👇
+1️⃣ Open Claude Code, Cursor, or Codex
+2️⃣ Type /plugin marketplace add, then the ECC repo
+3️⃣ Type /plugin install and you’re done in two minutes
+4️⃣ Say “Plan this feature” and one agent designs the whole architecture
+5️⃣ Say “Build it,” “Test it,” or “Secure it” and specialists handle the rest
+
+What makes this insane:
+✅ 63 specialist agents and 249 skills, all from plain English
+✅ Writes code in Django, Next.js, React, whatever you want
+✅ Runs tests until coverage hits 80%
+✅ Red teams your own app and patches holes before hackers find them
+✅ 100% free and open source on GitHub
+
+Why this matters: OpenAI and Anthropic will not hand you this. One developer already did, and the gap between people who install it and people who scroll past keeps getting wider.
+
+👉 Follow me then comment “ECC” and I’ll DM you the GitHub link and my full install guide
+
+#ECC #ClaudeCode #Cursor #Codex #AIagents AIcoding GitHub OpenSource AItools AIworkflow GenerativeAI BuildInPublic ZeroToFounder TechFounder DeveloperTools AIstartup VibeCoding AIbusiness AIcreator FutureOfAI

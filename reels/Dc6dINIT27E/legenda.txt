@@ -1,0 +1,22 @@
+Autor: Tessa Fairbrook
+
+Claude can now fix your prompts before answering.
+
+It's called Prompt Master, 11,000 stars on GitHub, completely free. And it fixes the one problem every Claude user has.
+
+You type a rough prompt, Claude does exactly what you typed, and you burn three messages explaining what you actually meant. That's where your tokens vanish.
+
+Prompt Master flips it. You write one messy sentence, and it hands back a finished prompt telling Claude what to output, what files to touch, and when to stop.
+
+Setup takes a minute. Download the repo, go to Claude, then Customize, then Skills, upload, done.
+
+It runs your prompt through 35 credit-wasting patterns and remembers what you've already decided, so Claude doesn't forget it mid-chat. Same work, way fewer attempts. And it works on ChatGPT and Cursor too.
+
+This is Claude doing something most people didn't know it could do.
+
+Comment PROMPT and I'll DM you the full skill and setup.
+ .
+ .
+ .
+ .
+ [ClaudeAI, ClaudeSkills, PromptMaster, PromptEngineering, AITools, ClaudeCode, TokenSavings, StayingAhead]

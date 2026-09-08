@@ -1,0 +1,26 @@
+Autor: Valeri Sabev | Building with AI
+
+Comment “CLONE” and I’ll send you the link.
+
+Stop rebuilding websites from scratch when you can turn a screenshot into a working site.
+
+There’s an open-source repo called Screenshot to Code that can take a screenshot and generate the code for you.
+
+Here’s what it does:
+
+Upload a screenshot
+Analyzes layout, spacing, typography, and colors
+Generates the website code
+Gives you a live preview
+Lets you iterate in the same window
+Supports different vision models
+Can generate placeholder images so the result feels more complete
+Can be self-hosted with your own API keys
+
+Basically, you give it the design and it gives you a working starting point.
+
+Comment “CLONE” and I’ll send you the link.
+
+Make sure you're following so the DM lands.
+
+#ScreenshotToCode #WebDevelopment #AIWebDesign

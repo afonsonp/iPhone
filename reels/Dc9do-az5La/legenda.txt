@@ -1,0 +1,42 @@
+Autor: Kunaal
+
+Claude can feel brilliant at the start of a coding session.
+
+Then 40 prompts later:
+
+it forgets constraints.
+reopens solved problems.
+touches unrelated files.
+and starts making weird assumptions.
+
+The model didn’t suddenly get worse.
+
+The context did.
+
+So during longer builds, I periodically reset these 5 things:
+
+1. Current objective
+  What exactly are we solving right now?
+2. Decisions already made
+  Architecture, libraries and approaches we already agreed on.
+3. Files that matter
+  Stop carrying half the codebase forward when 4 files are relevant.
+4. Known constraints
+  What must NOT change?
+5. Definition of done
+  What evidence proves this task is actually complete?
+
+Then I give the agent one clean instruction:
+
+“Continue from this state. Don’t reconsider completed decisions unless new evidence requires it.”
+
+AI coding isn’t only about writing better prompts.
+
+It’s about maintaining good context.
+
+And the longer your agent works, the more important that becomes.
+
+Save this before your next long Claude session.
+
+Want FREE Agentic Ai MASTERCLASS???
+Check link in Bio!!

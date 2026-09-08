@@ -1,0 +1,27 @@
+Autor: Danica Simic
+
+10 agentic AI concepts you need before 2027 
+
+People who’ve never written a single line of code have full mouth of agent loops and systems that make them 7 figures while they sleep. But here’s the knowledge that survives contact with production in 2027.
+
+1. Harness engineering — designing the environment your agent acts inside: the sandbox, the file system, the runtime surface.
+
+2. Loop engineering — deciding when the agent runs again, and when it stops.
+
+3. Context engineering — getting the right information into the window and keeping the wrong information out.
+
+4. Tool design — your agent is only as capable as the tools you hand it, and only as safe as their worst edge case.
+
+5. Memory architecture — what the agent remembers, for how long, and what it's allowed to forget.
+
+6. Orchestration patterns — one agent, a planner, or a swarm; each fails differently.
+
+7. Guardrails & permissions — what happens when the agent tries something it shouldn't.
+
+8. Evals for agents — you can't test a trajectory the way you test a function.
+
+9. Human-in-the-loop design — knowing which decisions never get delegated.
+
+10. Observability & tracing — when it breaks at step 14 of 30, you need to see step 14.
+
+Most people are stuck on 3 and 4. The gap between a demo and a system is 7 through 10. And that’s exactly what I can teach you if you lock-in throughout the rest of the year. Comment “POST” for my FREE guide!
